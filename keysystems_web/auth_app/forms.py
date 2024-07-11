@@ -8,6 +8,12 @@ class AuthBaseForm(forms.Form):
     inn = forms.IntegerField()
 
 
+# проверка инн + почта
+class AuthUserForm(forms.Form):
+    inn = forms.IntegerField()
+    email = forms.EmailField()
+
+
 # проверка пароля
 class PasswordForm(forms.Form):
     password = forms.CharField()
