@@ -6,12 +6,6 @@ from base_utils import log_error
 from enums import RequestMethod
 
 
-def index_2_2(request: HttpRequest):
-    log_error('index_2_2', wt=False)
-    context = {}
-    return render(request, 'index_2_2.html', context)
-
-
 def index_3_2(request: HttpRequest):
     context = {}
     return render(request, 'index_3_2.html', context)

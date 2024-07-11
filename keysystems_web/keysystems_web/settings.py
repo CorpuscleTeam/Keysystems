@@ -112,3 +112,12 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 AUTH_USER_MODEL = 'auth_app.CustomUser'
 
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'postfix'  # Адрес вашего Postfix сервера (если он запущен локально)
+EMAIL_PORT = 25  # Порт SMTP сервера
+EMAIL_USE_TLS = False  # Используется только если ваш Postfix настроен на TLS
+EMAIL_HOST_USER = 'your_email@example.com'
+EMAIL_HOST_PASSWORD = 'your_password'
+DEFAULT_FROM_EMAIL = 'your_email@example.com'
+
