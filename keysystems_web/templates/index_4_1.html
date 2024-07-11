@@ -7,6 +7,7 @@
     {% load static %}
     <link rel="stylesheet" href="{% static 'site/css/basic_style.css' %}">
     <link rel="stylesheet" href="{% static 'site/css/sidenav.css' %}">
+    <link rel="stylesheet" href="{% static 'site/css/modal_create_request.css' %}">
     <link rel="stylesheet" href="{% static 'site/css/style.css' %}">
     <link rel="stylesheet" href="{% static 'site/css/media.css' %}">
     <title>Личный кабинет КСЯ</title>
@@ -40,7 +41,7 @@
             <p>Учреждение</p>
         </li>
         <li class="create_request">
-            <a href="#!">
+            <a class="waves-effect waves-light btn modal-trigger" href="#modal_create_request">
                 <div class="create_request_flex">
                     <img src="{% static 'site/img/plus.svg' %}" alt="+">
                     <p>Создать заявку</p>
@@ -154,7 +155,7 @@
                 <div class="page_flex_menu">
                     <ul class="page_menu_ul">
                         <li>
-                            <a href="#!">
+                            <a class="waves-effect waves-light btn modal-trigger" href="#modal_create_request">
                                 <div class="page_create_request_flex">
                                     <img src="{% static 'site/img/plus.svg' %}" alt="+">
                                     <p>Создать заявку</p>
@@ -174,7 +175,7 @@
                         </li>
                         <li>
                             <a href="#!">
-                                <div class="page_menu_li_left">
+                                <div class="page_menu_li_news">
                                     <img src="{% static 'site/img/news.svg' %}" alt="">
                                     <p>Лента новостей</p>
                                 </div>
@@ -207,14 +208,26 @@
 
                 <!-- Основная часть -->
                 <div class="page_flex_body">
-                    <div>Lorem ipsum dolor sit amet consectetur adipisicing elit. Sunt magni tempore minima quae recusandae! Enim, eligendi. Quo quibusdam illum praesentium sit, beatae itaque natus nulla facere sint repudiandae, excepturi eligendi porro. Similique, dignissimos dolorum eaque in vel commodi quae eveniet! Corrupti eaque ratione nulla dolor minus reiciendis nobis, facilis eos earum illum unde a ducimus eveniet repellendus doloremque obcaecati fugiat harum inventore distinctio voluptates modi sapiente? Ab dignissimos fuga vel voluptates accusamus iste ipsa omnis dolorem quaerat? At repellat animi soluta quia amet vero provident explicabo odio debitis quibusdam! Molestiae voluptatem at odit soluta possimus omnis dolor, doloremque veritatis qui iure laborum, cumque fugit? Culpa dolor tempore nam veniam officiis, repellendus suscipit excepturi modi ullam vitae quidem necessitatibus iure laboriosam rerum! Impedit sint necessitatibus ad pariatur, rem iusto, animi quo eum deserunt, illo maxime repellendus eius aut magnam quam molestiae dolorum doloribus at optio soluta ea labore incidunt. Fugit optio expedita numquam consequatur molestiae soluta repellat officia quibusdam, voluptatem praesentium adipisci suscipit culpa alias, tempora cum accusantium nostrum. Distinctio eos eum omnis qui quia, modi quae velit tenetur unde! Aliquam alias vel amet, a aspernatur tenetur repudiandae, id doloribus aliquid saepe explicabo facilis! Delectus at laborum temporibus dolores doloribus ipsum fuga praesentium, ipsam reprehenderit facere voluptatum libero quo minus explicabo ex pariatur esse suscipit. Maiores libero quisquam deleniti aliquid accusantium porro blanditiis perferendis, nihil consectetur magnam reiciendis eaque eligendi, non quod ipsum! Ipsa provident et voluptate harum eos officia distinctio, soluta voluptatibus, inventore atque culpa officiis iure id. Voluptatibus enim distinctio pariatur nostrum id. Sunt rem provident excepturi maiores mollitia fugit ab ad expedita, dignissimos consequuntur sequi recusandae quas error cupiditate ipsam ea placeat tempora a soluta iste dolores modi itaque optio. Quisquam, reiciendis quas ad eaque illum officiis ducimus saepe officia minima iusto eos perspiciatis atque praesentium veniam quia!</div>
+                    <h2 class="page_body_h2">Новости</h2>
+
                 </div>
             </div>
         </div>
     </section>
 
+    <!-- Футер -->
+    <footer class="footer_client">
+        <div class="conteiner">
+            <a class="footer_client_a" href="#">Написать в техподдержку</a>
+        </div>
+    </footer>
+
+    <script>let link = "{% static 'site/img/close-large.svg' %}"</script>
+
     <script type="text/javascript" src="{% static 'site/js/materialize.min.js' %}"></script>
     <script type="text/javascript" src="{% static 'site/js/main_sidenav.js' %}"></script>
+    <script type="text/javascript" src="{% static 'site/js/main_create_request.js' %}"></script>
+
 
 </body>
 
