@@ -2,5 +2,5 @@
 **/idea/
 **/__pycache__/
 /nginx/conf.d/base.conf
-/.idea
+**/.idea
 /keysystems_web/logs/
