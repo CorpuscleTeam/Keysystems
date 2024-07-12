@@ -89,20 +89,20 @@ let textareaDescription = document.createElement('textarea')
 textareaDescription.setAttribute('name', 'description')
 textareaDescription.setAttribute('id', 'description')
 textareaDescription.setAttribute('maxlength', '55')
-textareaDescription.style.width = '100%'
-textareaDescription.style.height = '100px'
-textareaDescription.style.paddingBottom = '20px'
-textareaDescription.style.resize = 'none'
+// textareaDescription.style.width = '100%'
+// textareaDescription.style.height = '100px'
+// textareaDescription.style.paddingBottom = '20px'
+// textareaDescription.style.resize = 'none'
 textareaConteiner.appendChild(textareaDescription)
 
 // элемент для отображения количества символов
 let charCount = document.createElement('div');
 charCount.id = 'charCount'
-charCount.style.position = 'absolute'
-charCount.style.bottom = '5px'
-charCount.style.right = '10px'
-charCount.style.fontSize = '12px'
-charCount.style.color = 'gray'
+// charCount.style.position = 'absolute'
+// charCount.style.bottom = '5px'
+// charCount.style.right = '10px'
+// charCount.style.fontSize = '12px'
+// charCount.style.color = 'gray'
 charCount.textContent = '0/55'
 textareaConteiner.appendChild(charCount)
 
@@ -119,7 +119,22 @@ form.appendChild(addFile)
 
 let inputAddFile = document.createElement('input')
 inputAddFile.setAttribute('type', 'file')
+inputAddFile.setAttribute('id', 'addfile')
+inputAddFile.setAttribute('name', 'addfile')
+inputAddFile.style.display = 'none'
 addFile.appendChild(inputAddFile)
+
+let labelAddFile = document.createElement('label')
+labelAddFile.setAttribute('for', 'addfile')
+labelAddFile.classList.add('add_file')
+labelAddFile.textContent = 'Добавить файлы'
+labelAddFile.style.cursor = 'pointer'
+addFile.appendChild(labelAddFile)
+
+let labelAddFileImg = document.createElement('img')
+labelAddFileImg.setAttribute('src', linkAddFile)
+labelAddFile.prepend(labelAddFileImg)
+
 
 // создать модальное окно
 document.body.append(ModalCreateRequest)
