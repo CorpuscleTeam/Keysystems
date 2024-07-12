@@ -37,6 +37,14 @@ MIDDLEWARE = [
 
 ROOT_URLCONF = 'keysystems_web.urls'
 
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = 'dgushch@gmail.com'
+EMAIL_HOST_PASSWORD = 'vgjk cqkb iqbu mzoj'
+DEFAULT_FROM_EMAIL = 'test_gmail_address@gmail.com'
+
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
@@ -96,7 +104,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'ru-ru'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Asia/Yakutsk'
 
 USE_I18N = True
 
@@ -105,18 +113,13 @@ USE_TZ = True
 STATIC_URL = '/static/'
 STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+if not os.path.exists(STATIC_ROOT):
+    os.mkdir(STATIC_ROOT)
 
 MEDIA_URL = 'media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+if not os.path.exists(MEDIA_ROOT):
+    os.mkdir(MEDIA_ROOT)
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 AUTH_USER_MODEL = 'auth_app.CustomUser'
-
-
-EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = 'smtp.gmail.com'
-EMAIL_PORT = 587
-EMAIL_USE_TLS = True
-EMAIL_HOST_USER = 'dgushch@gmail.com'
-EMAIL_HOST_PASSWORD = 'vgjk cqkb iqbu mzoj'
-DEFAULT_FROM_EMAIL = 'test_gmail_address@gmail.com'
