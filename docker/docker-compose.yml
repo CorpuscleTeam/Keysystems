@@ -41,6 +41,7 @@ services:
       - "8000:8000"
     depends_on:
       - db
+      - mailhog
     env_file:
       - .env
 
@@ -59,20 +60,7 @@ services:
       - media_value:/var/html/media/
     depends_on:
       - web
-      - postfix
 
-
-  postfix:
-    build:
-      context: ..
-      dockerfile: docker/dockerfiles/DockerfilePost
-      args:
-        - --no-cache
-    container_name: postfix
-    ports:
-      - "25:25"
-    environment:
-      - HOSTNAME=localhost_post
 
 volumes:
   postgres_data:
