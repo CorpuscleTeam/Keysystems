@@ -7,20 +7,13 @@ from django.core.mail import send_mail
 
 from .forms import AuthBaseForm, RegistrationForm, PasswordForm, AuthUserForm
 from .models import UserKS, CustomUser
-from base_utils import log_error, pass_gen
+from keysystems_web.settings import EMAIL_HOST_USER, EMAIL_HOST_PASSWORD
+from base_utils import log_error, pass_gen, send_pass_email
 from enums import RequestMethod, UserRole
 
 
 # Определяет начальную страницу пользователя
 def start_page_redirect(request: HttpRequest):
-    # send_mail(
-    #     'Тестовое письмо',
-    #     'Это тестовое письмо, отправленное через Postfix SMTP сервер.',
-    #     'your_email@example.com',
-    #     ['dgushch@gmail.com'],
-    #     fail_silently=False,
-    # )
-
     if request.user.is_authenticated and request.user.is_staff:
         return redirect('index_4_1')
 
@@ -105,7 +98,10 @@ def index_3_1(request: HttpRequest):
         if reg_form.is_valid():
             password = pass_gen()
             log_error(f'>>>>>> {password}', wt=False)
+
             #  тут пароль отправляем на почту
+            send_pass_email(email=reg_form.cleaned_data['email'], password=password)
+
             new_user = CustomUser(
                 username=reg_form.cleaned_data['email'],
                 inn=reg_form.cleaned_data['inn'],
