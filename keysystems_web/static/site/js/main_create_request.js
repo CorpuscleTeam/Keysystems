@@ -15,10 +15,13 @@ modalContent.classList.add('modal-content')
 ModalCreateRequest.appendChild(modalContent)
 
 // Кнопка закрыть
-let ModalRequestClose = document.createElement('img')
-// ModalRequestClose.setAttribute('src', '../img/close-large.svg')
-ModalRequestClose.setAttribute('src', link)
+let ModalRequestClose = document.createElement('div')
+ModalRequestClose.classList.add('modal1_img')
 modalContent.appendChild(ModalRequestClose)
+
+let modalCloseImg = document.createElement('img')
+modalCloseImg.setAttribute('src', link)
+ModalRequestClose.appendChild(modalCloseImg)
 
 // Заголовок
 let ModalRequestH = document.createElement('h4')
@@ -134,6 +137,29 @@ addFile.appendChild(labelAddFile)
 let labelAddFileImg = document.createElement('img')
 labelAddFileImg.setAttribute('src', linkAddFile)
 labelAddFile.prepend(labelAddFileImg)
+
+// загруженный файл
+// Элемент для отображения названия загруженного файла
+let fileNameDisplay = document.createElement('span');
+fileNameDisplay.classList.add('file_name_display');
+fileNameDisplay.style.marginLeft = '10px';
+addFile.appendChild(fileNameDisplay);
+
+// Обработчик события изменения файла
+inputAddFile.addEventListener('change', (event) => {
+    const file = event.target.files[0];
+    if (file) {
+        fileNameDisplay.textContent = file.name;
+    } else {
+        fileNameDisplay.textContent = '';
+    }
+});
+
+// кнопка отправить заявку
+let btnSubmitRequest = document.createElement('button')
+btnSubmitRequest.classList.add('enter_button')
+btnSubmitRequest.innerHTML = `Отправить запрос`
+form.appendChild(btnSubmitRequest)
 
 
 // создать модальное окно
