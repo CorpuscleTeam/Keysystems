@@ -41,6 +41,7 @@ services:
       - "8000:8000"
     depends_on:
       - db
+      - mailhog
     env_file:
       - .env
 
@@ -59,6 +60,7 @@ services:
       - media_value:/var/html/media/
     depends_on:
       - web
+
 
 volumes:
   postgres_data:

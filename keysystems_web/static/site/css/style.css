@@ -315,9 +315,29 @@
 }
 .page_menu_ul {
     list-style: none;
+    padding: 0;
+}
+.page_menu_ul li {
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    height: 46px;
+    width: 100%;
+}
+.page_menu_ul li > a {
+    display: block;
+    width: 100%;
+    height: 100%;
+}
+.page_menu_ul li:first-child {
+    background-color: var(--color_green);
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 8px;
+    height: 46px;
 }
 .page_create_request_flex {
-    background-color: var(--color_green);
     color: rgba(255, 255, 255, 1);
     display: flex;
     justify-content: flex-start;
@@ -325,17 +345,47 @@
     gap: 8px;
     font-size: 16px;
     font-weight: 400;
-    height: 46px;
     padding-left: 24px;
+    height: 100%;
 }
-/* .page_create_request_flex img {
-    margin-right: 13px;
-} */
 .page_menu_li_flex {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-left: 24px;
+    padding-right: 24px;
+    height: 100%;
+    border: 2px solid var(--color_dark);;
 }
 .page_menu_li_left {
+    display: flex;
+    gap: 8px;
+}
+.page_menu_li_left p {
+    color: var(--color_dark);
 }
 .page_menu_li_right {
+    min-width: 22px;
+    height: 22px;
+    border-radius: 11px;
+    background-color: var(--color_green);
+    color: rgba(255, 255, 255, 1);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 10px;
+}
+.page_menu_li_news {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    gap: 8px;
+    padding-left: 24px;
+    height: 100%;
+    border: 2px solid var(--color_dark);
+}
+.page_menu_li_news p {
+    color: var(--color_dark);
 }
 
 /* Основная часть */
@@ -346,4 +396,38 @@
     min-width: 640px;
     padding: 20px 30px 30px;
 }
+.page_body_h2 {
+    font-size: 28px;
+    font-weight: 400;
+}
 
+
+/* Футер */
+.footer_client {
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+.footer_client_a {
+    color: 12;
+    color: rgba(153, 153, 153, 1);
+    text-decoration: none;
+    display: block;
+    text-align: right;
+}
+
+
+/* CSS для textarea и счетчика символов внутри */
+textarea {
+    padding-bottom: 20px; /* Добавляем отступ для счетчика символов */
+    width: 100%;
+    height: 100px;
+    resize: none;
+}
+
+#charCount {
+    position: absolute;
+    bottom: 5px;
+    right: 10px;
+    font-size: 12px;
+    color: gray;
+}

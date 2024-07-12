@@ -21,7 +21,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     # 'channels',
-    'client_app',
+    # 'client_app',
     'auth_app',
 ]
 
@@ -112,3 +112,11 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 AUTH_USER_MODEL = 'auth_app.CustomUser'
 
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = 'dgushch@gmail.com'
+EMAIL_HOST_PASSWORD = 'vgjk cqkb iqbu mzoj'
+DEFAULT_FROM_EMAIL = 'test_gmail_address@gmail.com'
