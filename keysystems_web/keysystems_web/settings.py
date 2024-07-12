@@ -21,7 +21,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     # 'channels',
-    # 'client_app',
+    'client_app',
     'auth_app',
 ]
 

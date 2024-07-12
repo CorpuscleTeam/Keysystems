@@ -24,6 +24,8 @@ def index_4_1(request: HttpRequest):
         'news': news,
         'topics': topics,
         'soft': soft,
+        'orders_count': 1,
+        'notice': 10,
     }
     return render(request, 'index_4_1.html', context)
 
