@@ -46,6 +46,80 @@ selectTypeAppeal.setAttribute('name', 'type_appeal')
 selectTypeAppeal.setAttribute('id', 'type_appeal')
 typeAppeal.appendChild(selectTypeAppeal)
 
+    // !! добавить цикл с вариантами выбора
+let optionTypeAppeal = document.createElement('option')
+selectTypeAppeal.appendChild(optionTypeAppeal)
+
+// Программное обеспечение
+let typeSoft = document.createElement('p')
+form.appendChild(typeSoft)
+
+let labelTypeSoft = document.createElement('label')
+labelTypeSoft.setAttribute('for', 'type_soft')
+labelTypeSoft.classList.add('required')
+labelTypeSoft.innerHTML = `Програмное обеспечение`
+typeSoft.appendChild(labelTypeSoft)
+
+let selectTypeSoft = document.createElement('select')
+selectTypeSoft.setAttribute('name', 'type_soft')
+selectTypeSoft.setAttribute('id', 'type_soft')
+typeSoft.appendChild(selectTypeSoft)
+
+    // !! добавить цикл с вариантами выбора
+let optionTypeSoft = document.createElement('option')
+selectTypeSoft.appendChild(optionTypeSoft)
+
+// Краткое описание
+let description = document.createElement('p')
+form.appendChild(description)
+
+let labelDescription = document.createElement('label')
+labelDescription.setAttribute('for', 'description')
+labelDescription.classList.add('required')
+labelDescription.innerHTML = `Краткое описание`
+description.appendChild(labelDescription)
+
+// счетчик символов
+let textareaConteiner = document.createElement('div')
+textareaConteiner.style.position = 'relative'
+description.appendChild(textareaConteiner)
+// textareaConteiner.appendChild(textareaDescription)
+
+let textareaDescription = document.createElement('textarea')
+textareaDescription.setAttribute('name', 'description')
+textareaDescription.setAttribute('id', 'description')
+textareaDescription.setAttribute('maxlength', '55')
+textareaDescription.style.width = '100%'
+textareaDescription.style.height = '100px'
+textareaDescription.style.paddingBottom = '20px'
+textareaDescription.style.resize = 'none'
+textareaConteiner.appendChild(textareaDescription)
+
+// элемент для отображения количества символов
+let charCount = document.createElement('div');
+charCount.id = 'charCount'
+charCount.style.position = 'absolute'
+charCount.style.bottom = '5px'
+charCount.style.right = '10px'
+charCount.style.fontSize = '12px'
+charCount.style.color = 'gray'
+charCount.textContent = '0/55'
+textareaConteiner.appendChild(charCount)
+
+// обработчик событий input для обновления счетсика
+textareaDescription.addEventListener('input', () => {
+    const currentLength = textareaDescription.value.length
+    const maxLength = textareaDescription.getAttribute('maxlength')
+    charCount.textContent = `${currentLength}/${maxLength}`
+})
+
+// приложить файл
+let addFile = document.createElement('p')
+form.appendChild(addFile)
+
+let inputAddFile = document.createElement('input')
+inputAddFile.setAttribute('type', 'file')
+addFile.appendChild(inputAddFile)
 
 // создать модальное окно
 document.body.append(ModalCreateRequest)
