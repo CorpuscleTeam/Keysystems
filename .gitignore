@@ -4,3 +4,4 @@
 /nginx/conf.d/base.conf
 **/.idea
 /keysystems_web/logs/
+/keysystems_web/media/
