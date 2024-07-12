@@ -7,6 +7,7 @@ from django.core.mail import send_mail
 
 from .forms import AuthBaseForm, RegistrationForm, PasswordForm, AuthUserForm
 from .models import UserKS, CustomUser
+from client_app.models import Soft
 from keysystems_web.settings import EMAIL_HOST_USER, EMAIL_HOST_PASSWORD
 from base_utils import log_error, pass_gen, send_pass_email
 from enums import RequestMethod, UserRole
@@ -113,12 +114,8 @@ def index_3_1(request: HttpRequest):
 
             return redirect(reverse('index_2_2') + f'?user={new_user.id}')
 
-    prods = [
-        {'name': 'ПО 1', 'id': 1},
-        {'name': 'ПО 2', 'id': 2},
-        {'name': 'ПО 3', 'id': 3},
-    ]
-    context = {'prods': prods}
+    soft = Soft.objects.filter(is_active=True).all()
+    context = {'soft': soft}
     return render(request, 'index_3_1.html', context)
 
 
