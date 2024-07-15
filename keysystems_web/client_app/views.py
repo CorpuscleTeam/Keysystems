@@ -3,6 +3,7 @@ from django.http.request import HttpRequest
 
 from .forms import AuthUserForm
 from .models import news, OrderTopic, Soft
+from django.core.serializers import serialize
 from base_utils import log_error
 from enums import RequestMethod
 
@@ -20,10 +21,12 @@ def index_4_1(request: HttpRequest):
 
     topics = OrderTopic.objects.filter(is_active=True).all()
     soft = Soft.objects.filter(is_active=True).all()
+    soft_json = serialize('json', soft)
+    topics_json = serialize('json', topics)
     context = {
         'news': news,
-        'topics': topics,
-        'soft': soft,
+        'topics': topics_json,
+        'soft': soft_json,
         'orders_count': 1,
         'notice': 10,
     }

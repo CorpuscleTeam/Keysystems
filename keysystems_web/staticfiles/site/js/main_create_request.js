@@ -49,13 +49,9 @@ selectTypeAppeal.setAttribute('name', 'type_appeal')
 selectTypeAppeal.setAttribute('id', 'type_appeal')
 typeAppeal.appendChild(selectTypeAppeal)
 
-// добавить цикл с вариантами выбора
-for (let i = 0; i<soft.length; i++) {
-    let optionTypeAppeal = document.createElement('option')
-    optionTypeAppeal.setAttribute('value', topics[i].pk)
-    optionTypeAppeal.innerHTML = topics[i].fields.topic
-    selectTypeAppeal.appendChild(optionTypeAppeal)
-}
+    // !! добавить цикл с вариантами выбора
+let optionTypeAppeal = document.createElement('option')
+selectTypeAppeal.appendChild(optionTypeAppeal)
 
 // Программное обеспечение
 let typeSoft = document.createElement('p')
@@ -72,13 +68,9 @@ selectTypeSoft.setAttribute('name', 'type_soft')
 selectTypeSoft.setAttribute('id', 'type_soft')
 typeSoft.appendChild(selectTypeSoft)
 
-// цикл с вариантами выбора
-for (let i = 0; i<soft.length; i++) {
-    let optionTypeSoft = document.createElement('option')
-    optionTypeSoft.setAttribute('value', soft[i].pk)
-    optionTypeSoft.innerHTML = soft[i].fields.title
-    selectTypeSoft.appendChild(optionTypeSoft)
-}
+    // !! добавить цикл с вариантами выбора
+let optionTypeSoft = document.createElement('option')
+selectTypeSoft.appendChild(optionTypeSoft)
 
 // Краткое описание
 let description = document.createElement('p')
@@ -124,7 +116,6 @@ inputAddFile.classList.add('add_file')
 inputAddFile.setAttribute('type', 'file')
 inputAddFile.setAttribute('id', 'addfile')
 inputAddFile.setAttribute('name', 'addfile')
-inputAddFile.setAttribute('multiple', 'multiple')
 inputAddFile.style.display = 'none'
 addFile.appendChild(inputAddFile)
 
@@ -141,21 +132,18 @@ labelAddFile.prepend(labelAddFileImg)
 
 // загруженный файл
 // Элемент для отображения названия загруженного файла
-let fileNameDisplay = document.createElement('div');
+let fileNameDisplay = document.createElement('span');
 fileNameDisplay.classList.add('file_name_display');
-fileNameDisplay.style.marginTop = '10px';
+fileNameDisplay.style.marginLeft = '10px';
 addFile.appendChild(fileNameDisplay);
 
 // Обработчик события изменения файла
 inputAddFile.addEventListener('change', (event) => {
-    const files = event.target.files;
-    if (files.length > 0) {
-        for (let i=0; i<files.length; i++) {
-            const file = files[i]
-            const fileItem = document.createElement('div')
-            fileItem.textContent = file.name
-            fileNameDisplay.appendChild(fileItem)
-        }
+    const file = event.target.files[0];
+    if (file) {
+        fileNameDisplay.textContent = file.name;
+    } else {
+        fileNameDisplay.textContent = '';
     }
 });
 
