@@ -17,7 +17,7 @@ def index_3_2(request: HttpRequest):
 # страничка с новостями
 def index_4_1(request: HttpRequest):
     if request.method == RequestMethod.POST:
-        pass
+        log_error(RequestMethod.POST, wt=False)
 
     topics = OrderTopic.objects.filter(is_active=True).all()
     soft = Soft.objects.filter(is_active=True).all()
@@ -30,6 +30,7 @@ def index_4_1(request: HttpRequest):
         'orders_count': 3,
         'notice': 10,
         'update_count': 44,
+
     }
     return render(request, 'index_4_1.html', context)
 
