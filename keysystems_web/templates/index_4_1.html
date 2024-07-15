@@ -50,12 +50,12 @@
         </li>
         <li class="sidenav_mobile_li">
             <a href="#!">
-                <div class="sidenav_li_flex">
+                <div class="sidenav_li_flex mobile_orders">
                     <div class="sidenav_li_left">
                         <img src="{% static 'site/img/request.svg' %}" alt="">
                         <p>Заявки</p>
                     </div>
-                    <div class="sidenav_li_right">1</div>
+                    <!-- <div class="sidenav_li_right orders_count"></div> -->
                 </div>
             </a>
         </li>
@@ -69,23 +69,23 @@
         </li>
         <li class="sidenav_mobile_li">
             <a href="#!">
-                <div class="sidenav_li_flex">
+                <div class="sidenav_li_flex mobile_notice">
                     <div class="sidenav_li_left">
                         <img src="{% static 'site/img/push.svg' %}" alt="">
                         <p>Уведомления</p>
                     </div>
-                    <div class="sidenav_li_right">1</div>
+                    <!-- <div class="sidenav_li_right notice">1</div> -->
                 </div>
             </a>
         </li>
         <li class="sidenav_mobile_li">
             <a href="#!">
-                <div class="sidenav_li_flex">
+                <div class="sidenav_li_flex mobile_update">
                     <div class="sidenav_li_left">
                         <img src="{% static 'site/img/update.svg' %}" alt="">
                         <p>Обновление ПО</p>
                     </div>
-                    <div class="sidenav_li_right">24</div>
+                    <!-- <div class="sidenav_li_right update_count">24</div> -->
                 </div>
             </a>
         </li>
@@ -124,7 +124,7 @@
                         <p>Учреждение</p>
                     </li>
                     <li>
-                        <a href="#">
+                        <a href="#modal_settings" class="waves-effect waves-light btn modal-trigger">
                             <img src="{% static 'site/img/setting.svg' %}" alt="setting">
                             <p>НАСТРОЙКИ</p>
                         </a>
@@ -164,12 +164,12 @@
                         </li>
                         <li>
                             <a href="#!">
-                                <div class="page_menu_li_flex">
+                                <div class="page_menu_li_flex page_orders">
                                     <div class="page_menu_li_left">
                                         <img src="{% static 'site/img/request.svg' %}" alt="">
                                         <p>Заявки</p>
                                     </div>
-                                    <div class="page_menu_li_right">1</div>
+                                    <!-- <div class="page_menu_li_right orders_count"></div> -->
                                 </div>
                             </a>
                         </li>
@@ -183,23 +183,23 @@
                         </li>
                         <li>
                             <a href="#!">
-                                <div class="page_menu_li_flex">
+                                <div class="page_menu_li_flex page_notice">
                                     <div class="page_menu_li_left">
                                         <img src="{% static 'site/img/push.svg' %}" alt="">
                                         <p>Уведомления</p>
                                     </div>
-                                    <div class="page_menu_li_right">1</div>
+                                    <!-- <div class="page_menu_li_right notice">1</div> -->
                                 </div>
                             </a>
                         </li>
                         <li>
                             <a href="#!">
-                                <div class="page_menu_li_flex">
+                                <div class="page_menu_li_flex page_update">
                                     <div class="page_menu_li_left">
                                         <img src="{% static 'site/img/update.svg' %}" alt="">
                                         <p>Обновление ПО</p>
                                     </div>
-                                    <div class="page_menu_li_right">24</div>
+                                    <!-- <div class="page_menu_li_right update_count">24</div> -->
                                 </div>
                             </a>
                         </li>
@@ -223,6 +223,10 @@
     </footer>
 
     <script>
+        // токен в форму
+        // let tokenForForm = {{ csrf_token }}
+        // console.log(tokenForForm)
+
         // картинка в модальное окно
         let link = "{% static 'site/img/close-large.svg' %}"
         let linkAddFile = "{% static 'site/img/addFile.svg' %}"
@@ -232,11 +236,22 @@
 
         // переменная "тип обращения"
         let topics = JSON.parse('{{ topics|escapejs }}')
+
+        // переменная "Заявки"
+        let orders = {{ orders_count }}
+        // console.log(orders_count)
+        // переменная "Уведомления"
+        let notice = {{ notice }}
+        // переменная "Обновления ПО"
+        let update_count = {{ update_count }}
+
     </script>
 
     <script type="text/javascript" src="{% static 'site/js/materialize.min.js' %}"></script>
     <script type="text/javascript" src="{% static 'site/js/main_sidenav.js' %}"></script>
     <script type="text/javascript" src="{% static 'site/js/main_create_request.js' %}"></script>
+    <script type="text/javascript" src="{% static 'site/js/main_ord_notice_updait.js' %}"></script>
+    <script type="text/javascript" src="{% static 'site/js/main_settings.js' %}"></script>
 
 
 </body>

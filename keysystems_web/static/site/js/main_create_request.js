@@ -1,7 +1,7 @@
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function () {
     var elems = document.querySelectorAll('.modal');
     var instances = M.Modal.init(elems);
-  });
+});
 
 //   Модальное окно "create_request"
 
@@ -34,6 +34,13 @@ form.classList.add('mod_request_form')
 form.setAttribute('method', 'post')
 modalContent.appendChild(form)
 
+// !!Добавить токен!
+// let token = document.createElement('input')
+// token.setAttribute('type', 'hidden')
+// token.setAttribute('id', 'csrf_token')
+// token.setAttribute('value', tokenForForm)
+// form.appendChild(token)
+
 // Тип обращения
 let typeAppeal = document.createElement('p')
 form.appendChild(typeAppeal)
@@ -50,7 +57,7 @@ selectTypeAppeal.setAttribute('id', 'type_appeal')
 typeAppeal.appendChild(selectTypeAppeal)
 
 // добавить цикл с вариантами выбора
-for (let i = 0; i<soft.length; i++) {
+for (let i = 0; i < soft.length; i++) {
     let optionTypeAppeal = document.createElement('option')
     optionTypeAppeal.setAttribute('value', topics[i].pk)
     optionTypeAppeal.innerHTML = topics[i].fields.topic
@@ -73,7 +80,7 @@ selectTypeSoft.setAttribute('id', 'type_soft')
 typeSoft.appendChild(selectTypeSoft)
 
 // цикл с вариантами выбора
-for (let i = 0; i<soft.length; i++) {
+for (let i = 0; i < soft.length; i++) {
     let optionTypeSoft = document.createElement('option')
     optionTypeSoft.setAttribute('value', soft[i].pk)
     optionTypeSoft.innerHTML = soft[i].fields.title
@@ -150,7 +157,7 @@ addFile.appendChild(fileNameDisplay);
 inputAddFile.addEventListener('change', (event) => {
     const files = event.target.files;
     if (files.length > 0) {
-        for (let i=0; i<files.length; i++) {
+        for (let i = 0; i < files.length; i++) {
             const file = files[i]
             const fileItem = document.createElement('div')
             fileItem.textContent = file.name
