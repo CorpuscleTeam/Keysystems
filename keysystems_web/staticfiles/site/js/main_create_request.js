@@ -15,10 +15,13 @@ modalContent.classList.add('modal-content')
 ModalCreateRequest.appendChild(modalContent)
 
 // Кнопка закрыть
-let ModalRequestClose = document.createElement('img')
-// ModalRequestClose.setAttribute('src', '../img/close-large.svg')
-ModalRequestClose.setAttribute('src', link)
+let ModalRequestClose = document.createElement('div')
+ModalRequestClose.classList.add('modal1_img')
 modalContent.appendChild(ModalRequestClose)
+
+let modalCloseImg = document.createElement('img')
+modalCloseImg.setAttribute('src', link)
+ModalRequestClose.appendChild(modalCloseImg)
 
 // Заголовок
 let ModalRequestH = document.createElement('h4')
@@ -89,20 +92,11 @@ let textareaDescription = document.createElement('textarea')
 textareaDescription.setAttribute('name', 'description')
 textareaDescription.setAttribute('id', 'description')
 textareaDescription.setAttribute('maxlength', '55')
-// textareaDescription.style.width = '100%'
-// textareaDescription.style.height = '100px'
-// textareaDescription.style.paddingBottom = '20px'
-// textareaDescription.style.resize = 'none'
 textareaConteiner.appendChild(textareaDescription)
 
 // элемент для отображения количества символов
 let charCount = document.createElement('div');
 charCount.id = 'charCount'
-// charCount.style.position = 'absolute'
-// charCount.style.bottom = '5px'
-// charCount.style.right = '10px'
-// charCount.style.fontSize = '12px'
-// charCount.style.color = 'gray'
 charCount.textContent = '0/55'
 textareaConteiner.appendChild(charCount)
 
@@ -134,6 +128,29 @@ addFile.appendChild(labelAddFile)
 let labelAddFileImg = document.createElement('img')
 labelAddFileImg.setAttribute('src', linkAddFile)
 labelAddFile.prepend(labelAddFileImg)
+
+// загруженный файл
+// Элемент для отображения названия загруженного файла
+let fileNameDisplay = document.createElement('span');
+fileNameDisplay.classList.add('file_name_display');
+fileNameDisplay.style.marginLeft = '10px';
+addFile.appendChild(fileNameDisplay);
+
+// Обработчик события изменения файла
+inputAddFile.addEventListener('change', (event) => {
+    const file = event.target.files[0];
+    if (file) {
+        fileNameDisplay.textContent = file.name;
+    } else {
+        fileNameDisplay.textContent = '';
+    }
+});
+
+// кнопка отправить заявку
+let btnSubmitRequest = document.createElement('button')
+btnSubmitRequest.classList.add('enter_button')
+btnSubmitRequest.innerHTML = `Отправить запрос`
+form.appendChild(btnSubmitRequest)
 
 
 // создать модальное окно

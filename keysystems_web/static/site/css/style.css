@@ -416,20 +416,44 @@
 }
 
 /* Модальное окно "Создать заявку" */
-
+.mod_request_form p {
+    display: flex;
+    flex-direction: column;
+}
+.mod_request_form p > label {
+    margin-bottom: 6px;
+}
+.mod_request_form p > select {
+    border: 1px solid rgba(204, 204, 204, 1);
+    border-radius: 2px;
+    height: 37px;
+}
 
 /* CSS для textarea и счетчика символов внутри */
+
 textarea {
     padding-bottom: 20px; /* Добавляем отступ для счетчика символов */
     width: 100%;
     height: 100px;
     resize: none;
+    border: 1px solid rgba(204, 204, 204, 1);
 }
-
 #charCount {
     position: absolute;
     bottom: 5px;
     right: 10px;
     font-size: 12px;
     color: gray;
+}
+.add_file {
+    background-color: rgba(238, 238, 238, 1);
+    border: 1px solid rgba(204, 204, 204, 1);
+    height: 46px;
+    display: flex;
+    justify-content: start;
+    align-items: center;
+    padding-left: 24px;
+}
+.add_file img {
+    margin-right: 8px;
 }
