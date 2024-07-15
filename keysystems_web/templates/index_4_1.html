@@ -222,8 +222,17 @@
         </div>
     </footer>
 
-    <script>let link = "{% static 'site/img/close-large.svg' %}"</script>
-    <script>let linkAddFile = "{% static 'site/img/addFile.svg' %}"</script>
+    <script>
+        // картинка в модальное окно
+        let link = "{% static 'site/img/close-large.svg' %}"
+        let linkAddFile = "{% static 'site/img/addFile.svg' %}"
+
+        // переменная "выбор ПО"
+        let soft = JSON.parse('{{ soft|escapejs }}')
+
+        // переменная "тип обращения"
+        let topics = JSON.parse('{{ topics|escapejs }}')
+    </script>
 
     <script type="text/javascript" src="{% static 'site/js/materialize.min.js' %}"></script>
     <script type="text/javascript" src="{% static 'site/js/main_sidenav.js' %}"></script>
