@@ -9,3 +9,16 @@ class RequestMethod(str, Enum):
 class UserRole(str, Enum):
     CLIENT = 'client'
     STAFF = 'staff'
+
+
+class OrderStatus(str, Enum):
+    NEW = 'new'
+    ACTIVE = 'active'
+    DONE = 'done'
+
+
+ORDER_CHOICES = (
+        (OrderStatus.NEW.value, 'Новый'),
+        (OrderStatus.ACTIVE.value, 'В работе'),
+        (OrderStatus.DONE.value, 'Активный'),
+)

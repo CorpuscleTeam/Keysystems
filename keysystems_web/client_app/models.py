@@ -1,6 +1,10 @@
 from django.db import models
 from auth_app.models import CustomUser
 
+from datetime import datetime
+
+from enums import ORDER_CHOICES, OrderStatus
+
 
 # темы обращений
 class OrderTopic(models.Model):
@@ -43,6 +47,25 @@ class UsedSoft(models.Model):
         verbose_name = 'ПО пользователей'
         verbose_name_plural = 'ПО пользователей'
         db_table = 'used_soft'
+
+
+# заказы
+class Order(models.Model):
+    id = models.AutoField(primary_key=True)
+    created_at = models.DateTimeField('Создана', default=datetime.now())
+    updated_at = models.DateTimeField('Обновлена', default=datetime.now())
+    from_user = models.ForeignKey(CustomUser, on_delete=models.DO_NOTHING, related_name='order')
+    text = models.CharField('Текст', max_length=255)
+    soft = models.ForeignKey(Soft, on_delete=models.DO_NOTHING, related_name='order')
+    executor = models.ForeignKey(CustomUser, on_delete=models.DO_NOTHING, related_name='order')
+    status = models.CharField('Статус', default=OrderStatus.NEW.value, choices=ORDER_CHOICES)
+
+    objects = models.Manager()
+
+    class Meta:
+        verbose_name = 'Заявка'
+        verbose_name_plural = 'Заявки'
+        db_table = 'orders'
 
 
 # новости. хз как оно будет работать
