@@ -17,6 +17,7 @@ ModalCreateRequest.appendChild(modalContent)
 // Кнопка закрыть
 let ModalRequestClose = document.createElement('div')
 ModalRequestClose.classList.add('modal1_img')
+ModalRequestClose.classList.add('modal-close')
 modalContent.appendChild(ModalRequestClose)
 
 let modalCloseImg = document.createElement('img')
@@ -32,6 +33,7 @@ modalContent.appendChild(ModalRequestH)
 let form = document.createElement('form')
 form.classList.add('mod_request_form')
 form.setAttribute('method', 'post')
+form.setAttribute('enctype', 'multipart/form-data')
 form.innerHTML = tokenForForm
 modalContent.appendChild(form)
 
@@ -140,6 +142,8 @@ let labelAddFileImg = document.createElement('img')
 labelAddFileImg.setAttribute('src', linkAddFile)
 labelAddFile.prepend(labelAddFileImg)
 
+let fileList = []
+
 // загруженный файл
 // Элемент для отображения названия загруженного файла
 let fileNameDisplay = document.createElement('div');
@@ -159,6 +163,24 @@ inputAddFile.addEventListener('change', (event) => {
         }
     }
 });
+
+// Обработка измения файлов
+inputAddFile.addEventListener('change', function() {
+    for (let i = 0; i < inputAddFile.files.length; i++) {
+        fileList.push(inputAddFile.files[i]);
+    }
+    updateFileList();
+});
+
+// Функция для обновления списка файлов в форме
+function updateFileList() {
+    let dataTransfer = new DataTransfer();
+    fileList.forEach(file => dataTransfer.items.add(file));
+    inputAddFile.files = dataTransfer.files;
+
+    // Обновляем отображение выбранных файлов (опционально)
+    console.log(fileList);
+}
 
 // кнопка отправить заявку
 let btnSubmitRequest = document.createElement('button')

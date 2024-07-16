@@ -124,7 +124,7 @@
                         <p>Учреждение</p>
                     </li>
                     <li>
-                        <a href="#modal_settings" class="waves-effect waves-light btn modal-trigger">
+                        <a href="#modal_settings" class="set_waves-effect set_waves-light set_btn modal-trigger">
                             <img src="{% static 'site/img/setting.svg' %}" alt="setting">
                             <p>НАСТРОЙКИ</p>
                         </a>
@@ -245,13 +245,18 @@
         // переменная "Обновления ПО"
         let update_count = {{ update_count }}
 
+        // Модальное окно "Настройки"
+        let inn = 1234
+        let institution = "Наименование чреждение"
+
     </script>
 
     <script type="text/javascript" src="{% static 'site/js/materialize.min.js' %}"></script>
     <script type="text/javascript" src="{% static 'site/js/main_sidenav.js' %}"></script>
     <script type="text/javascript" src="{% static 'site/js/main_create_request.js' %}"></script>
     <script type="text/javascript" src="{% static 'site/js/main_ord_notice_updait.js' %}"></script>
-    <!-- <script type="text/javascript" src="{% static 'site/js/main_settings.js' %}"></script> -->
+    <script type="text/javascript" src="{% static 'site/js/main_settings.js' %}"></script>
+
 
 
 </body>
