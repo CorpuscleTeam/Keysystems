@@ -2,6 +2,8 @@ from django import forms
 
 
 # проверка инн
-class AuthUserForm(forms.Form):
-    inn = forms.IntegerField()
-    email = forms.EmailField()
+class OrderForm(forms.Form):
+    type_appeal = forms.IntegerField()
+    type_soft = forms.IntegerField()
+    description = forms.CharField()
+    addfile = forms.FileField()

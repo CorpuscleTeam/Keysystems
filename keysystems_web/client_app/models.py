@@ -54,10 +54,10 @@ class Order(models.Model):
     id = models.AutoField(primary_key=True)
     created_at = models.DateTimeField('Создана', default=datetime.now())
     updated_at = models.DateTimeField('Обновлена', default=datetime.now())
-    from_user = models.ForeignKey(CustomUser, on_delete=models.DO_NOTHING, related_name='order')
+    from_user = models.ForeignKey(CustomUser, on_delete=models.DO_NOTHING, related_name='created_orders')
     text = models.CharField('Текст', max_length=255)
     soft = models.ForeignKey(Soft, on_delete=models.DO_NOTHING, related_name='order')
-    executor = models.ForeignKey(CustomUser, on_delete=models.DO_NOTHING, related_name='order')
+    executor = models.ForeignKey(CustomUser, on_delete=models.DO_NOTHING, related_name='executed_orders')
     status = models.CharField('Статус', default=OrderStatus.NEW.value, choices=ORDER_CHOICES)
 
     objects = models.Manager()
@@ -66,6 +66,22 @@ class Order(models.Model):
         verbose_name = 'Заявка'
         verbose_name_plural = 'Заявки'
         db_table = 'orders'
+
+
+# загруженные файлы
+class DownloadedFile(models.Model):
+    id = models.AutoField(primary_key=True)
+    created_at = models.DateTimeField('Создана', default=datetime.now())
+    from_user = models.ForeignKey(CustomUser, on_delete=models.DO_NOTHING, related_name='downloadedfile')
+    order = models.ForeignKey(Order, on_delete=models.CASCADE, related_name='downloadedfile')
+    url = models.CharField('Ссылка', max_length=255, default=OrderStatus.NEW.value, choices=ORDER_CHOICES)
+
+    objects = models.Manager()
+
+    class Meta:
+        verbose_name = 'Скаченный файл'
+        verbose_name_plural = 'Скаченные файлы'
+        db_table = 'downloaded_file'
 
 
 # новости. хз как оно будет работать
