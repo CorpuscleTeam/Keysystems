@@ -112,7 +112,6 @@ let addFile = document.createElement('p')
 form.appendChild(addFile)
 
 let inputAddFile = document.createElement('input')
-inputAddFile.classList.add('add_file')
 inputAddFile.setAttribute('type', 'file')
 inputAddFile.setAttribute('id', 'addfile')
 inputAddFile.setAttribute('name', 'addfile')
