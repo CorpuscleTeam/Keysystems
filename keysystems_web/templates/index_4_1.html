@@ -215,6 +215,7 @@
         </div>
     </section>
 
+
     <!-- Футер -->
     <footer class="footer_client">
         <div class="conteiner">
@@ -224,8 +225,7 @@
 
     <script>
         // токен в форму
-        // let tokenForForm = {{ csrf_token }}
-        // console.log(tokenForForm)
+        let tokenForForm = '{% csrf_token %}'
 
         // картинка в модальное окно
         let link = "{% static 'site/img/close-large.svg' %}"
@@ -251,7 +251,7 @@
     <script type="text/javascript" src="{% static 'site/js/main_sidenav.js' %}"></script>
     <script type="text/javascript" src="{% static 'site/js/main_create_request.js' %}"></script>
     <script type="text/javascript" src="{% static 'site/js/main_ord_notice_updait.js' %}"></script>
-    <script type="text/javascript" src="{% static 'site/js/main_settings.js' %}"></script>
+    <!-- <script type="text/javascript" src="{% static 'site/js/main_settings.js' %}"></script> -->
 
 
 </body>

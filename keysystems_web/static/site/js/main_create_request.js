@@ -32,14 +32,8 @@ modalContent.appendChild(ModalRequestH)
 let form = document.createElement('form')
 form.classList.add('mod_request_form')
 form.setAttribute('method', 'post')
+form.innerHTML = tokenForForm
 modalContent.appendChild(form)
-
-// !!Добавить токен!
-// let token = document.createElement('input')
-// token.setAttribute('type', 'hidden')
-// token.setAttribute('id', 'csrf_token')
-// token.setAttribute('value', tokenForForm)
-// form.appendChild(token)
 
 // Тип обращения
 let typeAppeal = document.createElement('p')
