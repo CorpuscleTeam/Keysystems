@@ -299,7 +299,8 @@
 .page {
 }
 .page_flex {
-    display: flex;
+    display: grid;
+    grid-template-columns: 1fr 2.3fr;
     gap: 20px;
 }
 
@@ -309,7 +310,6 @@
     background-color: rgba(255, 255, 255, 1);
     border: var(--border_grey);
     box-shadow: var(--border_shadow);
-    min-width: 280px;
     height: 370px;
     padding: 30px;
 }
@@ -393,7 +393,8 @@
     background-color: rgba(255, 255, 255, 1);
     border: var(--border_grey);
     box-shadow: var(--border_shadow);
-    min-width: 640px;
+    /* width: 640px; */
+    /* width: 100%; */
     padding: 20px 30px 30px;
 }
 .page_body_h2 {

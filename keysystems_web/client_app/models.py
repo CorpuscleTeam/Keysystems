@@ -50,22 +50,22 @@ class UsedSoft(models.Model):
 
 
 # заказы
-class Order(models.Model):
-    id = models.AutoField(primary_key=True)
-    created_at = models.DateTimeField('Создана', default=datetime.now())
-    updated_at = models.DateTimeField('Обновлена', default=datetime.now())
-    from_user = models.ForeignKey(CustomUser, on_delete=models.DO_NOTHING, related_name='order')
-    text = models.CharField('Текст', max_length=255)
-    soft = models.ForeignKey(Soft, on_delete=models.DO_NOTHING, related_name='order')
-    executor = models.ForeignKey(CustomUser, on_delete=models.DO_NOTHING, related_name='order')
-    status = models.CharField('Статус', default=OrderStatus.NEW.value, choices=ORDER_CHOICES)
+# class Order(models.Model):
+#     id = models.AutoField(primary_key=True)
+#     created_at = models.DateTimeField('Создана', default=datetime.now())
+#     updated_at = models.DateTimeField('Обновлена', default=datetime.now())
+#     from_user = models.ForeignKey(CustomUser, on_delete=models.DO_NOTHING, related_name='order')
+#     text = models.CharField('Текст', max_length=255)
+#     soft = models.ForeignKey(Soft, on_delete=models.DO_NOTHING, related_name='order')
+#     executor = models.ForeignKey(CustomUser, on_delete=models.DO_NOTHING, related_name='order')
+#     status = models.CharField('Статус', default=OrderStatus.NEW.value, choices=ORDER_CHOICES)
 
-    objects = models.Manager()
+#     objects = models.Manager()
 
-    class Meta:
-        verbose_name = 'Заявка'
-        verbose_name_plural = 'Заявки'
-        db_table = 'orders'
+#     class Meta:
+#         verbose_name = 'Заявка'
+#         verbose_name_plural = 'Заявки'
+#         db_table = 'orders'
 
 
 # новости. хз как оно будет работать

@@ -3,6 +3,10 @@
         padding-left: 15px;
         padding-right: 15px;
     }
+
+    .header_client_menu_ul li>a {
+        font-size: 13px;
+    }
 }
 @media screen and (max-width: 600px) {
     /* Авторизация */
@@ -57,5 +61,17 @@
     .header_mobile_client_burger {
         border-left: rgba(231, 231, 231, 1) solid 1px;
         height: 54px;
+    }
+
+    /* Тело страницы */
+    .page_flex {
+        display: grid;
+        grid-template-columns: 1fr;
+    }
+    .page_flex_menu {
+        display: none;
+    }
+    .page_flex_body {
+        padding: 12px;
     }
 }
