@@ -40,16 +40,19 @@ def index_4_1(request: HttpRequest):
 
             files = request.FILES.getlist('addfile')
             log_error(f'{len(files), files}', wt=False)
+
             # uploaded_file = request.FILES['addfile']
-            # folder_path = os.path.join(FILE_STORAGE, str(request.user.inn))
-            # if not os.path.exists(folder_path):
-            #     os.mkdir(folder_path)
-            # file_path = os.path.join(folder_path, uploaded_file.name)
-            # fs = FileSystemStorage()
-            # filename = fs.save(file_path, uploaded_file)
-            # file_url = fs.url(filename)
-            #
-            # log_error(f'{file_url}', wt=False)
+            folder_path = os.path.join(FILE_STORAGE, str(request.user.inn))
+            if not os.path.exists(folder_path):
+                os.mkdir(folder_path)
+
+            fs = FileSystemStorage()
+            for uploaded_file in files:
+                file_path = os.path.join(folder_path, uploaded_file.name)
+                filename = fs.save(file_path, uploaded_file)
+                file_url = fs.url(filename)
+
+                log_error(f'{file_url}', wt=False)
             # log_error(f'{topic_id}\n{soft_id}\n{description}\n{file}', wt=False)
 
     topics = OrderTopic.objects.filter(is_active=True).all()
