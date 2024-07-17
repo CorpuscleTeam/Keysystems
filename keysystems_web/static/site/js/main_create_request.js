@@ -15,19 +15,44 @@ modalContent.classList.add('modal-content')
 ModalCreateRequest.appendChild(modalContent)
 
 // Кнопка закрыть
-let ModalRequestClose = document.createElement('div')
-ModalRequestClose.classList.add('modal1_img')
-ModalRequestClose.classList.add('modal-close')
-modalContent.appendChild(ModalRequestClose)
+function btnClose() {
+    let ModalRequestClose = document.createElement('div')
+    ModalRequestClose.classList.add('modal1_img')
+    ModalRequestClose.classList.add('modal-close')
+    // modalContent.appendChild(ModalRequestClose)
 
-let modalCloseImg = document.createElement('img')
-modalCloseImg.setAttribute('src', link)
-ModalRequestClose.appendChild(modalCloseImg)
+    let modalCloseImg = document.createElement('img')
+    modalCloseImg.setAttribute('src', link)
+    ModalRequestClose.appendChild(modalCloseImg)
+
+    return ModalRequestClose
+}
+let requestClose = btnClose()
+modalContent.appendChild(requestClose)
+
+
+// let modalContent = document.createElement('div')
+// modalContent.classList.add('modal-content')
+// ModalCreateRequest.appendChild(modalContent)
+
+// // Кнопка закрыть
+// let ModalRequestClose = document.createElement('div')
+// ModalRequestClose.classList.add('modal1_img')
+// ModalRequestClose.classList.add('modal-close')
+// modalContent.appendChild(ModalRequestClose)
+
+// let modalCloseImg = document.createElement('img')
+// modalCloseImg.setAttribute('src', link)
+// ModalRequestClose.appendChild(modalCloseImg)
 
 // Заголовок
-let ModalRequestH = document.createElement('h4')
-ModalRequestH.innerHTML = 'Создать заявку'
-modalContent.appendChild(ModalRequestH)
+function modalTitle(title) {
+    let ModalRequestH = document.createElement('h4')
+    ModalRequestH.innerHTML = title
+    return ModalRequestH
+}
+let requestH = modalTitle('Создать заявку')
+modalContent.appendChild(requestH)
 
 // Форма
 let form = document.createElement('form')
@@ -61,27 +86,54 @@ for (let i = 0; i < soft.length; i++) {
 }
 
 // Программное обеспечение
-let typeSoft = document.createElement('p')
+function chooseSoft() {
+    let typeSoft = document.createElement('p')
+
+    let labelTypeSoft = document.createElement('label')
+    labelTypeSoft.setAttribute('for', 'type_soft')
+    labelTypeSoft.classList.add('required')
+    labelTypeSoft.innerHTML = `Програмное обеспечение`
+    typeSoft.appendChild(labelTypeSoft)
+
+    let selectTypeSoft = document.createElement('select')
+    selectTypeSoft.setAttribute('name', 'type_soft')
+    selectTypeSoft.setAttribute('id', 'type_soft')
+    typeSoft.appendChild(selectTypeSoft)
+
+    // цикл с вариантами выбора
+    for (let i = 0; i < soft.length; i++) {
+        let optionTypeSoft = document.createElement('option')
+        optionTypeSoft.setAttribute('value', soft[i].pk)
+        optionTypeSoft.innerHTML = soft[i].fields.title
+        selectTypeSoft.appendChild(optionTypeSoft)
+    }
+    return typeSoft
+}
+let typeSoft = chooseSoft()
 form.appendChild(typeSoft)
 
-let labelTypeSoft = document.createElement('label')
-labelTypeSoft.setAttribute('for', 'type_soft')
-labelTypeSoft.classList.add('required')
-labelTypeSoft.innerHTML = `Програмное обеспечение`
-typeSoft.appendChild(labelTypeSoft)
 
-let selectTypeSoft = document.createElement('select')
-selectTypeSoft.setAttribute('name', 'type_soft')
-selectTypeSoft.setAttribute('id', 'type_soft')
-typeSoft.appendChild(selectTypeSoft)
+// let typeSoft = document.createElement('p')
+// form.appendChild(typeSoft)
 
-// цикл с вариантами выбора
-for (let i = 0; i < soft.length; i++) {
-    let optionTypeSoft = document.createElement('option')
-    optionTypeSoft.setAttribute('value', soft[i].pk)
-    optionTypeSoft.innerHTML = soft[i].fields.title
-    selectTypeSoft.appendChild(optionTypeSoft)
-}
+// let labelTypeSoft = document.createElement('label')
+// labelTypeSoft.setAttribute('for', 'type_soft')
+// labelTypeSoft.classList.add('required')
+// labelTypeSoft.innerHTML = `Програмное обеспечение`
+// typeSoft.appendChild(labelTypeSoft)
+
+// let selectTypeSoft = document.createElement('select')
+// selectTypeSoft.setAttribute('name', 'type_soft')
+// selectTypeSoft.setAttribute('id', 'type_soft')
+// typeSoft.appendChild(selectTypeSoft)
+
+// // цикл с вариантами выбора
+// for (let i = 0; i < soft.length; i++) {
+//     let optionTypeSoft = document.createElement('option')
+//     optionTypeSoft.setAttribute('value', soft[i].pk)
+//     optionTypeSoft.innerHTML = soft[i].fields.title
+//     selectTypeSoft.appendChild(optionTypeSoft)
+// }
 
 // Краткое описание
 let description = document.createElement('p')
@@ -165,7 +217,7 @@ inputAddFile.addEventListener('change', (event) => {
 });
 
 // Обработка измения файлов
-inputAddFile.addEventListener('change', function() {
+inputAddFile.addEventListener('change', function () {
     for (let i = 0; i < inputAddFile.files.length; i++) {
         fileList.push(inputAddFile.files[i]);
     }
@@ -183,11 +235,21 @@ function updateFileList() {
 }
 
 // кнопка отправить заявку
-let btnSubmitRequest = document.createElement('button')
-btnSubmitRequest.classList.add('enter_button')
-btnSubmitRequest.innerHTML = `Отправить запрос`
+function form_btn_submit(title) {
+    let btnSubmitRequest = document.createElement('button')
+    btnSubmitRequest.classList.add('enter_button')
+    btnSubmitRequest.innerHTML = title
+    return btnSubmitRequest
+}
+let btnSubmitRequest = form_btn_submit(`Отправить запрос`)
 form.appendChild(btnSubmitRequest)
 
+
+
+// let btnSubmitRequest = document.createElement('button')
+// btnSubmitRequest.classList.add('enter_button')
+// btnSubmitRequest.innerHTML = `Отправить запрос`
+// form.appendChild(btnSubmitRequest)
 
 // создать модальное окно
 document.body.append(ModalCreateRequest)
