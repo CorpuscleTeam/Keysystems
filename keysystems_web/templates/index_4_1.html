@@ -41,7 +41,7 @@
             <p>Учреждение</p>
         </li>
         <li class="create_request">
-            <a class="waves-effect waves-light btn modal-trigger" href="#modal_create_request">
+            <a class="sidnav_waves-effect sidnav_waves-light sidnav_btn modal-trigger" href="#modal_create_request">
                 <div class="create_request_flex">
                     <img src="{% static 'site/img/plus.svg' %}" alt="+">
                     <p>Создать заявку</p>
@@ -90,7 +90,7 @@
             </a>
         </li>
         <li>
-            <a href="#!">
+            <a href="#modal_settings" class="set_waves-effect set_waves-light set_btn modal-trigger sidenav-close">
                 <div class="sidenav_li_left">
                     <img src="{% static 'site/img/setting.svg' %}" alt="">
                     <p>НАСТРОЙКИ</p>
@@ -175,7 +175,7 @@
                         </li>
                         <li>
                             <a href="#!">
-                                <div class="page_menu_li_news">
+                                <div class="page_menu_li_news page_menu_active">
                                     <img src="{% static 'site/img/news.svg' %}" alt="">
                                     <p>Лента новостей</p>
                                 </div>
@@ -219,7 +219,7 @@
     <!-- Футер -->
     <footer class="footer_client">
         <div class="conteiner">
-            <a class="footer_client_a" href="#">Написать в техподдержку</a>
+            <a class="footer_client_a modal-trigger" href="#modal_tech_support">Написать в техподдержку</a>
         </div>
     </footer>
 
@@ -248,6 +248,7 @@
         // Модальное окно "Настройки"
         let inn = 1234
         let institution = "Наименование чреждение"
+        let region = "Челябинская область"
 
     </script>
 
@@ -256,6 +257,7 @@
     <script type="text/javascript" src="{% static 'site/js/main_create_request.js' %}"></script>
     <script type="text/javascript" src="{% static 'site/js/main_ord_notice_updait.js' %}"></script>
     <script type="text/javascript" src="{% static 'site/js/main_settings.js' %}"></script>
+    <script type="text/javascript" src="{% static 'site/js/main_tech_support.js' %}"></script>
 
 
 

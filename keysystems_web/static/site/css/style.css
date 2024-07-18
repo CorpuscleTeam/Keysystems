@@ -416,19 +416,50 @@
     text-align: right;
 }
 
-/* Модальное окно "Создать заявку" */
-.mod_request_form p {
+/* Модальное окно "Создать заявку", "Настройки" */
+.mod_request_form p, .mod_settings_form p {
     display: flex;
     flex-direction: column;
 }
-.mod_request_form p > label {
+.mod_request_form p > label, .mod_settings_form p > label {
     margin-bottom: 6px;
+    font-weight: 700;
 }
-.mod_request_form p > select {
+.mod_request_form p > select, .mod_settings_form p > select, .mod_settings_form p > input {
     border: 1px solid rgba(204, 204, 204, 1);
     border-radius: 2px;
     height: 37px;
+    font-size: 16px;
+    font-weight: 400;
+    font-family: "Oswald", sans-serif;
+    padding-left: 10px;
 }
+.not_active, .not_active_input {
+    color: rgba(153, 153, 153, 1)
+}
+
+.mod_support_flex {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+    height: 46px;
+}
+.btn_support_cancel {
+    border: rgba(200, 200, 200, 1) solid 1px;
+    background-color: rgba(238, 238, 238, 1);
+    font-family: "Oswald", sans-serif;
+    font-size: 16px;
+    cursor: pointer;
+}
+.btn_support_submit {
+    background-color: var(--color_green);
+    font-family: "Oswald", sans-serif;
+    font-size: 16px;
+    border: none;
+    color: rgba(255, 255, 255, 1);
+    cursor: pointer;
+}
+
 
 /* CSS для textarea и счетчика символов внутри */
 
