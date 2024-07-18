@@ -438,6 +438,28 @@
     color: rgba(153, 153, 153, 1)
 }
 
+.mod_support_flex {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+    height: 46px;
+}
+.btn_support_cancel {
+    border: rgba(200, 200, 200, 1) solid 1px;
+    background-color: rgba(238, 238, 238, 1);
+    font-family: "Oswald", sans-serif;
+    font-size: 16px;
+    cursor: pointer;
+}
+.btn_support_submit {
+    background-color: var(--color_green);
+    font-family: "Oswald", sans-serif;
+    font-size: 16px;
+    border: none;
+    color: rgba(255, 255, 255, 1);
+    cursor: pointer;
+}
+
 
 /* CSS для textarea и счетчика символов внутри */
 

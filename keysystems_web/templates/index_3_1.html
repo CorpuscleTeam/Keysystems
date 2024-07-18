@@ -71,12 +71,10 @@
                             <label for="tel">Телефон</label>
                             <input type="tel" name="tel" id="tel">
                         </p>
-                        <button class="enter_button" type="submit">
+                        <!-- <button class="enter_button" type="submit">
                             <a class="waves-effect waves-light btn modal-trigger" href="#modal1">Отправить запрос</a>
-                        </button>
-                        <!-- <a class="waves-effect waves-light btn modal-trigger" href="#modal1">
-                            <button class="enter_button" type="submit">Отправить запрос</button>
-                        </a> -->
+                        </button> -->
+                        <a class="waves-effect waves-light btn modal-trigger" href="#modalConfirm">Отправить запрос</a>
                         <div class="confirm">
                             <img src="{% static 'site/img/Icon.svg' %}" alt="&#10003;">
                             <p>Нажимая «Отправить запрос» вы соглашаетесь с обработкой ваших данных и пользовательским соглашением.</p>
@@ -99,16 +97,17 @@
     </div>
 
     <!-- Модальное окно "Спасибо за обращение" -->
-    <div id="modal1" class="modal">
+    <div id="modalConfirm" class="modal">
         <div class="modal-content">
             <div class="modal1_img">
                 <img src="{% static 'site/img/close-large.svg' %}" alt="Закрыть" class="modal-close">
             </div>
             <h4>Спасибо за обращение</h4>
-            <p>Мы отправим ответ вам на электронную посту, которая была указана при регистрации.</p>
+            <p>Мы отправим ответ вам на электронную почту, которая была указана при регистрации.</p>
         </div>
         <div class="modal-footer">
-            <a href="#!" class="modal-close waves-effect waves-green btn-flat">Спасибо</a>
+            <a href="#!" class="modal-close waves-effect waves-green btn-flat">Отмена</a>
+            <button id="modalConfirm" class="modal-close waves-effect waves-green btn-flat">Подтвердить</button>
         </div>
     </div>
 
