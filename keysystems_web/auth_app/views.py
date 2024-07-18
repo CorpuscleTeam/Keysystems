@@ -3,11 +3,9 @@ from django.http.request import HttpRequest
 from django.contrib.auth import login, logout
 from django.urls import reverse
 from django.contrib.auth.hashers import make_password, check_password
-from django.core.mail import send_mail
 
 from .forms import AuthBaseForm, RegistrationForm, PasswordForm, AuthUserForm
 from common.models import UserKS, Soft, Customer
-from keysystems_web.settings import EMAIL_HOST_USER, EMAIL_HOST_PASSWORD
 from base_utils import log_error, pass_gen, send_pass_email
 from enums import RequestMethod, UserRole
 
@@ -73,7 +71,7 @@ def index_2_1(request: HttpRequest):
     if request.method == RequestMethod.POST:
         auth_form = AuthUserForm(request.POST)
         if auth_form.is_valid():
-            user = CustomUser.objects.filter(
+            user = UserKS.objects.filter(
                 inn=auth_form.data.get('inn'),
                 username=auth_form.data.get('eded@cfdd')
             ).first()
@@ -93,9 +91,10 @@ def index_2_1(request: HttpRequest):
 
 # регистрация заполните форму
 def index_3_1(request: HttpRequest):
-    # if request.user.is_authenticated:
-    #     return redirect('redirect')
+    if request.user.is_authenticated:
+        return redirect('redirect')
 
+    log_error(f'>>>>>> {request.method}', wt=False)
     if request.method == RequestMethod.POST:
         reg_form = RegistrationForm(request.POST)
         log_error(f'>>>>>> {request.POST}', wt=False)
