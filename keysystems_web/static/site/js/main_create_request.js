@@ -57,6 +57,7 @@ modalContent.appendChild(requestH)
 // Форма
 let form = document.createElement('form')
 form.classList.add('mod_request_form')
+form.setAttribute('id', 'request_form')
 form.setAttribute('method', 'post')
 form.setAttribute('enctype', 'multipart/form-data')
 form.innerHTML = tokenForForm
@@ -235,16 +236,20 @@ function updateFileList() {
 }
 
 // кнопка отправить заявку
-function form_btn_submit(title) {
-    let btnSubmitRequest = document.createElement('button')
-    btnSubmitRequest.classList.add('enter_button')
-    btnSubmitRequest.innerHTML = title
-    return btnSubmitRequest
-}
-let btnSubmitRequest = form_btn_submit(`Отправить запрос`)
+// function form_btn_submit(title) {
+//     let btnSubmitRequest = document.createElement('button')
+//     btnSubmitRequest.classList.add('enter_button')
+//     btnSubmitRequest.innerHTML = title
+//     return btnSubmitRequest
+// }
+// let btnSubmitRequest = form_btn_submit(`Отправить запрос`)
+// form.appendChild(btnSubmitRequest)
+
+let btnSubmitRequest = document.createElement('a')
+btnSubmitRequest.classList.add('modal-trigger')
+btnSubmitRequest.setAttribute('href', '#modalConfirmRequest')
+btnSubmitRequest.innerHTML = `Отправить запрос`
 form.appendChild(btnSubmitRequest)
-
-
 
 // let btnSubmitRequest = document.createElement('button')
 // btnSubmitRequest.classList.add('enter_button')
@@ -253,3 +258,12 @@ form.appendChild(btnSubmitRequest)
 
 // создать модальное окно
 document.body.append(ModalCreateRequest)
+
+
+// Модальное окно "подтвердить отправку формы"
+let modRequestConfirm = document.createElement('div')
+modRequestConfirm.setAttribute('id', 'modalRequestConfirm')
+modRequestConfirm.classList.add('modal')
+
+// Создать Модальное окно "Пдтвертить отправку формы"
+ModalCreateRequest
