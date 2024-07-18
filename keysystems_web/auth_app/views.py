@@ -90,9 +90,9 @@ def index_2_1(request: HttpRequest):
 
 # регистрация заполните форму
 def index_3_1(request: HttpRequest):
-    if request.user.is_authenticated:
-        return redirect('redirect')
-
+    # if request.user.is_authenticated:
+    #     return redirect('redirect')
+    log_error(f'>>>>>> {request.method}', wt=False)
     if request.method == RequestMethod.POST:
         reg_form = RegistrationForm(request.POST)
 
