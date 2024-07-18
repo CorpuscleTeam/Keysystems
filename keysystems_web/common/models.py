@@ -74,9 +74,7 @@ class OrderTopic(models.Model):
 # заказы
 class Order(models.Model):
     id = models.AutoField(primary_key=True)
-    # created_at = models.DateTimeField('Создана', default=datetime.now())
     created_at = models.DateTimeField('Создана', auto_now_add=True)
-    # updated_at = models.DateTimeField('Обновлена', default=datetime.now())
     updated_at = models.DateTimeField('Обновлена', auto_now=True)
 
     from_user = models.ForeignKey(UserKS, on_delete=models.DO_NOTHING, related_name='created_orders')

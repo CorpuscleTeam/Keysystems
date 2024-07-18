@@ -94,15 +94,12 @@ def index_3_1(request: HttpRequest):
     if request.user.is_authenticated:
         return redirect('redirect')
 
-    log_error(f'>>>>>> {request.method}', wt=False)
     if request.method == RequestMethod.POST:
-        reg_form = RegistrationForm(request.POST)
-        log_error(f'>>>>>> {request.POST}', wt=False)
-        if reg_form.is_valid():
-            password = pass_gen()
-            log_error(f'>>>>>> {password}', wt=False)
-            log_error(f'>>>>>> {reg_form.cleaned_data["reg_progr"]}', wt=False)
 
+        reg_form = RegistrationForm(request.POST)
+        inn = Customer.objects.filter(inn=reg_form.data['inn'])
+        if reg_form.is_valid() and inn:
+            password = pass_gen()
             #  тут пароль отправляем на почту
             send_pass_email(email=reg_form.cleaned_data['email'], password=password)
 
