@@ -22,3 +22,14 @@ ORDER_CHOICES = (
         (OrderStatus.ACTIVE.value, 'В работе'),
         (OrderStatus.DONE.value, 'Активный'),
 )
+
+
+class NewsEntryType(str, Enum):
+    NEWS = 'news'
+    UPDATE = 'update'
+
+
+ENTRY_TYPES = (
+    (NewsEntryType.NEWS.value, 'Новость'),
+    (NewsEntryType.UPDATE.value, 'Обновление ПО')
+)

@@ -3,11 +3,9 @@ from django.http.request import HttpRequest
 from django.contrib.auth import login, logout
 from django.urls import reverse
 from django.contrib.auth.hashers import make_password, check_password
-from django.core.mail import send_mail
 
 from .forms import AuthBaseForm, RegistrationForm, PasswordForm, AuthUserForm
-from .models import UserKS, CustomUser
-from client_app.models import Soft
+from common.models import UserKS, Soft, Customer
 from keysystems_web.settings import EMAIL_HOST_USER, EMAIL_HOST_PASSWORD
 from base_utils import log_error, pass_gen, send_pass_email
 from enums import RequestMethod, UserRole
@@ -36,18 +34,22 @@ def index_2(request: HttpRequest):
     if request.user.is_authenticated:
         return redirect('redirect')
 
-    input_error = 0
+    error_msg = ''
     if request.method == RequestMethod.POST:
-        # log_error(request.POST, wt=False)
         form = AuthBaseForm(request.POST)
         if form.is_valid():
-            # log_error(form.cleaned_data, wt=False)
-            # log_error(form.data, wt=False)
-            user_inn = form.cleaned_data["inn"]
-            users_inn = UserKS.objects.filter(inn=user_inn).all()
+            input_inn = form.cleaned_data["inn"]
+            users_inn = UserKS.objects.filter(inn=input_inn).all()
 
             if len(users_inn) == 0:
-                return redirect('index_3_1')
+                inn = Customer.objects.filter(inn=input_inn)
+                if inn:
+                    return redirect('index_3_1')
+                else:
+                    error_msg = 'ИНН не зарегистрирован'
+
+            elif len(users_inn) == 1:
+                return redirect(reverse('index_3_1'))
 
             elif len(users_inn) > 1:
                 return redirect(reverse('index_2_1') + f'?inn={users_inn}')
@@ -55,9 +57,9 @@ def index_2(request: HttpRequest):
             else:
                 return redirect('index_2_2')
         else:
-            input_error = 1
+            error_msg = 'Ошибка ввода'
 
-    context = {'input_error': input_error}
+    context = {'error_msg': error_msg}
     return render(request, 'index_2.html', context)
 
 
@@ -70,7 +72,7 @@ def index_2_1(request: HttpRequest):
     if request.method == RequestMethod.POST:
         auth_form = AuthUserForm(request.POST)
         if auth_form.is_valid():
-            user = CustomUser.objects.filter(
+            user = UserKS.objects.filter(
                 inn=auth_form.data.get('inn'),
                 username=auth_form.data.get('eded@cfdd')
             ).first()
@@ -90,8 +92,8 @@ def index_2_1(request: HttpRequest):
 
 # регистрация заполните форму
 def index_3_1(request: HttpRequest):
-    if request.user.is_authenticated:
-        return redirect('redirect')
+    # if request.user.is_authenticated:
+    #     return redirect('redirect')
 
     if request.method == RequestMethod.POST:
         reg_form = RegistrationForm(request.POST)
@@ -99,20 +101,21 @@ def index_3_1(request: HttpRequest):
         if reg_form.is_valid():
             password = pass_gen()
             log_error(f'>>>>>> {password}', wt=False)
+            log_error(f'>>>>>> {reg_form.cleaned_data["reg_progr"]}', wt=False)
 
             #  тут пароль отправляем на почту
-            send_pass_email(email=reg_form.cleaned_data['email'], password=password)
+            # send_pass_email(email=reg_form.cleaned_data['email'], password=password)
 
-            new_user = CustomUser(
-                username=reg_form.cleaned_data['email'],
-                inn=reg_form.cleaned_data['inn'],
-                full_name=reg_form.cleaned_data['fio'],
-                phone=reg_form.cleaned_data['tel'],
-                password=make_password(password)
-            )
-            new_user.save()
+            # new_user = CustomUser(
+            #     username=reg_form.cleaned_data['email'],
+            #     inn=reg_form.cleaned_data['inn'],
+            #     full_name=reg_form.cleaned_data['fio'],
+            #     phone=reg_form.cleaned_data['tel'],
+            #     password=make_password(password)
+            # )
+            # new_user.save()
 
-            return redirect(reverse('index_2_2') + f'?user={new_user.id}')
+            # return redirect(reverse('index_2_2') + f'?user={new_user.id}')
 
     soft = Soft.objects.filter(is_active=True).all()
     context = {'soft': soft}
@@ -132,7 +135,7 @@ def index_2_2(request: HttpRequest):
         if pass_form.is_valid():
             user_id = request.POST.get('user_id')
             # user = CustomUser.objects.filter(id=user_id).first()
-            user = CustomUser.objects.get(id=user_id)
+            user = UserKS.objects.get(id=user_id)
             if check_password(pass_form.cleaned_data['password'], user.password):
                 login(request, user)
                 return redirect('redirect')
