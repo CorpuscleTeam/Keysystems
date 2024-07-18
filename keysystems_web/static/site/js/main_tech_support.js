@@ -46,6 +46,7 @@ formSupportWrite.appendChild(textareaSupportWrite)
 
 // Кнопки - футер
 let footerSupport = document.createElement('div')
+footerSupport.classList.add('mod_support_flex')
 formSupport.appendChild(footerSupport)
 
 let btnSupportCancel = document.createElement('button')
