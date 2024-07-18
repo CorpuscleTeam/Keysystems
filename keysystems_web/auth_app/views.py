@@ -3,6 +3,7 @@ from django.http.request import HttpRequest
 from django.contrib.auth import login, logout
 from django.urls import reverse
 from django.contrib.auth.hashers import make_password, check_password
+from django.core.mail import send_mail
 
 from .forms import AuthBaseForm, RegistrationForm, PasswordForm, AuthUserForm
 from common.models import UserKS, Soft, Customer
@@ -72,7 +73,7 @@ def index_2_1(request: HttpRequest):
     if request.method == RequestMethod.POST:
         auth_form = AuthUserForm(request.POST)
         if auth_form.is_valid():
-            user = UserKS.objects.filter(
+            user = CustomUser.objects.filter(
                 inn=auth_form.data.get('inn'),
                 username=auth_form.data.get('eded@cfdd')
             ).first()

@@ -146,7 +146,12 @@ inputSettingsPhone.setAttribute('type', 'tel')
 formSettingsPhone.appendChild(inputSettingsPhone)
 
 // Кнопка "Сохранить изменения" - функция записана в main_create_request.js
-let btnSubmitSettings = form_btn_submit(`Сохранить изменения`)
+// let btnSubmitSettings = form_btn_submit(`Сохранить изменения`)
+// formSettings.appendChild(btnSubmitSettings)
+
+let btnSubmitSettings = document.createElement('button')
+btnSubmitRequest.classList.add('enter_button')
+btnSubmitRequest.innerHTML = `Сохранить изменения`
 formSettings.appendChild(btnSubmitSettings)
 
 // создать модальное окно
