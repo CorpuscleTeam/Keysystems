@@ -15,7 +15,9 @@ class News(models.Model):
     title = models.CharField('Название', max_length=255)
     text_preview = models.TextField('Текст привью', null=True, blank=True)
     text = models.TextField('Текст')
-    photo = models.CharField('Фото', max_length=255, null=True, blank=True)
+    # photo = models.CharField('Фото', max_length=255, null=True, blank=True)
+    photo = models.ImageField ('Фото', upload_to="news", null=True, blank=True)
+
     is_active = models.BooleanField(default=True)
 
     objects: models.Manager = models.Manager()

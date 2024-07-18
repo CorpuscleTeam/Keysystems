@@ -97,7 +97,7 @@ def index_3_1(request: HttpRequest):
 
     if request.method == RequestMethod.POST:
         reg_form = RegistrationForm(request.POST)
-
+        log_error(f'>>>>>> {request.POST}', wt=False)
         if reg_form.is_valid():
             password = pass_gen()
             log_error(f'>>>>>> {password}', wt=False)
