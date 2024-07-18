@@ -7,7 +7,8 @@ import os
 
 from keysystems_web.settings import FILE_STORAGE
 from .forms import OrderForm
-from .models import news, OrderTopic, Soft
+from .models import News
+from common.models import OrderTopic, Soft, Order, DownloadedFile
 from base_utils import log_error
 from enums import RequestMethod
 
@@ -29,20 +30,22 @@ def index_3_2(request: HttpRequest):
 def index_4_1(request: HttpRequest):
     if request.method == RequestMethod.POST:
         order_form = OrderForm(request.POST, request.FILES)
-        log_error(request.FILES, wt=False)
-        # log_error(request.POST, wt=False)
-        # log_error(order_form.is_valid(), wt=False)
+        # log_error(request.FILES, wt=False)
+        log_error(request.POST, wt=False)
+        log_error(order_form, wt=False)
         if order_form.is_valid():
-            topic_id = order_form.cleaned_data['type_appeal']
-            soft_id = order_form.cleaned_data['type_soft']
-            description = order_form.cleaned_data['description']
-            file = order_form.cleaned_data.get('addfile')
+            new_order = Order(
+                from_user=request.user.pk,
+                text=order_form.cleaned_data['description'],
+                soft=order_form.cleaned_data['type_soft'],
+                topic=order_form.cleaned_data['type_appeal']
+            )
+            new_order.save()
 
             files = request.FILES.getlist('addfile')
             log_error(f'{len(files), files}', wt=False)
 
-            # uploaded_file = request.FILES['addfile']
-            folder_path = os.path.join(FILE_STORAGE, str(request.user.inn))
+            folder_path = os.path.join(FILE_STORAGE, str(request.user.inn), str(new_order.pk))
             if not os.path.exists(folder_path):
                 os.mkdir(folder_path)
 
@@ -52,15 +55,18 @@ def index_4_1(request: HttpRequest):
                 filename = fs.save(file_path, uploaded_file)
                 file_url = fs.url(filename)
 
-                log_error(f'{file_url}', wt=False)
-            # log_error(f'{topic_id}\n{soft_id}\n{description}\n{file}', wt=False)
+                DownloadedFile.objects.create(
+                    user_ks=request.user.pk,
+                    order=new_order.pk,
+                    url=file_url
+                )
+            return redirect('redirect')
 
-    topics = OrderTopic.objects.filter(is_active=True).all()
-    soft = Soft.objects.filter(is_active=True).all()
-    soft_json = serialize('json', soft)
-    topics_json = serialize('json', topics)
+    soft_json = serialize(format='json', queryset=Soft.objects.filter(is_active=True).all())
+    topics_json = serialize(format='json', queryset=OrderTopic.objects.filter(is_active=True).all())
+    news_json = serialize(format='json', queryset=News.objects.filter(is_active=True).all())
     context = {
-        'news': news,
+        'news': news_json,
         'topics': topics_json,
         'soft': soft_json,
         'orders_count': 3,
