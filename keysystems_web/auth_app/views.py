@@ -26,7 +26,7 @@ def start_page_redirect(request: HttpRequest):
 # выход
 def logout_view(request):
     logout(request)
-    return redirect('index_2')
+    return redirect('redirect')
 
 
 # первая клиентская страница. Просит инн
@@ -104,18 +104,18 @@ def index_3_1(request: HttpRequest):
             log_error(f'>>>>>> {reg_form.cleaned_data["reg_progr"]}', wt=False)
 
             #  тут пароль отправляем на почту
-            # send_pass_email(email=reg_form.cleaned_data['email'], password=password)
+            send_pass_email(email=reg_form.cleaned_data['email'], password=password)
 
-            # new_user = CustomUser(
-            #     username=reg_form.cleaned_data['email'],
-            #     inn=reg_form.cleaned_data['inn'],
-            #     full_name=reg_form.cleaned_data['fio'],
-            #     phone=reg_form.cleaned_data['tel'],
-            #     password=make_password(password)
-            # )
-            # new_user.save()
+            new_user = UserKS(
+                username=reg_form.cleaned_data['email'],
+                inn=reg_form.cleaned_data['inn'],
+                full_name=reg_form.cleaned_data['fio'],
+                phone=reg_form.cleaned_data['tel'],
+                password=make_password(password)
+            )
+            new_user.save()
 
-            # return redirect(reverse('index_2_2') + f'?user={new_user.id}')
+            return redirect(reverse('index_2_2') + f'?user={new_user.id}')
 
     soft = Soft.objects.filter(is_active=True).all()
     context = {'soft': soft}
