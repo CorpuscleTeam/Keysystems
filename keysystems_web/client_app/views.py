@@ -28,11 +28,12 @@ def index_3_2(request: HttpRequest):
 
 # страничка с новостями
 def index_4_1(request: HttpRequest):
+    log_error(request.method, wt=False)
     if request.method == RequestMethod.POST:
         order_form = OrderForm(request.POST, request.FILES)
         # log_error(request.FILES, wt=False)
-        log_error(request.POST, wt=False)
-        log_error(order_form, wt=False)
+        
+        # log_error(order_form, wt=False)
         if order_form.is_valid():
             new_order = Order(
                 from_user=request.user.pk,
@@ -43,7 +44,7 @@ def index_4_1(request: HttpRequest):
             new_order.save()
 
             files = request.FILES.getlist('addfile')
-            log_error(f'{len(files), files}', wt=False)
+            # log_error(f'{len(files), files}', wt=False)
 
             folder_path = os.path.join(FILE_STORAGE, str(request.user.inn), str(new_order.pk))
             if not os.path.exists(folder_path):
