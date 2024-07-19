@@ -1,6 +1,7 @@
 *.env
 **/idea/
 **/__pycache__/
+**/migrations/
 /nginx/conf.d/base.conf
 **/.idea
 /keysystems_web/logs/

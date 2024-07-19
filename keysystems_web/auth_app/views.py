@@ -5,13 +5,16 @@ from django.urls import reverse
 from django.contrib.auth.hashers import make_password, check_password
 
 from .forms import AuthBaseForm, RegistrationForm, PasswordForm, AuthUserForm
-from common.models import UserKS, Soft, Customer
-from base_utils import log_error, pass_gen, send_pass_email
-from enums import RequestMethod, UserRole
+from common.models import UserKS, Soft, Customer, District
+from common import log_error, pass_gen, send_pass_email, yakutia_districts
+from enums import RequestMethod
 
 
 # Определяет начальную страницу пользователя
 def start_page_redirect(request: HttpRequest):
+    # for district in yakutia_districts:
+    #     District.objects.create(title=district)
+
     if request.user.is_authenticated and request.user.is_staff:
         return redirect('index_4_1')
 

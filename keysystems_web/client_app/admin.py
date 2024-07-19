@@ -1,10 +1,7 @@
 from django.contrib import admin
 from django.utils.html import mark_safe
 
-import os
-
 from .models import News
-from base_utils import log_error
 
 
 # админка новости
