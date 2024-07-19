@@ -1,6 +1,18 @@
 document.addEventListener('DOMContentLoaded', function () {
     var elems = document.querySelectorAll('.modal');
     var instances = M.Modal.init(elems);
+
+    // Обработчик нажатия на кнопку подтверждения в модальном окне
+    document.getElementById('btnRequestConfirm').addEventListener('click', function () {
+        document.getElementById('request_form').submit();
+    });
+
+    // Обработчик для предотвращения отправки формы и открытия подтверждающего модального окна
+    document.querySelector('#modal_create_request form button').addEventListener('click', function (event) {
+        event.preventDefault();
+        var instance = M.Modal.getInstance(document.getElementById('modalRequestConfirm'));
+        instance.open();
+    });
 });
 
 //   Модальное окно "create_request"
@@ -245,9 +257,9 @@ function updateFileList() {
 // let btnSubmitRequest = form_btn_submit(`Отправить запрос`)
 // form.appendChild(btnSubmitRequest)
 
-let btnSubmitRequest = document.createElement('a')
+let btnSubmitRequest = document.createElement('button')
 btnSubmitRequest.classList.add('modal-trigger')
-btnSubmitRequest.setAttribute('href', '#modalConfirmRequest')
+btnSubmitRequest.setAttribute('href', '#modalRequestConfirm')
 btnSubmitRequest.innerHTML = `Отправить запрос`
 form.appendChild(btnSubmitRequest)
 
@@ -265,5 +277,41 @@ let modRequestConfirm = document.createElement('div')
 modRequestConfirm.setAttribute('id', 'modalRequestConfirm')
 modRequestConfirm.classList.add('modal')
 
+// modal_content
+let modRequestConfirmContent = document.createElement('div')
+modRequestConfirmContent.classList.add('modal-content')
+modRequestConfirm.appendChild(modRequestConfirmContent)
+
+// кнопка закрыть
+let btnRequestConfirmClose = btnClose()
+modRequestConfirmContent.appendChild(btnRequestConfirmClose)
+
+// ззаголовок
+let requestConfirmH = modalTitle('Подтверждение')
+modRequestConfirmContent.appendChild(requestConfirmH)
+
+let requestConfirmP = document.createElement('p')
+requestConfirmP.innerHTML = `Вы действительно хотите отправить запрос на создание заявки?`
+modRequestConfirmContent.appendChild(requestConfirmP)
+
+// кнопки футер
+let footerRequestConfirm = document.createElement('div')
+footerRequestConfirm.classList.add('mod_support_flex')
+modRequestConfirmContent.appendChild(footerRequestConfirm)
+
+let btnRequestConfirCancel = document.createElement('button')
+btnRequestConfirCancel.classList.add('btn_support_cancel')
+btnRequestConfirCancel.innerHTML = `Отмена`
+footerRequestConfirm.appendChild(btnRequestConfirCancel)
+
+let btnRequestConfirSubmit = document.createElement('button')
+btnRequestConfirSubmit.setAttribute('id', 'btnRequestConfirm')
+btnRequestConfirSubmit.classList.add('btn_support_submit')
+btnRequestConfirSubmit.innerHTML = `Да`
+footerRequestConfirm.appendChild(btnRequestConfirSubmit)
+
+
 // Создать Модальное окно "Пдтвертить отправку формы"
-ModalCreateRequest
+document.body.append(modRequestConfirm)
+
+
