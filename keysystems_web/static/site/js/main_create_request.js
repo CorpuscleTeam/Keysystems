@@ -69,6 +69,7 @@ modalContent.appendChild(requestH)
 // Форма
 let form = document.createElement('form')
 form.classList.add('mod_request_form')
+form.classList.add('enter_form')
 form.setAttribute('id', 'request_form')
 form.setAttribute('method', 'post')
 form.setAttribute('enctype', 'multipart/form-data')
@@ -299,7 +300,7 @@ let footerRequestConfirm = document.createElement('div')
 footerRequestConfirm.classList.add('mod_support_flex')
 modRequestConfirmContent.appendChild(footerRequestConfirm)
 
-let btnRequestConfirCancel = document.createElement('button')
+let btnRequestConfirCancel = document.createElement('a')
 btnRequestConfirCancel.classList.add('btn_support_cancel')
 btnRequestConfirCancel.innerHTML = `Отмена`
 footerRequestConfirm.appendChild(btnRequestConfirCancel)
