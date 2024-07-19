@@ -1,11 +1,24 @@
 document.addEventListener('DOMContentLoaded', function () {
     var elems = document.querySelectorAll('.modal');
     var instances = M.Modal.init(elems);
+
+    // Обработчик нажатия на кнопку подтверждения в модальном окне
+    document.getElementById('confirmButton').addEventListener('click', function () {
+        document.getElementById('myForm').submit();
+    });
+
+    // Обработчик для предотвращения отправки формы и открытия подтверждающего модального окна
+    document.querySelector('#form_request form button').addEventListener('click', function (event) {
+        event.preventDefault();
+        var instance = M.Modal.getInstance(document.getElementById('confirmModal'));
+        instance.open();
+    });
 });
 
 //   Модальное окно "create_request"
 
 let ModalCreateRequest = document.createElement('div')
+ModalCreateRequest.setAttribute('id', 'form_request')
 ModalCreateRequest.classList.add('modal')
 ModalCreateRequest.setAttribute('id', 'modal_create_request')
 
@@ -265,5 +278,11 @@ let modRequestConfirm = document.createElement('div')
 modRequestConfirm.setAttribute('id', 'modalRequestConfirm')
 modRequestConfirm.classList.add('modal')
 
+let modRequestConfirmContent = document.createElement('div')
+modRequestConfirmContent.classList.add('modal-content')
+modRequestConfirm.appendChild(modRequestConfirmContent)
+
 // Создать Модальное окно "Пдтвертить отправку формы"
-ModalCreateRequest
+ModalCreateRequest.appendChild(modRequestConfirm)
+
+
