@@ -5,3 +5,4 @@
 **/.idea
 /keysystems_web/logs/
 /keysystems_web/media/
+**/migrations/

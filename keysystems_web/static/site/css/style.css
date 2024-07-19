@@ -156,14 +156,30 @@
 }
 
 /* стили для 3.1 - modalConfirm */
-.modalConfirm-footer {
+.modalConfirm-footer, .mod_support_flex {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
     height: 46px;
     gap: 20px;
 }
-
-
+.modalConfirm-footer a, .mod_support_flex a {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border: 1px solid rgba(204, 204, 204, 1);
+    background-color: rgba(238, 238, 238, 1);
+    color: var(--color_dark);
+}
+.modalConfirm-footer button, .mod_support_flex button {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: var(--color_green);
+    color: rgba(255, 255, 255, 1);
+    font-family: "Oswald", sans-serif;
+    border: none;
+    font-size: 16px;
+}
 
 
 .footer {
@@ -429,7 +445,33 @@
 }
 
 /* Модальное окно "Создать заявку" */
-
+.mod_request_form p {
+    display: flex;
+    flex-direction: column;
+}
+.mod_request_form label {
+    margin-bottom: 6px;
+    
+}
+.mod_request_form select {
+    height: 37px;
+    border: rgba(204, 204, 204, 1) 1px solid;
+    font-family: "Oswald", sans-serif;
+    padding-left: 10px;
+}
+.add_file {
+    width: 100%;
+    height: 46px;
+    border: rgba(204, 204, 204, 1) 1px solid;
+    background-color: rgba(238, 238, 238, 1);
+    display: flex;
+    justify-content: start;
+    align-items: center;
+    padding-left: 24px;
+}
+.add_file img {
+    margin-right: 8px;
+}
 
 /* CSS для textarea и счетчика символов внутри */
 textarea {
@@ -437,6 +479,7 @@ textarea {
     width: 100%;
     height: 100px;
     resize: none;
+    border: rgba(204, 204, 204, 1) 1px solid;
 }
 
 #charCount {
