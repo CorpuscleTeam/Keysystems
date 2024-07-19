@@ -1,71 +1,34 @@
 from django.db import models
-from auth_app.models import CustomUser
 
 from datetime import datetime
 
-from enums import ORDER_CHOICES, OrderStatus
+from enums import ENTRY_TYPES, OrderStatus
 
 
-# темы обращений
-class OrderTopic(models.Model):
+# модель клиентов customer
+class News(models.Model):
     id = models.AutoField(primary_key=True)
-    topic = models.CharField(max_length=255)
+    created_at = models.DateTimeField('Создана', auto_now_add=True)
+    updated_at = models.DateTimeField('Обновлена', auto_now=True)
+    type_entry = models.CharField('Тип', max_length=50, choices=ENTRY_TYPES)
+    author = models.CharField('автор', max_length=255, null=True, blank=True)
+    title = models.CharField('Название', max_length=255)
+    text_preview = models.TextField('Текст привью', null=True, blank=True)
+    text = models.TextField('Текст')
+    # photo = models.CharField('Фото', max_length=255, null=True, blank=True)
+    photo = models.ImageField ('Фото', upload_to="news", null=True, blank=True)
+
     is_active = models.BooleanField(default=True)
 
-    objects = models.Manager()
+    objects: models.Manager = models.Manager()
+
+    def __str__(self):
+        return f"{self.title}"
 
     class Meta:
-        verbose_name = 'Тема обращения'
-        verbose_name_plural = 'Темы обращений'
-        db_table = 'orders_topics'
-
-
-# Список ПО
-class Soft(models.Model):
-    id = models.AutoField(primary_key=True)
-    title = models.CharField(max_length=255)
-    description = models.CharField(max_length=255)
-    is_active = models.BooleanField(default=True)
-
-    objects = models.Manager()
-
-    class Meta:
-        verbose_name = 'ПО'
-        verbose_name_plural = 'ПО'
-        db_table = 'soft'
-
-
-# используемое ПО
-class UsedSoft(models.Model):
-    id = models.AutoField(primary_key=True)
-    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name='used_soft')
-    soft = models.ForeignKey(Soft, on_delete=models.CASCADE, related_name='used_soft')
-
-    objects = models.Manager()
-
-    class Meta:
-        verbose_name = 'ПО пользователей'
-        verbose_name_plural = 'ПО пользователей'
-        db_table = 'used_soft'
-
-
-# заказы
-# class Order(models.Model):
-#     id = models.AutoField(primary_key=True)
-#     created_at = models.DateTimeField('Создана', default=datetime.now())
-#     updated_at = models.DateTimeField('Обновлена', default=datetime.now())
-#     from_user = models.ForeignKey(CustomUser, on_delete=models.DO_NOTHING, related_name='order')
-#     text = models.CharField('Текст', max_length=255)
-#     soft = models.ForeignKey(Soft, on_delete=models.DO_NOTHING, related_name='order')
-#     executor = models.ForeignKey(CustomUser, on_delete=models.DO_NOTHING, related_name='order')
-#     status = models.CharField('Статус', default=OrderStatus.NEW.value, choices=ORDER_CHOICES)
-
-#     objects = models.Manager()
-
-#     class Meta:
-#         verbose_name = 'Заявка'
-#         verbose_name_plural = 'Заявки'
-#         db_table = 'orders'
+        verbose_name = 'Новость'
+        verbose_name_plural = 'Новости'
+        db_table = 'news'
 
 
 # новости. хз как оно будет работать

@@ -21,6 +21,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     # 'channels',
+    'common',
     'client_app',
     'auth_app',
 ]
@@ -121,5 +122,9 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 if not os.path.exists(MEDIA_ROOT):
     os.mkdir(MEDIA_ROOT)
 
+FILE_STORAGE = os.path.join(MEDIA_ROOT, 'downloaded_files')
+if not os.path.exists(FILE_STORAGE):
+    os.mkdir(FILE_STORAGE)
+
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
-AUTH_USER_MODEL = 'auth_app.CustomUser'
+AUTH_USER_MODEL = 'common.UserKS'
