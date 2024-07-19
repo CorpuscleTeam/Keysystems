@@ -5,9 +5,47 @@ from datetime import datetime
 from enums import OrderStatus, ORDER_CHOICES
 
 
+# список районов
+class District(models.Model):
+    id = models.AutoField(primary_key=True)
+    title = models.CharField('Название', max_length=255)
+
+    objects = models.Manager()
+
+    def __str__(self):
+        return f"{self.title}"
+
+    class Meta:
+        verbose_name = 'Район'
+        verbose_name_plural = 'Районы'
+        db_table = 'districts'
+
+
+# модель клиентов customer
+class Customer(models.Model):
+    id = models.AutoField(primary_key=True)
+    created_at = models.DateTimeField('Создана', auto_now_add=True)
+    updated_at = models.DateTimeField('Обновлена', auto_now=True)
+    inn = models.BigIntegerField('ИНН', null=True, blank=True)
+    # district = models.CharField('Район', max_length=255)
+    district = models.ForeignKey(District, on_delete=models.CASCADE, related_name='customer', verbose_name='Район')
+    title = models.CharField('Название', max_length=255)
+
+    objects: models.Manager = models.Manager()
+
+    def __str__(self):
+        return f"{self.title}"
+
+    class Meta:
+        verbose_name = 'Клиент'
+        verbose_name_plural = 'Клиенты'
+        db_table = 'customers'
+
+
 # пользователи
 class UserKS(AbstractUser):
     inn = models.BigIntegerField('ИНН', null=True, blank=True)
+    # inn = models.ForeignKey(Customer, on_delete=models.CASCADE, related_name='user', verbose_name='ИНН', default=1234567890)
     email = models.CharField('Почта', max_length=100, null=True, blank=True)
     full_name = models.CharField('ФИО', max_length=255, null=True, blank=True)
     phone = models.CharField('Телефон', max_length=100, null=True, blank=True)
@@ -27,6 +65,9 @@ class UserKS(AbstractUser):
         related_query_name='customuser',
     )
 
+    def __str__(self):
+        return f"{self.full_name}"
+
 
 # Список ПО
 class Soft(models.Model):
@@ -36,6 +77,9 @@ class Soft(models.Model):
     is_active = models.BooleanField('Активно', default=True)
 
     objects = models.Manager()
+
+    def __str__(self):
+        return f"{self.title}"
 
     class Meta:
         verbose_name = 'ПО'
@@ -65,6 +109,9 @@ class OrderTopic(models.Model):
 
     objects = models.Manager()
 
+    def __str__(self):
+        return f"{self.topic}"
+
     class Meta:
         verbose_name = 'Тема обращения'
         verbose_name_plural = 'Темы обращений'
@@ -76,15 +123,23 @@ class Order(models.Model):
     id = models.AutoField(primary_key=True)
     created_at = models.DateTimeField('Создана', auto_now_add=True)
     updated_at = models.DateTimeField('Обновлена', auto_now=True)
-
-    from_user = models.ForeignKey(UserKS, on_delete=models.DO_NOTHING, related_name='created_orders')
+    from_user = models.ForeignKey(UserKS, on_delete=models.CASCADE, related_name='created_orders', verbose_name='Клиент')
     text = models.CharField('Текст', max_length=255)
-    soft = models.ForeignKey(Soft, on_delete=models.DO_NOTHING, related_name='order')
-    topic = models.ForeignKey(OrderTopic, on_delete=models.DO_NOTHING, related_name='order')
-    executor = models.ForeignKey(UserKS, on_delete=models.DO_NOTHING, related_name='executed_orders', null=True, blank=True)
+    soft = models.ForeignKey(Soft, on_delete=models.DO_NOTHING, related_name='order', verbose_name='ПО')
+    topic = models.ForeignKey(OrderTopic, on_delete=models.DO_NOTHING, related_name='order', verbose_name='Тема')
+    executor = models.ForeignKey(
+        UserKS,
+        on_delete=models.DO_NOTHING,
+        related_name='executed_orders',
+        null=True, blank=True,
+        verbose_name='Ответственный'
+    )
     status = models.CharField('Статус', default=OrderStatus.NEW.value, choices=ORDER_CHOICES)
 
     objects = models.Manager()
+
+    def __str__(self):
+        return f"{self.id}"
 
     class Meta:
         verbose_name = 'Заявка'
@@ -106,23 +161,3 @@ class DownloadedFile(models.Model):
         verbose_name = 'Скаченный файл'
         verbose_name_plural = 'Скаченные файлы'
         db_table = 'downloaded_file'
-
-
-# модель клиентов customer
-class Customer(models.Model):
-    id = models.AutoField(primary_key=True)
-    created_at = models.DateTimeField('Создана', auto_now_add=True)
-    updated_at = models.DateTimeField('Обновлена', auto_now=True)
-    inn = models.BigIntegerField('ИНН', null=True, blank=True)
-    district = models.CharField('Район', max_length=255)
-    title = models.CharField('Название', max_length=255)
-
-    objects: models.Manager = models.Manager()
-
-    def __str__(self):
-        return f"{self.title}"
-
-    class Meta:
-        verbose_name = 'Клиент'
-        verbose_name_plural = 'Клиенты'
-        db_table = 'customers'
