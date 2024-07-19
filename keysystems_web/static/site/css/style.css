@@ -86,7 +86,7 @@
     height: 38px;
     margin-bottom: 20px;
 }
-.enter_form a {
+.enter_button {
     display: flex;
     justify-content: center;
     align-items: center;
@@ -155,6 +155,17 @@
     font-weight: 400;
 }
 
+/* стили для 3.1 - modalConfirm */
+.modalConfirm-footer {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    height: 46px;
+    gap: 20px;
+}
+
+
+
+
 .footer {
     flex-shrink: 0;
 }
@@ -195,30 +206,6 @@
     line-height: 21px;
     color: var(--color_dark);
     margin-bottom: 30px;
-}
-.modalConfirm-footer {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 20px;
-    height: 46px;
-}
-.modalConfirm-footer a {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    border: 1px solid rgba(204, 204, 204, 1);
-    background-color: rgba(238, 238, 238, 1);
-    color: rgba(47, 47, 47, 1);
-}
-.modalConfirm-footer button {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    background-color: var(--color_green);
-    border: none;
-    color: rgba(255, 255, 255, 1);
-    font-family: "Oswald", sans-serif;
-    font-size: 16px;
 }
 
 /* Клиентская панель */
@@ -325,8 +312,7 @@
 .page {
 }
 .page_flex {
-    display: grid;
-    grid-template-columns: 1fr 2.3fr;
+    display: flex;
     gap: 20px;
 }
 
@@ -336,6 +322,7 @@
     background-color: rgba(255, 255, 255, 1);
     border: var(--border_grey);
     box-shadow: var(--border_shadow);
+    min-width: 280px;
     height: 370px;
     padding: 30px;
 }
@@ -419,8 +406,7 @@
     background-color: rgba(255, 255, 255, 1);
     border: var(--border_grey);
     box-shadow: var(--border_shadow);
-    /* width: 640px; */
-    /* width: 100%; */
+    min-width: 640px;
     padding: 20px 30px 30px;
 }
 .page_body_h2 {
@@ -442,76 +428,21 @@
     text-align: right;
 }
 
-/* Модальное окно "Создать заявку", "Настройки" */
-.mod_request_form p, .mod_settings_form p {
-    display: flex;
-    flex-direction: column;
-}
-.mod_request_form p > label, .mod_settings_form p > label {
-    margin-bottom: 6px;
-    font-weight: 700;
-}
-.mod_request_form p > select, .mod_settings_form p > select, .mod_settings_form p > input {
-    border: 1px solid rgba(204, 204, 204, 1);
-    border-radius: 2px;
-    height: 37px;
-    font-size: 16px;
-    font-weight: 400;
-    font-family: "Oswald", sans-serif;
-    padding-left: 10px;
-}
-.not_active, .not_active_input {
-    color: rgba(153, 153, 153, 1)
-}
-
-.mod_support_flex {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 20px;
-    height: 46px;
-}
-.btn_support_cancel {
-    border: rgba(200, 200, 200, 1) solid 1px;
-    background-color: rgba(238, 238, 238, 1);
-    font-family: "Oswald", sans-serif;
-    font-size: 16px;
-    cursor: pointer;
-}
-.btn_support_submit {
-    background-color: var(--color_green);
-    font-family: "Oswald", sans-serif;
-    font-size: 16px;
-    border: none;
-    color: rgba(255, 255, 255, 1);
-    cursor: pointer;
-}
+/* Модальное окно "Создать заявку" */
 
 
 /* CSS для textarea и счетчика символов внутри */
-
 textarea {
     padding-bottom: 20px; /* Добавляем отступ для счетчика символов */
     width: 100%;
     height: 100px;
     resize: none;
-    border: 1px solid rgba(204, 204, 204, 1);
 }
+
 #charCount {
     position: absolute;
     bottom: 5px;
     right: 10px;
     font-size: 12px;
     color: gray;
-}
-.add_file {
-    background-color: rgba(238, 238, 238, 1);
-    border: 1px solid rgba(204, 204, 204, 1);
-    height: 46px;
-    display: flex;
-    justify-content: start;
-    align-items: center;
-    padding-left: 24px;
-}
-.add_file img {
-    margin-right: 8px;
 }
