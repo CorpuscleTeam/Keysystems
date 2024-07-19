@@ -39,12 +39,12 @@ def get_main_client_front_data(request: HttpRequest) -> dict:
         log_error(f">>>> {item['fields']['day']} {item['fields']['month']} {item['fields']['year']}", wt=False)
 
     news_json = json.dumps(news_data)  # Преобразуем обратно в JSON
-
-    log_error(f'>>>> {type(news_json)}', wt=False)
+    log_error(request.user.inn, wt=False)
     return {
         'news': news_json,
         'topics': topics_json,
         'soft': soft_json,
+        'inn': request.user.inn,
         'orders_count': user_orders_count,
         'notice': 10,
         'update_count': 44,
@@ -53,18 +53,20 @@ def get_main_client_front_data(request: HttpRequest) -> dict:
 
 # сохраняет форму отправки обращения
 def order_form_processing(request: HttpRequest, form: OrderForm):
+    soft = Soft.objects.get(pk=form.cleaned_data['type_soft'])
+    topic = OrderTopic.objects.get(pk=form.cleaned_data['type_soft'])
     new_order = Order(
-        from_user=request.user.pk,
+        from_user=request.user,
         text=form.cleaned_data['description'],
-        soft=form.cleaned_data['type_soft'],
-        topic=form.cleaned_data['type_appeal']
+        soft=soft,
+        topic=topic
     )
     new_order.save()
 
     files = request.FILES.getlist('addfile')
 
     folder_path = os.path.join(FILE_STORAGE, str(request.user.inn), str(new_order.pk))
-    if not os.path.exists(folder_path):
+    if not os.path.exists(folder_path) and files:
         os.mkdir(folder_path)
 
     fs = FileSystemStorage()
@@ -74,8 +76,8 @@ def order_form_processing(request: HttpRequest, form: OrderForm):
         file_url = fs.url(filename)
 
         DownloadedFile.objects.create(
-            user_ks=request.user.pk,
-            order=new_order.pk,
+            user_ks=request.user,
+            order=new_order,
             url=file_url
         )
 

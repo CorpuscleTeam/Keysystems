@@ -32,7 +32,9 @@ def index_3_2(request: HttpRequest):
 # страничка с новостями
 def index_4_1(request: HttpRequest):
     if request.method == RequestMethod.POST:
+        log_error(request.POST, wt=False)
         order_form = OrderForm(request.POST, request.FILES)
+        log_error(f'>>>> {order_form.is_valid()}', wt=False)
         if order_form.is_valid():
             utils.order_form_processing(request=request, form=order_form)
             return redirect('redirect')

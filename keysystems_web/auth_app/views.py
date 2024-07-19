@@ -3,9 +3,10 @@ from django.http.request import HttpRequest
 from django.contrib.auth import login, logout
 from django.urls import reverse
 from django.contrib.auth.hashers import make_password, check_password
+from django.core.serializers import serialize
 
 from .forms import AuthBaseForm, RegistrationForm, PasswordForm, AuthUserForm
-from common.models import UserKS, Soft, Customer, District
+from common.models import UserKS, Soft, Customer, District, UsedSoft
 from common import log_error, pass_gen, send_pass_email, yakutia_districts
 from enums import RequestMethod
 
@@ -46,15 +47,15 @@ def index_2(request: HttpRequest):
             if len(users_inn) == 0:
                 inn = Customer.objects.filter(inn=input_inn)
                 if inn:
-                    return redirect('index_3_1')
+                    return redirect(reverse('index_3_1') + f'?inn={input_inn}')
                 else:
                     error_msg = 'ИНН не зарегистрирован'
 
             elif len(users_inn) == 1:
-                return redirect(reverse('index_3_1'))
+                return redirect(reverse('index_3_1') + f'?inn={input_inn}')
 
             elif len(users_inn) > 1:
-                return redirect(reverse('index_2_1') + f'?inn={users_inn}')
+                return redirect(reverse('index_2_1') + f'?inn={input_inn}')
 
             else:
                 return redirect('index_2_2')
@@ -98,27 +99,32 @@ def index_3_1(request: HttpRequest):
         return redirect('redirect')
 
     if request.method == RequestMethod.POST:
-
+        log_error(request.POST, wt=False)
         reg_form = RegistrationForm(request.POST)
-        inn = Customer.objects.filter(inn=reg_form.data['inn'])
+        inn = Customer.objects.filter(inn=reg_form.data.get('inn', 0))
         if reg_form.is_valid() and inn:
+
             password = pass_gen()
             #  тут пароль отправляем на почту
             send_pass_email(email=reg_form.cleaned_data['email'], password=password)
 
             new_user = UserKS(
                 username=reg_form.cleaned_data['email'],
-                inn=reg_form.cleaned_data['inn'],
+                inn=Customer.objects.get(reg_form.cleaned_data['inn']),
                 full_name=reg_form.cleaned_data['fio'],
                 phone=reg_form.cleaned_data['tel'],
                 password=make_password(password)
             )
             new_user.save()
 
-            return redirect(reverse('index_2_2') + f'?user={new_user.id}')
+            used_soft = Soft.objects.get(id=reg_form.cleaned_data['reg_progr'])
+            UsedSoft.objects.create(user=new_user, soft=used_soft)
+            return redirect(reverse('index_2_2') + f'?user={new_user.pk}')
 
-    soft = Soft.objects.filter(is_active=True).all()
-    context = {'soft': soft}
+    context = {
+        'soft': serialize(format='json', queryset=Soft.objects.filter(is_active=True).all()),
+        'inn': request.GET.get('inn', '')
+    }
     return render(request, 'index_3_1.html', context)
 
 

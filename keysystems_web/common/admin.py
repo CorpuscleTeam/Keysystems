@@ -2,7 +2,7 @@ from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from django.contrib.auth.forms import UserCreationForm, UserChangeForm
 
-from .models import Soft, Customer, OrderTopic, UserKS, Order
+from .models import Soft, Customer, OrderTopic, UserKS, Order, District
 # from .forms import CustomUserChangeForm
 
 
@@ -22,13 +22,13 @@ class CustomUserChangeForm(UserChangeForm):
 @admin.register(UserKS)
 class ViewAdminUser(admin.ModelAdmin):
     form = CustomUserChangeForm
-    list_display = ['username', 'email', 'is_active', 'is_staff']
+    list_display = ['full_name', 'email', 'is_active', 'is_staff']
+    readonly_fields = ['last_login', 'date_joined']
 
     fieldsets = (
-        (None, {'fields': ('username', 'email', 'password')}),
-        ('Permissions', {'fields': ('is_active', 'is_staff', 'is_superuser',
-                                    'groups', 'user_permissions')}),
-        ('Important dates', {'fields': ('last_login', 'date_joined')}),
+        ('О пользователе', {'fields': ('username', 'full_name')}),
+        ('Права', {'fields': ('is_active', 'is_staff', 'is_superuser')}),
+        ('Даты', {'fields': ('last_login', 'date_joined')}),
     )
     add_fieldsets = (
         (None, {
@@ -80,9 +80,8 @@ class ViewAdminOrder(admin.ModelAdmin):
     list_display = ['from_user', 'soft', 'topic', 'executor', 'status']
     readonly_fields = ['created_at', 'updated_at']
 
+
 # # админка новости
-# @admin.register(News)
-# class ViewAdminNews(admin.ModelAdmin):
-#     list_display = ['type_entry', 'title', 'photo', 'is_active']
-#     readonly_fields = ['created_at', 'updated_at']
-#     list_editable = ['is_active']
+@admin.register(District)
+class ViewAdminNews(admin.ModelAdmin):
+    list_display = ['title']
