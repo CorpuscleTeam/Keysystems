@@ -44,8 +44,7 @@ class Customer(models.Model):
 
 # пользователи
 class UserKS(AbstractUser):
-    inn = models.BigIntegerField('ИНН', null=True, blank=True)
-    # inn = models.ForeignKey(Customer, on_delete=models.CASCADE, related_name='user', verbose_name='ИНН', default=1234567890)
+    customer = models.ForeignKey(Customer, on_delete=models.CASCADE, related_name='user', verbose_name='Клиент')
     email = models.CharField('Почта', max_length=100, null=True, blank=True)
     full_name = models.CharField('ФИО', max_length=255, null=True, blank=True)
     phone = models.CharField('Телефон', max_length=100, null=True, blank=True)
