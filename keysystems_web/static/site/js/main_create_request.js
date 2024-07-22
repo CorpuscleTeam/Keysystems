@@ -260,6 +260,7 @@ function updateFileList() {
 
 let btnSubmitRequest = document.createElement('button')
 btnSubmitRequest.classList.add('modal-trigger')
+btnSubmitRequest.classList.add('submit_request')
 btnSubmitRequest.setAttribute('href', '#modalRequestConfirm')
 btnSubmitRequest.innerHTML = `Отправить запрос`
 form.appendChild(btnSubmitRequest)
