@@ -39,9 +39,24 @@ def index_4_1(request: HttpRequest):
             utils.order_form_processing(request=request, form=order_form)
             return redirect('redirect')
 
+    news = News.objects.filter(is_active=True).all()
+    news_json = serialize(format='json', queryset=news)
+
+    news_data = json.loads(news_json)
+
+    for item in news_data:
+        created_at = item['fields']['created_at']
+        created_at_date = datetime.fromisoformat(created_at)  # Преобразуем строку в объект datetime
+        item['fields']['day'] = created_at_date.day
+        item['fields']['month'] = months_str_ru.get(created_at_date.month, '')
+        item['fields']['year'] = created_at_date.year
+
+    news_json = json.dumps(news_data)  # Преобразуем обратно в JSON
+
     client_data = utils.get_main_client_front_data(request)
     context = {
-        **client_data
+        **client_data,
+        'news': news_json,
     }
     return render(request, 'index_4_1.html', context)
 
