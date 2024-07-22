@@ -42,7 +42,7 @@ def index_2(request: HttpRequest):
         form = AuthBaseForm(request.POST)
         if form.is_valid():
             input_inn = form.cleaned_data["inn"]
-            users_inn = UserKS.objects.filter(inn=input_inn).all()
+            users_inn = UserKS.objects.filter(customer=input_inn).all()
 
             if len(users_inn) == 0:
                 customer = Customer.objects.filter(inn=input_inn)
@@ -111,7 +111,7 @@ def index_3_1(request: HttpRequest):
 
             new_user = UserKS(
                 username=reg_form.cleaned_data['email'],
-                inn=Customer.objects.get(reg_form.cleaned_data['inn']),
+                customer=Customer.objects.get(inn=reg_form.cleaned_data['inn']),
                 full_name=reg_form.cleaned_data['fio'],
                 phone=reg_form.cleaned_data['tel'],
                 password=make_password(password)
