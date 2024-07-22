@@ -43,7 +43,7 @@ class Customer(models.Model):
 
 # пользователи
 class UserKS(AbstractUser):
-    customer = models.ForeignKey(Customer, on_delete=models.CASCADE, related_name='user', verbose_name='Клиент')
+    customer = models.ForeignKey(Customer, on_delete=models.CASCADE, related_name='user', verbose_name='Клиент', null=True, blank=True)
     email = models.CharField('Почта', max_length=100, null=True, blank=True)
     full_name = models.CharField('ФИО', max_length=255, null=True, blank=True)
     phone = models.CharField('Телефон', max_length=100, null=True, blank=True)
