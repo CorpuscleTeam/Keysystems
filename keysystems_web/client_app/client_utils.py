@@ -19,7 +19,7 @@ from enums import OrderStatus, NewsEntryType
 def get_main_client_front_data(request: HttpRequest) -> dict:
     user_orders_count = Order.objects.filter(from_user=request.user).exclude(status=OrderStatus.DONE).count()
     notice_count = Notice.objects.filter(viewed=False, user_ks=request.user).count()
-    update_soft = News.objects.filter(entry_type=NewsEntryType.UPDATE).all()
+    update_soft = News.objects.filter(type_entry=NewsEntryType.UPDATE).all()
     soft_view = serialize(format='json', queryset=update_soft)
     for up_soft in soft_view:
         log_error(up_soft, wt=False)
@@ -27,11 +27,12 @@ def get_main_client_front_data(request: HttpRequest) -> dict:
     soft_json = serialize(format='json', queryset=Soft.objects.filter(is_active=True).all())
     topics_json = serialize(format='json', queryset=OrderTopic.objects.filter(is_active=True).all())
 
-    log_error(request.user.inn, wt=False)
+    log_error(request.user.customer, wt=False)
+    log_error(request.user.customer.inn, wt=False)
     return {
         'topics': topics_json,
         'soft': soft_json,
-        'inn': request.user.inn,
+        'inn': request.user.customer,
         'orders_count': user_orders_count,
         'notice': notice_count,
         'update_count': 44,

@@ -62,5 +62,48 @@ def index_4_1(request: HttpRequest):
 
 
 def index_4_2(request: HttpRequest):
-    context = {}
+    client_data = utils.get_main_client_front_data(request)
+    context = {
+        **client_data,
+    }
     return render(request, 'index_4_2.html', context)
+
+
+def index_8(request: HttpRequest):
+    client_data = utils.get_main_client_front_data(request)
+    context = {
+        **client_data,
+    }
+    return render(request, 'index_8.html', context)
+
+
+def index_5_1(request: HttpRequest):
+    client_data = utils.get_main_client_front_data(request)
+    context = {
+        **client_data,
+    }
+    return render(request, 'index_5_1.html', context)
+
+
+def index_6(request: HttpRequest):
+    client_data = utils.get_main_client_front_data(request)
+    context = {
+        **client_data,
+    }
+    return render(request, 'index_6.html', context)
+
+
+def index_7_1(request: HttpRequest):
+    client_data = utils.get_main_client_front_data(request)
+    context = {
+        **client_data,
+    }
+    return render(request, 'index_7_1.html', context)
+
+
+def index_7_2(request: HttpRequest):
+    client_data = utils.get_main_client_front_data(request)
+    context = {
+        **client_data,
+    }
+    return render(request, 'index_7_2.html', context)

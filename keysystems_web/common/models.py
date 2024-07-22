@@ -27,7 +27,6 @@ class Customer(models.Model):
     created_at = models.DateTimeField('Создана', auto_now_add=True)
     updated_at = models.DateTimeField('Обновлена', auto_now=True)
     inn = models.BigIntegerField('ИНН', null=True, blank=True)
-    # district = models.CharField('Район', max_length=255)
     district = models.ForeignKey(District, on_delete=models.CASCADE, related_name='customer', verbose_name='Район')
     title = models.CharField('Название', max_length=255)
 
@@ -150,8 +149,8 @@ class Order(models.Model):
 class DownloadedFile(models.Model):
     id = models.AutoField(primary_key=True)
     created_at = models.DateTimeField('Создана', default=datetime.now())
-    user_ks = models.ForeignKey(UserKS, on_delete=models.DO_NOTHING, related_name='downloadedfile')
-    order = models.ForeignKey(Order, on_delete=models.CASCADE, related_name='downloadedfile')
+    user_ks = models.ForeignKey(UserKS, on_delete=models.DO_NOTHING, related_name='downloaded_file')
+    order = models.ForeignKey(Order, on_delete=models.CASCADE, related_name='downloaded_file')
     url = models.CharField('Ссылка', max_length=255, default=OrderStatus.NEW.value, choices=ORDER_CHOICES)
 
     objects = models.Manager()
