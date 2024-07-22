@@ -45,8 +45,8 @@ def index_2(request: HttpRequest):
             users_inn = UserKS.objects.filter(inn=input_inn).all()
 
             if len(users_inn) == 0:
-                inn = Customer.objects.filter(inn=input_inn)
-                if inn:
+                customer = Customer.objects.filter(inn=input_inn)
+                if customer:
                     return redirect(reverse('index_3_1') + f'?inn={input_inn}')
                 else:
                     error_msg = 'ИНН не зарегистрирован'
@@ -71,12 +71,13 @@ def index_2_1(request: HttpRequest):
     if request.user.is_authenticated:
         return redirect('redirect')
 
-    error_msg = None
+    error_msg = ''
     if request.method == RequestMethod.POST:
         auth_form = AuthUserForm(request.POST)
         if auth_form.is_valid():
+            customer = Customer.objects.filter(inn=auth_form.cleaned_data.get('inn'))
             user = UserKS.objects.filter(
-                inn=auth_form.data.get('inn'),
+                inn=customer,
                 username=auth_form.data.get('eded@cfdd')
             ).first()
             if user:
@@ -99,7 +100,7 @@ def index_3_1(request: HttpRequest):
         return redirect('redirect')
 
     if request.method == RequestMethod.POST:
-        log_error(request.POST, wt=False)
+        # log_error(request.POST, wt=False)
         reg_form = RegistrationForm(request.POST)
         inn = Customer.objects.filter(inn=reg_form.data.get('inn', 0))
         if reg_form.is_valid() and inn:

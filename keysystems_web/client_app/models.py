@@ -1,11 +1,11 @@
 from django.db import models
-
 from datetime import datetime
 
+from common.models import UserKS, Order
 from enums import ENTRY_TYPES, OrderStatus
 
 
-# модель клиентов customer
+# Новости
 class News(models.Model):
     id = models.AutoField(primary_key=True)
     created_at = models.DateTimeField('Создана', auto_now_add=True)
@@ -15,7 +15,7 @@ class News(models.Model):
     title = models.CharField('Название', max_length=255)
     text_preview = models.TextField('Текст привью', null=True, blank=True)
     text = models.TextField('Текст')
-#     photo = models.CharField('Фото', max_length=255, null=True, blank=True)
+    # photo = models.CharField('Фото', max_length=255, null=True, blank=True)
     photo = models.ImageField ('Фото', upload_to="news", null=True, blank=True)
 
     is_active = models.BooleanField(default=True)
@@ -29,6 +29,46 @@ class News(models.Model):
         verbose_name = 'Новость'
         verbose_name_plural = 'Новости'
         db_table = 'news'
+
+
+# просмотренные новости
+class ViewNews(models.Model):
+    id = models.AutoField(primary_key=True)
+    created_at = models.DateTimeField('Создана', auto_now_add=True)
+    updated_at = models.DateTimeField('Обновлена', auto_now=True)
+    news = models.ForeignKey(News, on_delete=models.CASCADE, related_name='view_news')
+    user_ks = models.ForeignKey(UserKS, on_delete=models.CASCADE, related_name='view_news')
+
+    objects: models.Manager = models.Manager()
+
+    def __str__(self):
+        return f"{self.id}"
+
+    class Meta:
+        verbose_name = 'Просмотр новости'
+        verbose_name_plural = 'Просмотр новостей'
+        db_table = 'view_news'
+
+
+# Уведомления
+class Notice(models.Model):
+    id = models.AutoField(primary_key=True)
+    created_at = models.DateTimeField('Создана', auto_now_add=True)
+    updated_at = models.DateTimeField('Обновлена', auto_now=True)
+    order = models.ForeignKey(Order, on_delete=models.CASCADE, related_name='notice')
+    user_ks = models.ForeignKey(UserKS, on_delete=models.CASCADE, related_name='notice')
+    text = models.CharField('Текст', max_length=255, null=True, blank=True)
+    viewed = models.BooleanField(default=False)
+
+    objects: models.Manager = models.Manager()
+
+    def __str__(self):
+        return f"{self.text}"
+
+    class Meta:
+        verbose_name = 'Уведомление'
+        verbose_name_plural = 'Уведомления'
+        db_table = 'notice'
 
 
 # новости. хз как оно будет работать
