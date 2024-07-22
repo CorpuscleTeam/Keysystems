@@ -86,6 +86,10 @@
     height: 38px;
     margin-bottom: 20px;
 }
+input[placeholder] {
+    font-family: "Oswald", sans-serif;
+    padding-left: 10px;
+}
 .enter_button {
     display: flex;
     justify-content: center;
@@ -255,6 +259,12 @@
     font-weight: 400;
     color: var(--color_dark);
 }
+.header_client_menu_ul li>a:hover {
+    color: var(--color_green);
+}
+.header_client_menu_ul li > a:hover img {
+    filter: brightness(0) saturate(100%) invert(73%) sepia(20%) saturate(6008%) hue-rotate(38deg) brightness(93%) contrast(89%);
+}
 .header_client_menu_ul li:first-child {
     flex-grow: 1;
     display: flex;
@@ -267,6 +277,10 @@
     flex-shrink: 0;
     border-left: rgba(231, 231, 231, 1) solid 1px;
 }
+/* .header_client_menu_ul li:nth-child(n+2):hover {
+    color: var(--color_green);
+} */
+
 .menu_INN {
 }
 
@@ -358,6 +372,12 @@
     width: 100%;
     height: 100%;
 }
+.page_menu_active p {
+    color: var(--color_green);
+}
+.page_menu_active img {
+    filter: brightness(0) saturate(100%) invert(73%) sepia(20%) saturate(6008%) hue-rotate(38deg) brightness(93%) contrast(89%);
+}
 .page_menu_ul li:first-child {
     background-color: var(--color_green);
     display: flex;
@@ -384,7 +404,12 @@
     padding-left: 24px;
     padding-right: 24px;
     height: 100%;
-    border: 2px solid var(--color_dark);;
+    border: 2px solid var(--color_dark);
+}
+.page_menu_li_flex:hover, .page_menu_li_news:hover {
+    border: 2px solid var(--color_green);
+    color: var(--color_green);
+    filter: brightness(0) saturate(100%) invert(73%) sepia(20%) saturate(6008%) hue-rotate(38deg) brightness(93%) contrast(89%);
 }
 .page_menu_li_left {
     display: flex;
@@ -392,6 +417,12 @@
 }
 .page_menu_li_left p {
     color: var(--color_dark);
+}
+.page_menu_li_flex:hover .page_menu_li_right {
+    border: none;
+    color: rgba(255, 255, 255, 1);
+    filter: none;
+    background-color: var(--color_green);
 }
 .page_menu_li_right {
     min-width: 22px;
@@ -404,6 +435,12 @@
     align-items: center;
     font-size: 10px;
 }
+.page_menu_li_flex:hover > *:not(.page_menu_li_right) {
+    color: var(--color_green);
+}
+/* .page_menu_li_right:hover {
+    color: rgba(255, 255, 255, 1);
+} */
 .page_menu_li_news {
     display: flex;
     justify-content: flex-start;
@@ -413,9 +450,9 @@
     height: 100%;
     border: 2px solid var(--color_dark);
 }
-.page_menu_li_news p {
+/* .page_menu_li_news p {
     color: var(--color_dark);
-}
+} */
 
 /* Основная часть */
 .page_flex_body {
@@ -431,6 +468,7 @@
 }
 
 
+
 /* Футер */
 .footer_client {
     margin-top: 20px;
@@ -444,20 +482,28 @@
     text-align: right;
 }
 
-/* Модальное окно "Создать заявку" */
-.mod_request_form p {
+/* Модальное окно "Создать заявку", "Настройки" */
+.mod_request_form p, .mod_settings_form p {
     display: flex;
     flex-direction: column;
 }
-.mod_request_form label {
+.mod_request_form label, .mod_settings_form label {
     margin-bottom: 6px;
-    
 }
-.mod_request_form select {
+.mod_request_form select, .mod_settings_form select {
     height: 37px;
     border: rgba(204, 204, 204, 1) 1px solid;
     font-family: "Oswald", sans-serif;
     padding-left: 10px;
+}
+.mod_settings_form input {
+    height: 37px;
+    border: rgba(204, 204, 204, 1) 1px solid;
+    font-family: "Oswald", sans-serif;
+    padding-left: 10px;
+}
+.not_active_input {
+    color: rgba(153, 153, 153, 1);
 }
 .add_file {
     width: 100%;
@@ -471,6 +517,16 @@
 }
 .add_file img {
     margin-right: 8px;
+}
+
+.submit_request {
+    width: 100%;
+    background-color: var(--color_green);
+    border: none;
+    color: rgba(255, 255, 255, 1);
+    font-family: "Oswald", sans-serif;
+    font-size: 16px;
+    height: 46px;
 }
 
 /* CSS для textarea и счетчика символов внутри */
@@ -489,3 +545,4 @@ textarea {
     font-size: 12px;
     color: gray;
 }
+
