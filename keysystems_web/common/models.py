@@ -2,7 +2,7 @@ from django.db import models
 from django.contrib.auth.models import AbstractUser, Group, Permission
 from datetime import datetime
 
-from enums import OrderStatus, ORDER_CHOICES
+from enums import OrderStatus, ORDER_CHOICES, notices_tuple
 
 
 # список районов
@@ -121,7 +121,8 @@ class Order(models.Model):
     id = models.AutoField(primary_key=True)
     created_at = models.DateTimeField('Создана', auto_now_add=True)
     updated_at = models.DateTimeField('Обновлена', auto_now=True)
-    from_user = models.ForeignKey(UserKS, on_delete=models.CASCADE, related_name='created_orders', verbose_name='Клиент')
+    from_user = models.ForeignKey(UserKS, on_delete=models.CASCADE, related_name='created_orders', verbose_name='Пользователь')
+    customer = models.ForeignKey(Customer, on_delete=models.CASCADE, related_name='orders', verbose_name='Клиент')
     text = models.CharField('Текст', max_length=255)
     soft = models.ForeignKey(Soft, on_delete=models.DO_NOTHING, related_name='order', verbose_name='ПО')
     topic = models.ForeignKey(OrderTopic, on_delete=models.DO_NOTHING, related_name='order', verbose_name='Тема')
@@ -159,3 +160,24 @@ class DownloadedFile(models.Model):
         verbose_name = 'Скаченный файл'
         verbose_name_plural = 'Скаченные файлы'
         db_table = 'downloaded_file'
+
+
+# Уведомления
+class Notice(models.Model):
+    id = models.AutoField(primary_key=True)
+    created_at = models.DateTimeField('Создана', auto_now_add=True)
+    updated_at = models.DateTimeField('Обновлена', auto_now=True)
+    order = models.ForeignKey(Order, on_delete=models.CASCADE, related_name='notice')
+    user_ks = models.ForeignKey(UserKS, on_delete=models.CASCADE, related_name='notice')
+    type_notice = models.CharField('Текст', max_length=255, choices=notices_tuple)
+    viewed = models.BooleanField(default=False)
+
+    objects: models.Manager = models.Manager()
+
+    def __str__(self):
+        return f"{self.type_notice}"
+
+    class Meta:
+        verbose_name = 'Уведомление'
+        verbose_name_plural = 'Уведомления'
+        db_table = 'notice'

@@ -33,3 +33,19 @@ ENTRY_TYPES = (
     (NewsEntryType.NEWS.value, 'Новость'),
     (NewsEntryType.UPDATE.value, 'Обновление ПО')
 )
+
+
+# уведомления
+class Notice(str, Enum):
+    ORDER_ACTIVE = 'order_active'
+    ORDER_DONE = 'order_done'
+    NEW_MSG = 'NEW_MSG'
+
+
+notices_dict = {
+    Notice.ORDER_ACTIVE.value: 'Ваша задача #{pk} переведена в статус «В РАБОТЕ».',
+    Notice.ORDER_DONE.value: 'Ваша задача #{pk} переведена в статус «ВЫПОЛНЕНО». Оцените качество выполненной работы.',
+    Notice.NEW_MSG.value: 'В заявке #{pk} куратор оставил новое сообщение.',
+}
+
+notices_tuple = ((k, v) for k, v in notices_dict.items())

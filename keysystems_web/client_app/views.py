@@ -9,11 +9,11 @@ import json
 
 from keysystems_web.settings import FILE_STORAGE
 from .forms import OrderForm
-from .models import News
+from .models import News, FAQ
 from . import client_utils as utils
-from common.models import OrderTopic, Soft, Order, DownloadedFile
-from common import log_error, months_str_ru
-from enums import RequestMethod, NewsEntryType
+from common.models import OrderTopic, Notice, Order
+from common import log_error, months_str_ru, get_data_string
+from enums import RequestMethod, NewsEntryType, OrderStatus, notices_dict
 
 
 # удалить аналог 2_2
@@ -66,8 +66,9 @@ def index_4_2(request: HttpRequest):
     # if not main_news:
     #     return redirect('redirect')
 
-    news_id = request.GET.get('news', 0)
+    news_id = request.GET.get('news', 1)
     main_news = News.objects.get(pk=int(news_id))
+    log_error(type(main_news), wt=False)
     # news_type = main_news.type_entry
 
     # Получение предыдущей записи того же типа
@@ -85,33 +86,58 @@ def index_4_2(request: HttpRequest):
     client_data = utils.get_main_client_front_data(request)
     context = {
         **client_data,
-        'main_news': serialize(format='json', queryset=main_news),
-        'previous_news': previous_news.pk,
-        'next_news': next_news.pk,
+        'news': serialize(format='json', queryset=[main_news]),
+        'previous_news': previous_news.id if previous_news else 0,
+        'next_news': next_news.id if next_news else 0,
     }
     return render(request, 'index_4_2.html', context)
 
 
 def index_8(request: HttpRequest):
+    faq = FAQ.objects.filter(is_astive=True).order_by('-created_at').all()
+
     client_data = utils.get_main_client_front_data(request)
     context = {
         **client_data,
+        'faq': serialize(format='json', queryset=faq)
     }
     return render(request, 'index_8.html', context)
 
 
 def index_5_1(request: HttpRequest):
+    orders = Order.objects.filter(customer=request.user.customer).order_by('-created_at')
+    new_orders = orders.filter(status=OrderStatus.NEW).all()
+    active_orders = orders.filter(status=OrderStatus.ACTIVE).all()
+    done_orders = orders.filter(status=OrderStatus.DONE).all()
+
     client_data = utils.get_main_client_front_data(request)
     context = {
         **client_data,
+        'new_orders': serialize(format='json', queryset=new_orders),
+        'active_orders': serialize(format='json', queryset=active_orders),
+        'done_orders': serialize(format='json', queryset=done_orders),
     }
     return render(request, 'index_5_1.html', context)
 
 
 def index_6(request: HttpRequest):
+    notices = Notice.objects.filter(user_ks=request.user).order_by('-created_at').all()
+
+    notice_list = []
+    for notice in notices:
+        text: str = notices_dict.get(notice.type_notice)
+        if text:
+            notice_list.append(
+                {
+                    'date': get_data_string(notice.created_at),
+                    'text': text.format(pk=notice.id)
+                }
+            )
+
     client_data = utils.get_main_client_front_data(request)
     context = {
         **client_data,
+        'notices': notice_list
     }
     return render(request, 'index_6.html', context)
 
