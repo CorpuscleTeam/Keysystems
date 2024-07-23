@@ -50,6 +50,7 @@ def index_4_1(request: HttpRequest):
         item['fields']['day'] = created_at_date.day
         item['fields']['month'] = months_str_ru.get(created_at_date.month, '')
         item['fields']['year'] = created_at_date.year
+        log_error(item, wt=False)
 
     news_json = json.dumps(news_data)  # Преобразуем обратно в JSON
 
