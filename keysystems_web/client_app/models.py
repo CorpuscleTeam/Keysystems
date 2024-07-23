@@ -124,3 +124,15 @@ def news():
          'photo': '/media/news/example.jpg',
          },
     ]
+
+
+'''
+{
+    "model": "common.ordertopic",
+    "pk": 1,
+    "fields": {
+        "topic": "Сломаль(",
+        "is_active": true
+    }
+}
+'''
