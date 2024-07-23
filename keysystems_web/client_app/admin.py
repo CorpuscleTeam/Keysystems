@@ -1,7 +1,7 @@
 from django.contrib import admin
 from django.utils.html import mark_safe
 
-from .models import News
+from .models import News, FAQ
 
 
 # админка новости
@@ -25,4 +25,12 @@ class ViewAdminNews(admin.ModelAdmin):
 
     cover_image_preview.short_description = 'Фото'
     cover_image_preview_in.short_description = 'Фото'
+
+
+# вопросы
+@admin.register(FAQ)
+class ViewAdminFAQ(admin.ModelAdmin):
+    list_display = ['question', 'answer', 'is_active']
+    readonly_fields = ['created_at', 'updated_at']
+    list_editable = ['is_active']
 

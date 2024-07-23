@@ -50,25 +50,24 @@ class ViewNews(models.Model):
         db_table = 'view_news'
 
 
-# Уведомления
-class Notice(models.Model):
+# Частые вопросы
+class FAQ(models.Model):
     id = models.AutoField(primary_key=True)
     created_at = models.DateTimeField('Создана', auto_now_add=True)
     updated_at = models.DateTimeField('Обновлена', auto_now=True)
-    order = models.ForeignKey(Order, on_delete=models.CASCADE, related_name='notice')
-    user_ks = models.ForeignKey(UserKS, on_delete=models.CASCADE, related_name='notice')
-    text = models.CharField('Текст', max_length=255, null=True, blank=True)
-    viewed = models.BooleanField(default=False)
+    question = models.TextField('Вопрос')
+    answer = models.TextField('Ответ')
+    is_active = models.BooleanField('Активно', default=True)
 
     objects: models.Manager = models.Manager()
 
     def __str__(self):
-        return f"{self.text}"
+        return f"{self.question}"
 
     class Meta:
-        verbose_name = 'Уведомление'
-        verbose_name_plural = 'Уведомления'
-        db_table = 'notice'
+        verbose_name = 'FAQ'
+        verbose_name_plural = 'FAQ'
+        db_table = 'faq'
 
 
 # новости. хз как оно будет работать
