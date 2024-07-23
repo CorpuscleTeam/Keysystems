@@ -92,7 +92,7 @@ selectTypeAppeal.setAttribute('id', 'type_appeal')
 typeAppeal.appendChild(selectTypeAppeal)
 
 // добавить цикл с вариантами выбора
-for (let i = 0; i < soft.length; i++) {
+for (let i = 0; i < topics.length; i++) {
     let optionTypeAppeal = document.createElement('option')
     optionTypeAppeal.setAttribute('value', topics[i].pk)
     optionTypeAppeal.innerHTML = topics[i].fields.topic
@@ -260,6 +260,7 @@ function updateFileList() {
 
 let btnSubmitRequest = document.createElement('button')
 btnSubmitRequest.classList.add('modal-trigger')
+btnSubmitRequest.classList.add('submit_request')
 btnSubmitRequest.setAttribute('href', '#modalRequestConfirm')
 btnSubmitRequest.innerHTML = `Отправить запрос`
 form.appendChild(btnSubmitRequest)

@@ -14,7 +14,7 @@ from enums import RequestMethod
 # Определяет начальную страницу пользователя
 def start_page_redirect(request: HttpRequest):
     # for district in yakutia_districts:
-    #     District.objects.create(title=district)
+        # District.objects.create(title=district)
 
     if request.user.is_authenticated and request.user.is_staff:
         return redirect('index_4_1')

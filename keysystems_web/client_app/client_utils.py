@@ -41,11 +41,10 @@ def get_main_client_front_data(request: HttpRequest) -> dict:
     )
     not_view_news = news_queryset.filter(has_viewed=False).count()
 
+
     soft_json = serialize(format='json', queryset=Soft.objects.filter(is_active=True).all())
     topics_json = serialize(format='json', queryset=OrderTopic.objects.filter(is_active=True).all())
 
-    # log_error(request.user.customer, wt=False)
-    # log_error(request.user.customer.district, wt=False)
     return {
         'topics': topics_json,
         'soft': soft_json,
