@@ -386,6 +386,10 @@ input[placeholder] {
     gap: 8px;
     height: 46px;
 }
+.page_menu_ul li:first-child:hover {
+    content: '';
+    background-color: rgba(110, 165, 10, 1);
+}
 .page_create_request_flex {
     color: rgba(255, 255, 255, 1);
     display: flex;
@@ -435,12 +439,14 @@ input[placeholder] {
     align-items: center;
     font-size: 10px;
 }
-.page_menu_li_flex:hover > *:not(.page_menu_li_right) {
+/* .page_menu_li_flex:hover > *:not(.page_menu_li_right) {
     color: var(--color_green);
-}
-/* .page_menu_li_right:hover {
-    color: rgba(255, 255, 255, 1);
 } */
+
+/* !!! разобраться с ховерами !!! */
+.page_menu_li_right:hover {
+    color: rgba(255, 255, 255, 1);
+}
 .page_menu_li_news {
     display: flex;
     justify-content: flex-start;
@@ -546,3 +552,14 @@ textarea {
     color: gray;
 }
 
+/* 4.1 - Новости */
+.news_date {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 100px;
+    height: 70px;
+    background-color: var(--color_green);
+    border-radius: 3px;
+}

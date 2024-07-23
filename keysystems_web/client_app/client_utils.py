@@ -17,27 +17,29 @@ from enums import OrderStatus, NewsEntryType
 
 # Собирает данные для стандартного окружения клиентской части
 def get_main_client_front_data(request: HttpRequest) -> dict:
-    user_orders_count = Order.objects.filter(from_user=request.user).exclude(status=OrderStatus.DONE).count()
-    notice_count = Notice.objects.filter(viewed=False, user_ks=request.user).count()
+    # user_orders_count = Order.objects.filter(from_user=request.user).exclude(status=OrderStatus.DONE).count()
+    # notice_count = Notice.objects.filter(viewed=False, user_ks=request.user).count()
     update_soft = News.objects.filter(type_entry=NewsEntryType.UPDATE).all()
     soft_view = serialize(format='json', queryset=update_soft)
-    # for up_soft in soft_view:
-    #     log_error(up_soft, wt=False)
 
     soft_json = serialize(format='json', queryset=Soft.objects.filter(is_active=True).all())
     topics_json = serialize(format='json', queryset=OrderTopic.objects.filter(is_active=True).all())
 
-    # log_error(request.user.customer, wt=False)
-    # log_error(request.user.customer.district, wt=False)
     return {
         'topics': topics_json,
         'soft': soft_json,
-        'inn': request.user.customer.inn,
-        'institution': request.user.customer.title,
-        'region': request.user.customer.district,
-        'orders_count': user_orders_count,
-        'notice': notice_count,
-        'update_count': 44,
+        # 'inn': request.user.customer.inn,
+        # 'institution': request.user.customer.title,
+        # 'region': request.user.customer.district,
+        # 'orders_count': user_orders_count,
+        # 'notice': notice_count,
+        'inn': 1111111111111,
+        'institution': '"OOO" plastic world',
+        'region': 'chelabinsk',
+        'orders_count': 3,
+        'notice': 2,
+        'update_count': 44
+        
     }
 
 '''
