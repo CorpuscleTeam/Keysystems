@@ -13,7 +13,7 @@ from .models import News
 from . import client_utils as utils
 from common.models import OrderTopic, Soft, Order, DownloadedFile
 from common import log_error, months_str_ru
-from enums import RequestMethod
+from enums import RequestMethod, NewsEntryType
 
 
 # удалить аналог 2_2
@@ -39,7 +39,7 @@ def index_4_1(request: HttpRequest):
             utils.order_form_processing(request=request, form=order_form)
             return redirect('redirect')
 
-    news = News.objects.filter(is_active=True).all()
+    news = News.objects.filter(is_active=True, type_entry=NewsEntryType.NEWS).order_by('-created_at').all()
     news_json = serialize(format='json', queryset=news)
 
     news_data = json.loads(news_json)
@@ -50,6 +50,7 @@ def index_4_1(request: HttpRequest):
         item['fields']['day'] = created_at_date.day
         item['fields']['month'] = months_str_ru.get(created_at_date.month, '')
         item['fields']['year'] = created_at_date.year
+        log_error(item, wt=False)
 
     news_json = json.dumps(news_data)  # Преобразуем обратно в JSON
 
@@ -62,9 +63,31 @@ def index_4_1(request: HttpRequest):
 
 
 def index_4_2(request: HttpRequest):
+    # if not main_news:
+    #     return redirect('redirect')
+
+    news_id = request.GET.get('news', 0)
+    main_news = News.objects.get(pk=int(news_id))
+    # news_type = main_news.type_entry
+
+    # Получение предыдущей записи того же типа
+    previous_news = News.objects.filter(
+        created_at__lt=main_news.created_at,
+        type_entry=NewsEntryType.NEWS
+    ).order_by('-created_at').first()
+
+    # Получение следующей записи того же типа
+    next_news = News.objects.filter(
+        created_at__gt=main_news.created_at,
+        type_entry=NewsEntryType.NEWS
+    ).order_by('created_at').first()
+
     client_data = utils.get_main_client_front_data(request)
     context = {
         **client_data,
+        'main_news': serialize(format='json', queryset=main_news),
+        'previous_news': previous_news.pk,
+        'next_news': next_news.pk,
     }
     return render(request, 'index_4_2.html', context)
 
