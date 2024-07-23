@@ -11,8 +11,8 @@ import json
 
 from keysystems_web.settings import FILE_STORAGE
 from .forms import OrderForm
-from .models import Notice, News, ViewNews
-from common.models import OrderTopic, Soft, Order, DownloadedFile
+from .models import News, ViewNews
+from common.models import OrderTopic, Soft, Order, DownloadedFile, Notice
 from common import log_error, months_str_ru
 from enums import OrderStatus, NewsEntryType
 
