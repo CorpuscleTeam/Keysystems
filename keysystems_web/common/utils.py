@@ -1,7 +1,7 @@
 from random import choice
 from datetime import datetime, timedelta
 
-from data import months_str_ru
+from common.data import months_str_ru
 
 
 def pass_gen(len_: int = 8) -> str:

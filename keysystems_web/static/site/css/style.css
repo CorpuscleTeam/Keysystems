@@ -33,7 +33,7 @@
     justify-content: space-between;
 }
 .btn_back button {
-    width: 108px;
+    width: 102px;
     height: 31px;
     border: 1px solid rgba(231, 231, 231, 1);
     background-color: rgba(255, 255, 255, 1);
@@ -631,4 +631,26 @@ textarea {
     color: var(--color_dark);
 }
 
-
+/* Страница 4_2 */
+.page_4_2_btn_back {
+    margin-bottom: 20px;
+}
+.page_news_content {
+    margin-bottom: 20px;
+}
+.page_4_2_btn_news_footer-flex {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.link_news_previous button, .link_news_next button {
+    height: 31px;
+    padding-left: 24px;
+    padding-right: 24px;
+    border: 1px solid rgba(231, 231, 231, 1);
+    background-color: rgba(255, 255, 255, 1);
+    font-weight: 400;
+    font-size: 16px;
+    color: var(--color_green);
+    cursor: pointer;
+}

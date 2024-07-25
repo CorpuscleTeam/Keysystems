@@ -68,8 +68,16 @@ def index_4_2(request: HttpRequest):
 
     news_id = request.GET.get('news', 1)
     main_news = News.objects.get(pk=int(news_id))
-    log_error(type(main_news), wt=False)
-    # news_type = main_news.type_entry
+    news_json = serialize(format='json', queryset=[main_news])
+    news_data = json.loads(news_json)
+
+    created_at = news_data[0]['fields']['created_at']
+    created_at_date = datetime.fromisoformat(created_at)  # Преобразуем строку в объект datetime
+    news_data[0]['fields']['day'] = created_at_date.day
+    news_data[0]['fields']['month'] = months_str_ru.get(created_at_date.month, '')
+    news_data[0]['fields']['year'] = created_at_date.year
+
+    news_json = json.dumps(news_data[0])
 
     # Получение предыдущей записи того же типа
     previous_news = News.objects.filter(
@@ -86,11 +94,14 @@ def index_4_2(request: HttpRequest):
     client_data = utils.get_main_client_front_data(request)
     context = {
         **client_data,
-        'news': serialize(format='json', queryset=[main_news]),
+        # 'news': serialize(format='json', queryset=[main_news]),
+        'news': news_json,
+        'news_raw': main_news,
         'previous_news': previous_news.id if previous_news else 0,
         'next_news': next_news.id if next_news else 0,
     }
     return render(request, 'index_4_2.html', context)
+
 
 
 def index_8(request: HttpRequest):
