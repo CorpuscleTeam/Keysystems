@@ -342,8 +342,10 @@ input[placeholder] {
 .page {
 }
 .page_flex {
-    display: flex;
+    display: grid;
     gap: 20px;
+    grid-template-columns: 1fr 2.3fr;
+    /* justify-content: space-between; */
 }
 
 
@@ -352,7 +354,6 @@ input[placeholder] {
     background-color: rgba(255, 255, 255, 1);
     border: var(--border_grey);
     box-shadow: var(--border_shadow);
-    min-width: 280px;
     height: 370px;
     padding: 30px;
 }
@@ -465,7 +466,6 @@ input[placeholder] {
     background-color: rgba(255, 255, 255, 1);
     border: var(--border_grey);
     box-shadow: var(--border_shadow);
-    min-width: 640px;
     padding: 20px 30px 30px;
 }
 .page_body_h2 {
