@@ -20,7 +20,7 @@ class OrderStatus(str, Enum):
 ORDER_CHOICES = (
         (OrderStatus.NEW.value, 'Новый'),
         (OrderStatus.ACTIVE.value, 'В работе'),
-        (OrderStatus.DONE.value, 'Активный'),
+        (OrderStatus.DONE.value, 'Выполнено'),
 )
 
 

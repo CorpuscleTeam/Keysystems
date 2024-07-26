@@ -2,7 +2,7 @@ from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from django.contrib.auth.forms import UserCreationForm, UserChangeForm
 
-from .models import Soft, Customer, OrderTopic, UserKS, Order, District
+from .models import Soft, Customer, OrderTopic, UserKS, Order, District, Notice
 # from .forms import CustomUserChangeForm
 
 
@@ -85,3 +85,9 @@ class ViewAdminOrder(admin.ModelAdmin):
 @admin.register(District)
 class ViewAdminNews(admin.ModelAdmin):
     list_display = ['title']
+
+
+# # админка новости
+@admin.register(Notice)
+class ViewAdminNews(admin.ModelAdmin):
+    list_display = ['type_notice']

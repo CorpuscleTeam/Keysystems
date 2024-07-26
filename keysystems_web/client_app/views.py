@@ -116,7 +116,8 @@ def index_8(request: HttpRequest):
 
 
 def index_5_1(request: HttpRequest):
-    orders = Order.objects.filter(customer=request.user.customer).order_by('-created_at')
+    # orders = Order.objects.filter(customer=request.user.customer).order_by('-created_at')
+    orders = Order.objects.filter().order_by('-created_at')
     new_orders = orders.filter(status=OrderStatus.NEW).all()
     active_orders = orders.filter(status=OrderStatus.ACTIVE).all()
     done_orders = orders.filter(status=OrderStatus.DONE).all()
@@ -132,7 +133,8 @@ def index_5_1(request: HttpRequest):
 
 
 def index_6(request: HttpRequest):
-    notices = Notice.objects.filter(user_ks=request.user).order_by('-created_at').all()
+    # notices = Notice.objects.filter(user_ks=request.user).order_by('-created_at').all()
+    notices = Notice.objects.filter().order_by('-created_at').all()
 
     notice_list = []
     for notice in notices:
@@ -140,6 +142,7 @@ def index_6(request: HttpRequest):
         if text:
             notice_list.append(
                 {
+                    'num_push': notice.id,
                     'date': get_data_string(notice.created_at),
                     'text': text.format(pk=notice.id)
                 }
@@ -148,7 +151,7 @@ def index_6(request: HttpRequest):
     client_data = utils.get_main_client_front_data(request)
     context = {
         **client_data,
-        'notices': notice_list
+        'notices': json.dumps(notice_list)
     }
     return render(request, 'index_6.html', context)
 
