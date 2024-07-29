@@ -175,7 +175,7 @@
                         </li>
                         <li>
                             <a href="index_4_1">
-                                <div class="page_menu_li_news page_menu_active">
+                                <div class="page_menu_li_news">
                                     <img src="{% static 'site/img/news.svg' %}" alt="">
                                     <p>Лента новостей</p>
                                 </div>
@@ -251,7 +251,7 @@
         let region = "Челябинская область"
 
         // переменная "вопрос-ответ"
-        let faq = {{ faq }}
+        let faq = JSON.parse('{{ faq|escapejs }}')
 
     </script>
 

@@ -748,3 +748,41 @@ textarea {
     font-size: 10px;
     line-height: 11px;
 }
+
+/* вопрос-ответ faq_index_8 */
+.question_flex {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+.faq_h5 {
+    background-color: rgba(231, 231, 231, 1);
+    border: 1px solid rgba(231, 231, 231, 1);
+    font-size: 20px;
+    line-height: 22px;
+    padding: 20px;
+    cursor: pointer;
+}
+.question_h3::marker {
+    content: '';
+    display: none;
+}
+.question_h3 {
+    display: flex;
+    justify-content: space-between;
+}
+.question_h3::after {
+    /* content: "{% static 'site/img/plus.png' %}"; */
+    content: url("../img/plus.png");
+    /* content: url("{% static 'img/plus.png' %}"); */
+    /* background-image: url({% static 'images\background_main.jpg' %}); */
+}
+.faq_item[open] .question_h3::after {
+    transform: rotate(45deg);
+}
+.faq_p {
+    padding: 20px;
+    font-size: 16px;
+    line-height: 21px;
+    border: 1px solid rgba(231, 231, 231, 1);
+}

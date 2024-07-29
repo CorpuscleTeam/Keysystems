@@ -7,6 +7,10 @@
     .header_client_menu_ul li>a {
         font-size: 13px;
     }
+
+    /* .page_news_header {
+        flex-direction: column;
+    } */
 }
 @media screen and (max-width: 600px) {
     /* Авторизация */
