@@ -159,8 +159,8 @@ def index_7_1(request: HttpRequest):
         files = UpdateSoftFiles.objects.filter(update_soft=update.pk).all()
         update_files = []
         for file in files:
-            # update_files.append(file.file.path)
-            update_files.append(file.file)
+            update_files.append({'url': file.file.url, 'name': file.file.name})
+            # update_files.append(file.file.value)
 
         updates_json.append(
             {
@@ -170,12 +170,12 @@ def index_7_1(request: HttpRequest):
                 'update_files': update_files
             }
         )
-        # ut.log_error(updates_json, wt=False)
+        ut.log_error(updates_json, wt=False)
 
     client_data = utils.get_main_client_front_data(request)
     context = {
         **client_data,
-        'update_json': updates_json
+        'update_json': json.dumps(updates_json)
     }
     return render(request, 'index_7_1.html', context)
 
