@@ -1,13 +1,13 @@
 from django.contrib import admin
 from django.utils.html import mark_safe
 
-from .models import News, FAQ
+from .models import News, FAQ, UpdateSoft, UpdateSoftFiles
 
 
 # админка новости
 @admin.register(News)
 class ViewAdminNews(admin.ModelAdmin):
-    list_display = ['type_entry', 'title', 'is_active', 'cover_image_preview']
+    list_display = ['title', 'is_active', 'cover_image_preview']
     readonly_fields = ['created_at', 'updated_at', 'cover_image_preview_in']
     list_editable = ['is_active']
 
@@ -34,3 +34,14 @@ class ViewAdminFAQ(admin.ModelAdmin):
     readonly_fields = ['created_at', 'updated_at']
     list_editable = ['is_active']
 
+
+class UpdateSoftFilesInline(admin.TabularInline):
+    model = UpdateSoftFiles
+    extra = 1
+
+
+@admin.register(UpdateSoft)
+class RecordAdmin(admin.ModelAdmin):
+    inlines = [UpdateSoftFilesInline]
+    list_display = ['soft', 'description']
+    readonly_fields = ['created_at', 'updated_at']

@@ -9,9 +9,9 @@ import json
 
 from keysystems_web.settings import FILE_STORAGE
 from .forms import OrderForm
-from .models import News, FAQ
+from .models import News, FAQ, UpdateSoft, UpdateSoftFiles
 from . import client_utils as utils
-from common.models import OrderTopic, Notice, Order
+from common.models import OrderTopic, Notice, Order, Soft
 import common as ut
 from enums import RequestMethod, NewsEntryType, OrderStatus, notices_dict
 
@@ -151,22 +151,31 @@ def index_6(request: HttpRequest):
 
 
 def index_7_1(request: HttpRequest):
-    news = News.objects.filter(is_active=True, type_entry=NewsEntryType.UPDATE).order_by('-created_at').all()
-    news_json = serialize(format='json', queryset=news)
+    # updates = UpdateSoft.objects.select_related('soft').prefetch_related('files').filter(is_active=True).order_by('-created_at').all()
+    updates = UpdateSoft.objects.select_related('soft').filter(is_active=True).order_by('-created_at').all()
 
-    news_data = json.loads(news_json)
+    updates_json = []
+    for update in updates:
+        files = UpdateSoftFiles.objects.filter(update_soft=update.pk).all()
+        update_files = []
+        for file in files:
+            # update_files.append(file.file.path)
+            update_files.append(file.file)
 
-    for item in news_data:
-        created_at = item['fields']['created_at']
-        created_at_date = datetime.fromisoformat(created_at)  # Преобразуем строку в объект datetime
-        item['fields']['date'] = ut.get_data_string(created_at_date)
-
-    update_json = json.dumps(news_data)  # Преобразуем обратно в JSON
+        updates_json.append(
+            {
+                'date': ut.get_data_string(update.created_at),
+                'soft': update.soft.title,
+                'description': update.description,
+                'update_files': update_files
+            }
+        )
+        ut.log_error(updates_json, wt=False)
 
     client_data = utils.get_main_client_front_data(request)
     context = {
         **client_data,
-        'update_json': update_json
+        'update_json': updates_json
     }
     return render(request, 'index_7_1.html', context)
 
