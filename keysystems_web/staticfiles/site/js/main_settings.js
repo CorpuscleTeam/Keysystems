@@ -150,8 +150,8 @@ formSettingsPhone.appendChild(inputSettingsPhone)
 // formSettings.appendChild(btnSubmitSettings)
 
 let btnSubmitSettings = document.createElement('button')
-btnSubmitRequest.classList.add('enter_button')
-btnSubmitRequest.innerHTML = `Сохранить изменения`
+btnSubmitSettings.classList.add('enter_button')
+btnSubmitSettings.innerHTML = `Сохранить изменения`
 formSettings.appendChild(btnSubmitSettings)
 
 // создать модальное окно
