@@ -20,7 +20,7 @@
 for (let i=0; i<news.length; i++) {
     let news_preview = document.createElement('div')
     // news.innerHTML = `Предпросмотр новости`
-    news_preview.classList.add('page_body_news')
+    news_preview.classList.add('page_body_news_preview')
 
     // шапка новости (дата, заголовок, автор)
     let news_header = document.createElement('div')
@@ -54,6 +54,37 @@ for (let i=0; i<news.length; i++) {
     news_date_year.classList.add('news_date_MY')
     news_date_year.innerHTML = news[i]['fields']['year']
     news_date_MY_flex.appendChild(news_date_year)
+
+    // Заголовок
+    let news_title_flex = document.createElement('div')
+    news_title_flex.classList.add('news_title_flex')
+    news_header.appendChild(news_title_flex)
+
+    let news_header_title = document.createElement('h3')
+    news_header_title.classList.add('news_title')
+    news_header_title.innerHTML = news[i]['fields']['title']
+    news_title_flex.appendChild(news_header_title)
+
+    let news_header_author = document.createElement('p')
+    news_header_author.classList.add('news_author')
+    news_header_author.innerHTML = `Автор: ${news[i]['fields']['author']}`
+    news_title_flex.appendChild(news_header_author)
+
+    // Текст Превью
+    let news_text_preview = document.createElement('p')
+    news_text_preview.classList.add('news_text_preview')
+    news_text_preview.innerHTML = news[i]['fields']['text_preview']
+    news_preview.appendChild(news_text_preview)
+
+    // кнопка "Читать"
+    let btn_link_read = document.createElement('div')
+    btn_link_read.classList.add('news_link_read')
+    news_preview.appendChild(btn_link_read)
+
+    let news_link_read = document.createElement('a')
+    news_link_read.setAttribute('href', `index_4_2?news=${news[i].pk}`)
+    news_link_read.innerHTML = `Читать`
+    btn_link_read.appendChild(news_link_read)
 
     // Создать предпросмотр новости
     document.querySelector('.page_flex_body').append(news_preview)

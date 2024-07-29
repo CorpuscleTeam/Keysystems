@@ -208,7 +208,7 @@
 
                 <!-- Основная часть -->
                 <div class="page_flex_body">
-                    <h2 class="page_body_h2">Новости</h2>
+                    <!-- <h2 class="page_body_h2">Новости</h2> -->
 
                 </div>
             </div>
@@ -250,6 +250,19 @@
         let institution = "Наименование чреждение"
         let region = "Челябинская область"
 
+        // Переменная "Новости"
+        let news = JSON.parse('{{ news|escapejs }}')
+        // news = news[0]
+
+        // Картинка к новости
+        let news_path = "{{ news_raw.photo.url }}" 
+        // console.log(news_path)
+
+        // Кнопка "Предыдущая навость"
+        let news_previous = {{ previous_news }}
+        // Кнопка "Следующая новость"
+        let news_next = {{ next_news }}
+
     </script>
 
     <script type="text/javascript" src="{% static 'site/js/materialize.min.js' %}"></script>
@@ -257,8 +270,8 @@
     <script type="text/javascript" src="{% static 'site/js/main_create_request.js' %}"></script>
     <script type="text/javascript" src="{% static 'site/js/main_ord_notice_updait.js' %}"></script>
     <script type="text/javascript" src="{% static 'site/js/main_settings.js' %}"></script>
-    <script type="text/javascript" src="{% static 'site/js/main_tech_support.js' %}"></script>
-
+    <!-- <script type="text/javascript" src="{% static 'site/js/main_tech_support.js' %}"></script> -->
+    <script type="text/javascript" src="{% static 'site/js/news_4_2.js' %}"></script>
 
 
 </body>

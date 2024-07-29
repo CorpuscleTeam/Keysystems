@@ -164,7 +164,7 @@
                         </li>
                         <li>
                             <a href="#">
-                                <div class="page_menu_li_flex page_orders">
+                                <div class="page_menu_li_flex page_orders  page_menu_active">
                                     <div class="page_menu_li_left">
                                         <img src="{% static 'site/img/request.svg' %}" alt="">
                                         <p>Заявки</p>
@@ -175,7 +175,7 @@
                         </li>
                         <li>
                             <a href="index_4_1">
-                                <div class="page_menu_li_news page_menu_active">
+                                <div class="page_menu_li_news">
                                     <img src="{% static 'site/img/news.svg' %}" alt="">
                                     <p>Лента новостей</p>
                                 </div>
@@ -208,7 +208,7 @@
 
                 <!-- Основная часть -->
                 <div class="page_flex_body">
-                    <h2 class="page_body_h2">Новости</h2>
+                    <h2 class="page_body_h2">Заявки</h2>
 
                 </div>
             </div>
@@ -250,6 +250,15 @@
         let institution = "Наименование чреждение"
         let region = "Челябинская область"
 
+        // Переменные "заявки"
+        // Переменная "Новые заявки"
+        let new_orders = JSON.parse('{{ new_orders|escapejs }}')
+        // Переменная "Заявки в рабботе"
+        let active_orders = JSON.parse('{{ active_orders|escapejs }}')
+        // переменная "Выполненые заявки"
+        let done_orders = JSON.parse('{{ done_orders|escapejs }}') 
+
+
     </script>
 
     <script type="text/javascript" src="{% static 'site/js/materialize.min.js' %}"></script>
@@ -257,7 +266,8 @@
     <script type="text/javascript" src="{% static 'site/js/main_create_request.js' %}"></script>
     <script type="text/javascript" src="{% static 'site/js/main_ord_notice_updait.js' %}"></script>
     <script type="text/javascript" src="{% static 'site/js/main_settings.js' %}"></script>
-    <script type="text/javascript" src="{% static 'site/js/main_tech_support.js' %}"></script>
+    <!-- <script type="text/javascript" src="{% static 'site/js/main_tech_support.js' %}"></script> -->
+    <script type="text/javascript" src="{% static 'site/js/request_5_1.js' %}"></script>
 
 
 
