@@ -1,6 +1,18 @@
 document.addEventListener('DOMContentLoaded', function () {
     var elems = document.querySelectorAll('.modal');
     var instances = M.Modal.init(elems);
+
+    // Обработчик нажатия на кнопку подтверждения в модальном окне
+    document.getElementById('btnRequestConfirm').addEventListener('click', function () {
+        document.getElementById('request_form').submit();
+    });
+
+    // Обработчик для предотвращения отправки формы и открытия подтверждающего модального окна
+    document.querySelector('#modal_create_request form button').addEventListener('click', function (event) {
+        event.preventDefault();
+        var instance = M.Modal.getInstance(document.getElementById('modalRequestConfirm'));
+        instance.open();
+    });
 });
 
 //   Модальное окно "create_request"
@@ -57,6 +69,7 @@ modalContent.appendChild(requestH)
 // Форма
 let form = document.createElement('form')
 form.classList.add('mod_request_form')
+form.classList.add('enter_form')
 form.setAttribute('id', 'request_form')
 form.setAttribute('method', 'post')
 form.setAttribute('enctype', 'multipart/form-data')
@@ -79,7 +92,7 @@ selectTypeAppeal.setAttribute('id', 'type_appeal')
 typeAppeal.appendChild(selectTypeAppeal)
 
 // добавить цикл с вариантами выбора
-for (let i = 0; i < soft.length; i++) {
+for (let i = 0; i < topics.length; i++) {
     let optionTypeAppeal = document.createElement('option')
     optionTypeAppeal.setAttribute('value', topics[i].pk)
     optionTypeAppeal.innerHTML = topics[i].fields.topic
@@ -245,9 +258,10 @@ function updateFileList() {
 // let btnSubmitRequest = form_btn_submit(`Отправить запрос`)
 // form.appendChild(btnSubmitRequest)
 
-let btnSubmitRequest = document.createElement('a')
+let btnSubmitRequest = document.createElement('button')
 btnSubmitRequest.classList.add('modal-trigger')
-btnSubmitRequest.setAttribute('href', '#modalConfirmRequest')
+btnSubmitRequest.classList.add('submit_request')
+btnSubmitRequest.setAttribute('href', '#modalRequestConfirm')
 btnSubmitRequest.innerHTML = `Отправить запрос`
 form.appendChild(btnSubmitRequest)
 
@@ -265,5 +279,41 @@ let modRequestConfirm = document.createElement('div')
 modRequestConfirm.setAttribute('id', 'modalRequestConfirm')
 modRequestConfirm.classList.add('modal')
 
+// modal_content
+let modRequestConfirmContent = document.createElement('div')
+modRequestConfirmContent.classList.add('modal-content')
+modRequestConfirm.appendChild(modRequestConfirmContent)
+
+// кнопка закрыть
+let btnRequestConfirmClose = btnClose()
+modRequestConfirmContent.appendChild(btnRequestConfirmClose)
+
+// ззаголовок
+let requestConfirmH = modalTitle('Подтверждение')
+modRequestConfirmContent.appendChild(requestConfirmH)
+
+let requestConfirmP = document.createElement('p')
+requestConfirmP.innerHTML = `Вы действительно хотите отправить запрос на создание заявки?`
+modRequestConfirmContent.appendChild(requestConfirmP)
+
+// кнопки футер
+let footerRequestConfirm = document.createElement('div')
+footerRequestConfirm.classList.add('mod_support_flex')
+modRequestConfirmContent.appendChild(footerRequestConfirm)
+
+let btnRequestConfirCancel = document.createElement('a')
+btnRequestConfirCancel.classList.add('btn_support_cancel')
+btnRequestConfirCancel.innerHTML = `Отмена`
+footerRequestConfirm.appendChild(btnRequestConfirCancel)
+
+let btnRequestConfirSubmit = document.createElement('button')
+btnRequestConfirSubmit.setAttribute('id', 'btnRequestConfirm')
+btnRequestConfirSubmit.classList.add('btn_support_submit')
+btnRequestConfirSubmit.innerHTML = `Да`
+footerRequestConfirm.appendChild(btnRequestConfirSubmit)
+
+
 // Создать Модальное окно "Пдтвертить отправку формы"
-ModalCreateRequest
+document.body.append(modRequestConfirm)
+
+
