@@ -41,3 +41,21 @@ def log_error(message, wt: bool = True):
         return msg
     else:
         logging.warning(f'{now}\n{message}\n\n---------------------------------\n')
+
+
+# выводит в логи адекватную запись словаря
+def log_dict(data: dict):
+    data_str = ''
+    for k, v in data.items():
+        if isinstance(v, dict):
+            for k1, v1 in v.items():
+                data_str += f'    {k1}: {v1}\n'
+        elif isinstance(v, list):
+            list_str = ''
+            for i in v:
+                list_str += f'    {i}\n'
+            data_str += f'{k}:\n {list_str}\n'
+        else:
+            data_str += f'{k}: {v}\n'
+
+    log_error(data_str.strip(), wt=False)

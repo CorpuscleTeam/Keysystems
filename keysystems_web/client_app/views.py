@@ -12,7 +12,7 @@ from .forms import OrderForm
 from .models import News, FAQ
 from . import client_utils as utils
 from common.models import OrderTopic, Notice, Order
-from common import log_error, months_str_ru, get_data_string
+import common as ut
 from enums import RequestMethod, NewsEntryType, OrderStatus, notices_dict
 
 
@@ -32,9 +32,9 @@ def index_3_2(request: HttpRequest):
 # страничка с новостями
 def index_4_1(request: HttpRequest):
     if request.method == RequestMethod.POST:
-        log_error(request.POST, wt=False)
+        ut.log_error(request.POST, wt=False)
         order_form = OrderForm(request.POST, request.FILES)
-        log_error(f'>>>> {order_form.is_valid()}', wt=False)
+        ut.log_error(f'>>>> {order_form.is_valid()}', wt=False)
         if order_form.is_valid():
             utils.order_form_processing(request=request, form=order_form)
             return redirect('redirect')
@@ -48,9 +48,9 @@ def index_4_1(request: HttpRequest):
         created_at = item['fields']['created_at']
         created_at_date = datetime.fromisoformat(created_at)  # Преобразуем строку в объект datetime
         item['fields']['day'] = created_at_date.day
-        item['fields']['month'] = months_str_ru.get(created_at_date.month, '')
+        item['fields']['month'] = ut.months_str_ru.get(created_at_date.month, '')
         item['fields']['year'] = created_at_date.year
-        log_error(item, wt=False)
+        ut.log_error(item, wt=False)
 
     news_json = json.dumps(news_data)  # Преобразуем обратно в JSON
 
@@ -74,7 +74,7 @@ def index_4_2(request: HttpRequest):
     created_at = news_data[0]['fields']['created_at']
     created_at_date = datetime.fromisoformat(created_at)  # Преобразуем строку в объект datetime
     news_data[0]['fields']['day'] = created_at_date.day
-    news_data[0]['fields']['month'] = months_str_ru.get(created_at_date.month, '')
+    news_data[0]['fields']['month'] = ut.months_str_ru.get(created_at_date.month, '')
     news_data[0]['fields']['year'] = created_at_date.year
 
     news_json = json.dumps(news_data[0])
@@ -103,24 +103,18 @@ def index_4_2(request: HttpRequest):
     return render(request, 'index_4_2.html', context)
 
 
-
-def index_8(request: HttpRequest):
-    faq = FAQ.objects.filter(is_active=True).order_by('-created_at').all()
-
-    client_data = utils.get_main_client_front_data(request)
-    context = {
-        **client_data,
-        'faq': serialize(format='json', queryset=faq)
-    }
-    return render(request, 'index_8.html', context)
-
-
 def index_5_1(request: HttpRequest):
     # orders = Order.objects.filter(customer=request.user.customer).order_by('-created_at')
-    orders = Order.objects.filter().order_by('-created_at')
+    # orders = Order.objects.filter().select_related('soft').order_by('-created_at')
+    orders = Order.objects.select_related('soft').order_by('-created_at')
+
     new_orders = orders.filter(status=OrderStatus.NEW).all()
     active_orders = orders.filter(status=OrderStatus.ACTIVE).all()
     done_orders = orders.filter(status=OrderStatus.DONE).all()
+
+    ut.log_error(orders[0].soft.title, wt=False)
+    # tst = ut.OrderSerializer(orders)
+    # ut.log_dict(tst.data)
 
     client_data = utils.get_main_client_front_data(request)
     context = {
@@ -143,7 +137,7 @@ def index_6(request: HttpRequest):
             notice_list.append(
                 {
                     'num_push': notice.id,
-                    'date': get_data_string(notice.created_at),
+                    'date': ut.get_data_string(notice.created_at),
                     'text': text.format(pk=notice.id)
                 }
             )
@@ -157,9 +151,22 @@ def index_6(request: HttpRequest):
 
 
 def index_7_1(request: HttpRequest):
+    news = News.objects.filter(is_active=True, type_entry=NewsEntryType.UPDATE).order_by('-created_at').all()
+    news_json = serialize(format='json', queryset=news)
+
+    news_data = json.loads(news_json)
+
+    for item in news_data:
+        created_at = item['fields']['created_at']
+        created_at_date = datetime.fromisoformat(created_at)  # Преобразуем строку в объект datetime
+        item['fields']['date'] = ut.get_data_string(created_at_date)
+
+    update_json = json.dumps(news_data)  # Преобразуем обратно в JSON
+
     client_data = utils.get_main_client_front_data(request)
     context = {
         **client_data,
+        'update_json': update_json
     }
     return render(request, 'index_7_1.html', context)
 
@@ -170,3 +177,14 @@ def index_7_2(request: HttpRequest):
         **client_data,
     }
     return render(request, 'index_7_2.html', context)
+
+
+def index_8(request: HttpRequest):
+    faq = FAQ.objects.filter(is_active=True).order_by('-created_at').all()
+
+    client_data = utils.get_main_client_front_data(request)
+    context = {
+        **client_data,
+        'faq': serialize(format='json', queryset=faq)
+    }
+    return render(request, 'index_8.html', context)

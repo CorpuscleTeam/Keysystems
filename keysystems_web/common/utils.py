@@ -4,7 +4,6 @@ from datetime import datetime, timedelta
 from .data import months_str_ru
 
 
-
 def pass_gen(len_: int = 8) -> str:
     return ''.join([choice('abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789') for _ in range(len_)])
 
@@ -23,7 +22,6 @@ def get_data_string(dt: datetime) -> str:
         data_str = f'{dt.day} {months_str_ru.get(dt.month)} {dt.year}'
 
     return f'{data_str} / {dt.hour}:{dt.minute}'
-
 
 
 # Получить ip
