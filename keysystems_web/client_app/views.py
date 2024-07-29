@@ -170,7 +170,7 @@ def index_7_1(request: HttpRequest):
                 'update_files': update_files
             }
         )
-        ut.log_error(updates_json, wt=False)
+        # ut.log_error(updates_json, wt=False)
 
     client_data = utils.get_main_client_front_data(request)
     context = {

@@ -2,6 +2,7 @@ from random import choice
 from datetime import datetime, timedelta
 
 from .data import months_str_ru
+from .logs import log_error
 
 
 def pass_gen(len_: int = 8) -> str:
@@ -12,11 +13,11 @@ def pass_gen(len_: int = 8) -> str:
 # 18 февраля 2024 / 6:32
 # возвращает текстовые дата и время
 def get_data_string(dt: datetime) -> str:
-    today = datetime.now()
-    yesterday = today - timedelta(days=1)
-    if dt.date() == today:
+    now = datetime.now()
+    yesterday = now - timedelta(days=1)
+    if dt.date() == now.date():
         data_str = 'СЕГОДНЯ'
-    elif dt.date() == yesterday:
+    elif dt.date() == yesterday.date():
         data_str = 'ВЧЕРА'
     else:
         data_str = f'{dt.day} {months_str_ru.get(dt.month)} {dt.year}'
