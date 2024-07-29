@@ -104,7 +104,7 @@ def index_4_2(request: HttpRequest):
 
 
 def index_8(request: HttpRequest):
-    faq = FAQ.objects.filter(is_astive=True).order_by('-created_at').all()
+    faq = FAQ.objects.filter(is_active=True).order_by('-created_at').all()
 
     client_data = utils.get_main_client_front_data(request)
     context = {
