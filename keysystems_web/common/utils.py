@@ -28,6 +28,14 @@ def get_data_string(dt: datetime) -> str:
     return f'{data_str} / {hour_str}:{minute_str}'
 
 
+# Создаёт строку с размером файла
+def get_size_file_str(size: int) -> str:
+    for unit in ['байт', 'КБ', 'МБ', 'ГБ']:
+        if size < 1024:
+            return f"{size:.2f} {unit}"
+        size /= 1024
+
+
 # Получить ip
 def get_client_ip(request):
     x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')
