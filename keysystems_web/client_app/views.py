@@ -159,7 +159,7 @@ def index_7_1(request: HttpRequest):
         files = UpdateSoftFiles.objects.filter(update_soft=update.pk).all()
         update_files = []
         for file in files:
-            update_files.append({'url': file.file.url, 'name': file.file.name})
+            update_files.append({'url': f'..{file.file.url}', 'name': file.file.name})
             # update_files.append(file.file.value)
 
         updates_json.append(
