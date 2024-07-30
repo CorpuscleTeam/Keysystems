@@ -631,13 +631,34 @@ textarea {
 .news_link_read {
     border: 2px solid var(--color_dark);
     text-decoration: none;
-    /* color: var(--color_dark); */
+    color: var(--color_dark);
     cursor: pointer;
     padding: 12px 24px;
     width: 90px;
 }
 .news_link_read a {
     color: var(--color_dark);
+}
+.news_link_read:hover {
+    border: 2px solid var(--color_green);
+    color: var(--color_green);
+}
+.news_link_read a:hover {
+    color: var(--color_green);
+}
+
+/* исправить кнопки на 4_1 на свойства ниже */
+.read_link {
+    border: 2px solid var(--color_dark);
+    color: var(--color_dark);
+    padding: 12px 24px;
+    cursor: pointer;
+    /* box-sizing: border-box; */
+    /* margin-top: 20px; */
+}
+.read_link:hover {
+    border: 2px solid var(--color_green);
+    color: var(--color_green);
 }
 
 /* Страница 4_2 */
@@ -785,4 +806,35 @@ textarea {
     font-size: 16px;
     line-height: 21px;
     border: 1px solid rgba(231, 231, 231, 1);
+}
+
+
+/* update index_7_1 */
+.update_soft_flex {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+.updateItem {
+    background-color: rgba(238, 238, 238, 1);
+    padding: 20px 20px 32px;
+}
+.updateHeader_flex {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+}
+.update_title {
+    font-size: 20px;
+    line-height: 22px;
+}
+.update_date {
+    font-size: 10px;
+    color: rgba(153, 153, 153, 1);
+}
+.update_text {
+    font-size: 16px;
+    line-height: 21px;
+    margin-bottom: 32px;
 }
