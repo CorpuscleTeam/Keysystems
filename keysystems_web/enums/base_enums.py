@@ -43,9 +43,9 @@ class Notice(str, Enum):
 
 
 notices_dict = {
-    Notice.ORDER_ACTIVE.value: 'Ваша задача #{pk} переведена в статус «В РАБОТЕ».',
-    Notice.ORDER_DONE.value: 'Ваша задача #{pk} переведена в статус «ВЫПОЛНЕНО». Оцените качество выполненной работы.',
-    Notice.NEW_MSG.value: 'В заявке #{pk} куратор оставил новое сообщение.',
+    Notice.ORDER_ACTIVE.value: 'Ваша задача #{pk:05d} переведена в статус «В РАБОТЕ».',
+    Notice.ORDER_DONE.value: 'Ваша задача #{pk:05d} переведена в статус «ВЫПОЛНЕНО». Оцените качество выполненной работы.',
+    Notice.NEW_MSG.value: 'В заявке #{pk:05d} куратор оставил новое сообщение.',
 }
 
 notices_tuple = ((k, v) for k, v in notices_dict.items())
