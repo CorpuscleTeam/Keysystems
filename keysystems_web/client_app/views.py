@@ -51,7 +51,7 @@ def index_4_1(request: HttpRequest):
         item['fields']['day'] = created_at_date.day
         item['fields']['month'] = ut.months_str_ru.get(created_at_date.month, '')
         item['fields']['year'] = created_at_date.year
-        ut.log_error(item, wt=False)
+        # ut.log_error(item, wt=False)
 
     news_json = json.dumps(news_data)  # Преобразуем обратно в JSON
 
@@ -192,7 +192,12 @@ def index_7_2(request: HttpRequest):
     update_files = []
     for file in files:
         file_name = file.file.name.split('/')[-1]
-        update_files.append({'url': f'..{file.file.url}', 'name': file_name})
+        update_files.append({
+            'url': f'..{file.file.url}',
+            'name': file_name,
+            'size': ut.get_size_file_str(file.file_size),
+            'icon': f'..\static\site\img\files\{file_name[-3:]}.svg'
+        })
 
     update_json = {
         'date': ut.get_data_string(update.created_at),
@@ -201,6 +206,7 @@ def index_7_2(request: HttpRequest):
         'update_files': update_files
         }
 
+    ut.log_dict(update_json)
     client_data = utils.get_main_client_front_data(request)
     context = {
         **client_data,

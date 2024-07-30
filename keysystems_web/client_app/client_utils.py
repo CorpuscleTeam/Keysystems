@@ -29,7 +29,7 @@ def get_main_client_front_data(request: HttpRequest) -> dict:
         # update_soft = UpdateSoft.objects.select_related('view_update').all()
         unviewed_updates_count = UpdateSoft.objects.filter(~Q(view_update__user_ks_id=request.user)).distinct().count()
 
-        log_error(unviewed_updates_count, wt=False)
+        # log_error(unviewed_updates_count, wt=False)
 
         return {
             'topics': topics_json,
@@ -76,6 +76,7 @@ def order_form_processing(request: HttpRequest, form: OrderForm):
     for uploaded_file in files:
         file_path = os.path.join(folder_path, uploaded_file.name)
         filename = fs.save(file_path, uploaded_file)
+        file_size = uploaded_file.size
         file_url = fs.url(filename)
 
         DownloadedFile.objects.create(
