@@ -82,14 +82,12 @@ def index_4_2(request: HttpRequest):
 
     # Получение предыдущей записи того же типа
     previous_news = News.objects.filter(
-        created_at__lt=main_news.created_at,
-        type_entry=NewsEntryType.NEWS
+        created_at__lt=main_news.created_at
     ).order_by('-created_at').first()
 
     # Получение следующей записи того же типа
     next_news = News.objects.filter(
-        created_at__gt=main_news.created_at,
-        type_entry=NewsEntryType.NEWS
+        created_at__gt=main_news.created_at
     ).order_by('created_at').first()
 
     client_data = utils.get_main_client_front_data(request)
@@ -114,12 +112,12 @@ def index_5_1(request: HttpRequest):
     client_data = utils.get_main_client_front_data(request)
     context = {
         **client_data,
-        'new_orders': serialize(format='json', queryset=new_orders),
-        'active_orders': serialize(format='json', queryset=active_orders),
-        'done_orders': serialize(format='json', queryset=done_orders),
-        # 'new_orders': json.dumps(OrderSerializer(new_orders, many=True)),
-        # 'active_orders': json.dumps(OrderSerializer(active_orders, many=True)),
-        # 'done_orders': json.dumps(OrderSerializer(done_orders, many=True)),
+        # 'new_orders': serialize(format='json', queryset=new_orders),
+        # 'active_orders': serialize(format='json', queryset=active_orders),
+        # 'done_orders': serialize(format='json', queryset=done_orders),
+        'new_orders': json.dumps(OrderSerializer(new_orders, many=True)),
+        'active_orders': json.dumps(OrderSerializer(active_orders, many=True)),
+        'done_orders': json.dumps(OrderSerializer(done_orders, many=True)),
     }
     return render(request, 'index_5_1.html', context)
 
@@ -201,7 +199,7 @@ def index_7_2(request: HttpRequest):
     client_data = utils.get_main_client_front_data(request)
     context = {
         **client_data,
-        'update_json': update_json
+        'update_json': json.dumps(update_json)
     }
     return render(request, 'index_7_2.html', context)
 
