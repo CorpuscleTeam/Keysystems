@@ -76,6 +76,12 @@ form.setAttribute('enctype', 'multipart/form-data')
 form.innerHTML = tokenForForm
 modalContent.appendChild(form)
 
+let inputHidden = document.createElement('input')
+inputHidden.setAttribute('type', 'hidden')
+inputHidden.setAttribute('value', 'order')
+inputHidden.setAttribute('name', 'type_form')
+form.appendChild(inputHidden)
+
 // Тип обращения
 let typeAppeal = document.createElement('p')
 form.appendChild(typeAppeal)

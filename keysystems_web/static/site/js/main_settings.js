@@ -37,6 +37,12 @@ formSettings.setAttribute('method', 'post')
 formSettings.innerHTML = tokenForForm
 settingContent.appendChild(formSettings)
 
+let inputHiddenSetting = document.createElement('input')
+inputHiddenSetting.setAttribute('type', 'hidden')
+inputHiddenSetting.setAttribute('value', 'setting')
+inputHiddenSetting.setAttribute('name', 'type_form')
+formSettings.appendChild(inputHiddenSetting)
+
 // ИНН - не активная
 let formSettingsINN = document.createElement('p')
 formSettings.appendChild(formSettingsINN)
