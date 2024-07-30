@@ -39,7 +39,7 @@ def index_4_1(request: HttpRequest):
             utils.order_form_processing(request=request, form=order_form)
             return redirect('redirect')
 
-    news = News.objects.filter(is_active=True, type_entry=NewsEntryType.NEWS).order_by('-created_at').all()
+    news = News.objects.filter(is_active=True).order_by('-created_at').all()
     news_json = serialize(format='json', queryset=news)
 
     news_data = json.loads(news_json)
@@ -164,6 +164,7 @@ def index_7_1(request: HttpRequest):
 
         updates_json.append(
             {
+                'pk': update.pk,
                 'date': ut.get_data_string(update.created_at),
                 'soft': update.soft.title,
                 'description': update.description,
@@ -199,7 +200,7 @@ def index_7_2(request: HttpRequest):
     client_data = utils.get_main_client_front_data(request)
     context = {
         **client_data,
-        'update_json': update_json
+        'update_json': json.dumps(update_json)
     }
     return render(request, 'index_7_2.html', context)
 

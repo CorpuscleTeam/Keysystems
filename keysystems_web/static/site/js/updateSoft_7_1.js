@@ -22,6 +22,7 @@ for (let i = 0; i < updateSoft.length; i++) {
     let updatePOitem = document.createElement('dev')
     updatePOitem.classList.add('updateItem')
 
+    // Шапка обновления
     let updateHeader = document.createElement('div')
     updateHeader.classList.add('updateHeader_flex')
     updatePOitem.appendChild(updateHeader)
@@ -35,6 +36,29 @@ for (let i = 0; i < updateSoft.length; i++) {
     header_right.classList.add('update_date')
     header_right.innerHTML = updateSoft[i]['date']
     updateHeader.appendChild(header_right)
+
+    // Превью контент
+    let updateText = document.createElement('p')
+    updateText.classList.add('update_text')
+    updateText.innerHTML = updateSoft[i]['description']
+    updatePOitem.appendChild(updateText)
+
+    // кнопка "читать"
+
+    // let btnLinkRead = document.createElement('div')
+    // btnLinkRead.classList.add('news_link_read')
+    // updatePOitem.appendChild(btnLinkRead)
+
+    // let updateLinkRead = document.createElement('a')
+    // updateLinkRead.setAttribute('href', `index_7_2?update=${updateSoft[i].pk}`)
+    // updateLinkRead.innerHTML = `Читать`
+    // btnLinkRead.appendChild(updateLinkRead)
+
+    let btnLinkRead = document.createElement('a')
+    btnLinkRead.classList.add('read_link')
+    btnLinkRead.setAttribute('href', `index_7_2?update=${updateSoft[i].pk}`)
+    btnLinkRead.innerHTML = `Читать`
+    updatePOitem.appendChild(btnLinkRead)
 
     updatePO.appendChild(updatePOitem)
 }
