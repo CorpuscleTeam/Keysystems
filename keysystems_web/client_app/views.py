@@ -181,9 +181,25 @@ def index_7_1(request: HttpRequest):
 
 
 def index_7_2(request: HttpRequest):
+    update_id = request.GET.get('update', 1)
+    update = UpdateSoft.objects.select_related('soft').filter(id=int(update_id)).order_by('-created_at').first()
+
+    files = UpdateSoftFiles.objects.filter(update_soft=update.pk).all()
+    update_files = []
+    for file in files:
+        update_files.append({'url': f'..{file.file.url}', 'name': file.file.name})
+
+    update_json = {
+        'date': ut.get_data_string(update.created_at),
+        'soft': update.soft.title,
+        'description': update.description,
+        'update_files': update_files
+        }
+
     client_data = utils.get_main_client_front_data(request)
     context = {
         **client_data,
+        'update_json': update_json
     }
     return render(request, 'index_7_2.html', context)
 
