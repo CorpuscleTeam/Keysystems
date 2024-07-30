@@ -48,9 +48,11 @@ def log_dict(data: dict):
     data_str = ''
     for k, v in data.items():
         if isinstance(v, dict):
+            data_str += f'{k}:\n'
             for k1, v1 in v.items():
                 data_str += f'    {k1}: {v1}\n'
         elif isinstance(v, list):
+            data_str += f'{k}:\n'
             list_str = ''
             for i in v:
                 list_str += f'    {i}\n'

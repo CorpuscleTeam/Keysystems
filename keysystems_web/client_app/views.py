@@ -12,6 +12,7 @@ from .forms import OrderForm
 from .models import News, FAQ, UpdateSoft, UpdateSoftFiles
 from . import client_utils as utils
 from common.models import OrderTopic, Notice, Order, Soft
+from common.serializers import OrderSerializer
 import common as ut
 from enums import RequestMethod, NewsEntryType, OrderStatus, notices_dict
 
@@ -81,14 +82,12 @@ def index_4_2(request: HttpRequest):
 
     # Получение предыдущей записи того же типа
     previous_news = News.objects.filter(
-        created_at__lt=main_news.created_at,
-        type_entry=NewsEntryType.NEWS
+        created_at__lt=main_news.created_at
     ).order_by('-created_at').first()
 
     # Получение следующей записи того же типа
     next_news = News.objects.filter(
-        created_at__gt=main_news.created_at,
-        type_entry=NewsEntryType.NEWS
+        created_at__gt=main_news.created_at
     ).order_by('created_at').first()
 
     client_data = utils.get_main_client_front_data(request)
@@ -104,24 +103,21 @@ def index_4_2(request: HttpRequest):
 
 
 def index_5_1(request: HttpRequest):
-    # orders = Order.objects.filter(customer=request.user.customer).order_by('-created_at')
-    # orders = Order.objects.filter().select_related('soft').order_by('-created_at')
-    orders = Order.objects.select_related('soft').order_by('-created_at')
+    orders = Order.objects.select_related('soft', 'topic', 'from_user', 'executor', 'customer').order_by('-created_at')
 
     new_orders = orders.filter(status=OrderStatus.NEW).all()
     active_orders = orders.filter(status=OrderStatus.ACTIVE).all()
     done_orders = orders.filter(status=OrderStatus.DONE).all()
 
-    ut.log_error(orders[0].soft.title, wt=False)
-    # tst = ut.OrderSerializer(orders)
-    # ut.log_dict(tst.data)
-
     client_data = utils.get_main_client_front_data(request)
     context = {
         **client_data,
-        'new_orders': serialize(format='json', queryset=new_orders),
-        'active_orders': serialize(format='json', queryset=active_orders),
-        'done_orders': serialize(format='json', queryset=done_orders),
+        # 'new_orders': serialize(format='json', queryset=new_orders),
+        # 'active_orders': serialize(format='json', queryset=active_orders),
+        # 'done_orders': serialize(format='json', queryset=done_orders),
+        'new_orders': json.dumps(OrderSerializer(new_orders, many=True)),
+        'active_orders': json.dumps(OrderSerializer(active_orders, many=True)),
+        'done_orders': json.dumps(OrderSerializer(done_orders, many=True)),
     }
     return render(request, 'index_5_1.html', context)
 
@@ -136,6 +132,7 @@ def index_6(request: HttpRequest):
         if text:
             notice_list.append(
                 {
+                    'order_id': notice.order.id,
                     'num_push': notice.id,
                     'date': ut.get_data_string(notice.created_at),
                     'text': text.format(pk=notice.id)
@@ -153,6 +150,8 @@ def index_6(request: HttpRequest):
 def index_7_1(request: HttpRequest):
     # updates = UpdateSoft.objects.select_related('soft').prefetch_related('files').filter(is_active=True).order_by('-created_at').all()
     updates = UpdateSoft.objects.select_related('soft').filter(is_active=True).order_by('-created_at').all()
+
+    # tst =OrderSerializer(updates)
 
     updates_json = []
     for update in updates:

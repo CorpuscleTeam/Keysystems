@@ -1,5 +1,5 @@
 from django.db import models
-from datetime import datetime
+from ckeditor.fields import RichTextField
 
 from common.models import UserKS, Soft
 from enums import ENTRY_TYPES, OrderStatus
@@ -10,12 +10,10 @@ class News(models.Model):
     id = models.AutoField(primary_key=True)
     created_at = models.DateTimeField('Создана', auto_now_add=True)
     updated_at = models.DateTimeField('Обновлена', auto_now=True)
-    # type_entry = models.CharField('Тип', max_length=50, choices=ENTRY_TYPES)
     author = models.CharField('автор', max_length=255, null=True, blank=True)
     title = models.CharField('Название', max_length=255)
     text_preview = models.TextField('Текст привью', null=True, blank=True)
-    text = models.TextField('Текст')
-    # photo = models.CharField('Фото', max_length=255, null=True, blank=True)
+    text = RichTextField('Текст')
     photo = models.ImageField ('Фото', upload_to="news", null=True, blank=True)
 
     is_active = models.BooleanField(default=True)
@@ -56,7 +54,7 @@ class UpdateSoft(models.Model):
     created_at = models.DateTimeField('Создана', auto_now_add=True)
     updated_at = models.DateTimeField('Обновлена', auto_now=True)
     soft = models.ForeignKey(Soft, on_delete=models.DO_NOTHING, related_name='update_soft', verbose_name='Обновления ПО')
-    description = models.TextField('Описание')
+    description = RichTextField('Описание')
     is_active = models.BooleanField(default=True)
 
     objects: models.Manager = models.Manager()
@@ -113,7 +111,7 @@ class FAQ(models.Model):
     created_at = models.DateTimeField('Создана', auto_now_add=True)
     updated_at = models.DateTimeField('Обновлена', auto_now=True)
     question = models.TextField('Вопрос')
-    answer = models.TextField('Ответ')
+    answer = RichTextField('Ответ')
     is_active = models.BooleanField('Активно', default=True)
 
     objects: models.Manager = models.Manager()
