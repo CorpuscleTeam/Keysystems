@@ -75,8 +75,14 @@ class UpdateSoftFiles(models.Model):
     updated_at = models.DateTimeField('Обновлена', auto_now=True)
     update_soft = models.ForeignKey(UpdateSoft, on_delete=models.DO_NOTHING, related_name='files', verbose_name='Обновления ПО')
     file = models.FileField('Путь', upload_to='updates')
+    file_size = models.PositiveIntegerField('Размер файла (в байтах)', null=True, blank=True)
 
     objects: models.Manager = models.Manager()
+
+    def save(self, *args, **kwargs):
+        if self.file and not self.file_size:
+            self.file_size = self.file.size
+        super().save(*args, **kwargs)
 
     def __str__(self):
         return f"{self.id}"

@@ -35,7 +35,7 @@ def index_4_1(request: HttpRequest):
     if request.method == RequestMethod.POST:
         ut.log_error(request.POST, wt=False)
         order_form = OrderForm(request.POST, request.FILES)
-        ut.log_error(f'>>>> {order_form.is_valid()}', wt=False)
+        ut.log_error(f'>>>> {order_form.data}', wt=False)
         if order_form.is_valid():
             utils.order_form_processing(request=request, form=order_form)
             return redirect('redirect')
@@ -51,7 +51,7 @@ def index_4_1(request: HttpRequest):
         item['fields']['day'] = created_at_date.day
         item['fields']['month'] = ut.months_str_ru.get(created_at_date.month, '')
         item['fields']['year'] = created_at_date.year
-        ut.log_error(item, wt=False)
+        # ut.log_error(item, wt=False)
 
     news_json = json.dumps(news_data)  # Преобразуем обратно в JSON
 
@@ -109,15 +109,19 @@ def index_5_1(request: HttpRequest):
     active_orders = orders.filter(status=OrderStatus.ACTIVE).all()
     done_orders = orders.filter(status=OrderStatus.DONE).all()
 
+    new_orders_ser = OrderSerializer(new_orders, many=True)
+    active_orders_ser = OrderSerializer(active_orders, many=True)
+    done_orders_ser = OrderSerializer(done_orders, many=True)
+
     client_data = utils.get_main_client_front_data(request)
     context = {
         **client_data,
         # 'new_orders': serialize(format='json', queryset=new_orders),
         # 'active_orders': serialize(format='json', queryset=active_orders),
         # 'done_orders': serialize(format='json', queryset=done_orders),
-        'new_orders': json.dumps(OrderSerializer(new_orders, many=True)),
-        'active_orders': json.dumps(OrderSerializer(active_orders, many=True)),
-        'done_orders': json.dumps(OrderSerializer(done_orders, many=True)),
+        'new_orders': json.dumps(new_orders_ser.data),
+        'active_orders': json.dumps(active_orders_ser.data),
+        'done_orders': json.dumps(done_orders_ser.data),
     }
     return render(request, 'index_5_1.html', context)
 
@@ -187,7 +191,13 @@ def index_7_2(request: HttpRequest):
     files = UpdateSoftFiles.objects.filter(update_soft=update.pk).all()
     update_files = []
     for file in files:
-        update_files.append({'url': f'..{file.file.url}', 'name': file.file.name})
+        file_name = file.file.name.split('/')[-1]
+        update_files.append({
+            'url': f'..{file.file.url}',
+            'name': file_name,
+            'size': ut.get_size_file_str(file.file_size),
+            'icon': f'..\static\site\img\files\{file_name[-3:]}.svg'
+        })
 
     update_json = {
         'date': ut.get_data_string(update.created_at),
@@ -196,6 +206,7 @@ def index_7_2(request: HttpRequest):
         'update_files': update_files
         }
 
+    ut.log_dict(update_json)
     client_data = utils.get_main_client_front_data(request)
     context = {
         **client_data,
