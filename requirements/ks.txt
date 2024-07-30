@@ -4,4 +4,3 @@ channels-redis
 psycopg2
 pillow
 djangorestframework
-django-ckeditor

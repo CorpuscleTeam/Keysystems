@@ -1,5 +1,5 @@
 from django.contrib import admin
-from django.urls import path, include
+from django.urls import path
 from django.conf.urls.static import static
 
 from . import settings
@@ -23,9 +23,7 @@ urlpatterns = [
     path('index_6', client.index_6, name='index_6'),
     path('index_7_1', client.index_7_1, name='index_7_1'),
     path('index_7_2', client.index_7_2, name='index_7_2'),
-
     path('admin/', admin.site.urls),
-    path('ckeditor/', include('ckeditor_uploader.urls')),
 ]
 
 if settings.DEBUG:

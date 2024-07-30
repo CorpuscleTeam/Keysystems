@@ -21,8 +21,6 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
-    'ckeditor',
-    'ckeditor_uploader',
     # 'channels',
     'common',
     'client_app',
@@ -131,5 +129,3 @@ if not os.path.exists(FILE_STORAGE):
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 AUTH_USER_MODEL = 'common.UserKS'
-
-CKEDITOR_UPLOAD_PATH = "ck_storage/"
