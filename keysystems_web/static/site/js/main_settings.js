@@ -118,6 +118,7 @@ let inputSettingsEmail = document.createElement('input')
 inputSettingsEmail.setAttribute('name', 'settings_email')
 inputSettingsEmail.setAttribute('id', 'settings_email')
 inputSettingsEmail.setAttribute('type', 'email')
+inputSettingsEmail.setAttribute('value', email)
 formSettingsEmail.appendChild(inputSettingsEmail)
 
 //  ответственный - обязательно для заполнения

@@ -24,7 +24,7 @@ def get_main_client_front_data(request: HttpRequest) -> dict:
 
     log_error('hhhhhhhhhhhhhhhhhhhh', wt=False)
 
-    if request.user:
+    if request.user.is_authenticated:
         user_orders_count = Order.objects.filter(from_user=request.user).exclude(status=OrderStatus.DONE).count()
         notice_count = Notice.objects.filter(viewed=False, user_ks=request.user).count()
 
@@ -49,13 +49,14 @@ def get_main_client_front_data(request: HttpRequest) -> dict:
         return {
             'topics': topics_json,
             'soft': soft_json,
-            'inn': "1234567890",
-            'institution': "OOO Oooo",
+            'inn': "8",
+            'institution': "89sdfghghghg",
             'region': 'ChO',
             'orders_count': 2,
             'notice': 3,
             'update_count': 12,
-            'used_soft': 2
+            'used_soft': 2,
+            'email': 'ex@mail.com'
         }
 
 
