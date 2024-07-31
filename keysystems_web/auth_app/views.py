@@ -42,17 +42,18 @@ def index_2(request: HttpRequest):
         form = AuthBaseForm(request.POST)
         if form.is_valid():
             input_inn = form.cleaned_data["inn"]
-            users_inn = UserKS.objects.filter(customer=input_inn).all()
+            costumer = Customer.objects.get(inn=input_inn)
+            users_inn = UserKS.objects.filter(customer=costumer).all()
+            log_error(f'>>len(users_inn): {len(users_inn)}', wt=False)
 
             if len(users_inn) == 0:
-                customer = Customer.objects.filter(inn=input_inn)
-                if customer:
+                if costumer:
                     return redirect(reverse('index_3_1') + f'?inn={input_inn}')
                 else:
                     error_msg = 'ИНН не зарегистрирован'
 
             elif len(users_inn) == 1:
-                return redirect(reverse('index_3_1') + f'?inn={input_inn}')
+                return redirect(reverse('index_2_2') + f'?inn={input_inn}')
 
             elif len(users_inn) > 1:
                 return redirect(reverse('index_2_1') + f'?inn={input_inn}')
@@ -75,10 +76,10 @@ def index_2_1(request: HttpRequest):
     if request.method == RequestMethod.POST:
         auth_form = AuthUserForm(request.POST)
         if auth_form.is_valid():
-            customer = Customer.objects.filter(inn=auth_form.cleaned_data.get('inn'))
+            customer = Customer.objects.get(inn=auth_form.cleaned_data['inn'])
             user = UserKS.objects.filter(
-                inn=customer,
-                username=auth_form.data.get('eded@cfdd')
+                customer=customer,
+                username=auth_form.cleaned_data['email']
             ).first()
             if user:
                 login(request, user)
@@ -92,6 +93,35 @@ def index_2_1(request: HttpRequest):
     inn = request.GET.get('inn', '')
     context = {'inn': inn, 'error_msg': error_msg}
     return render(request, 'index_2_1.html', context)
+
+
+# принимает пароль и регистрирует пользователя
+# kP4f2PwD
+def index_2_2(request: HttpRequest):
+    if request.user.is_authenticated:
+        return redirect('redirect')
+
+    error_msg = None
+    if request.method == RequestMethod.POST:
+        pass_form = PasswordForm(request.POST)
+        log_error(f'>>>>>> {pass_form.is_valid()}', wt=False)
+        if pass_form.is_valid():
+            user_id = request.POST.get('user_id')
+            # user = CustomUser.objects.filter(id=user_id).first()
+            user = UserKS.objects.get(id=user_id)
+            if check_password(pass_form.cleaned_data['password'], user.password):
+                login(request, user)
+                return redirect('redirect')
+
+            else:
+                error_msg = 'Неверный пароль'
+
+    user_id = request.GET.get('user')
+    context = {
+        'error_msg': error_msg,
+        'user_id': user_id
+    }
+    return render(request, 'index_2_2.html', context)
 
 
 # регистрация заполните форму
@@ -127,32 +157,3 @@ def index_3_1(request: HttpRequest):
         'inn': request.GET.get('inn', '')
     }
     return render(request, 'index_3_1.html', context)
-
-
-# принимает пароль и регистрирует пользователя
-# kP4f2PwD
-def index_2_2(request: HttpRequest):
-    if request.user.is_authenticated:
-        return redirect('redirect')
-
-    error_msg = None
-    if request.method == RequestMethod.POST:
-        pass_form = PasswordForm(request.POST)
-        log_error(f'>>>>>> {pass_form.is_valid()}', wt=False)
-        if pass_form.is_valid():
-            user_id = request.POST.get('user_id')
-            # user = CustomUser.objects.filter(id=user_id).first()
-            user = UserKS.objects.get(id=user_id)
-            if check_password(pass_form.cleaned_data['password'], user.password):
-                login(request, user)
-                return redirect('redirect')
-
-            else:
-                error_msg = 'Неверный пароль'
-
-    user_id = request.GET.get('user')
-    context = {
-        'error_msg': error_msg,
-        'user_id': user_id
-    }
-    return render(request, 'index_2_2.html', context)
