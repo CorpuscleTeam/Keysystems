@@ -192,9 +192,7 @@ def index_7_2(request: HttpRequest):
     update_files = []
     for file in files:
         file_name = file.file.name.split('/')[-1]
-        _, extension = os.path.splitext(file_name)
-        extension = extension[1:] if extension else extension
-        file_type = extension if extension in ut.upload_file_type else 'file'
+        file_type = file_name[-3:] if file_name[-3:] in ut.upload_file_type else 'file'
         update_files.append({
             'url': f'..{file.file.url}',
             'name': file_name,
