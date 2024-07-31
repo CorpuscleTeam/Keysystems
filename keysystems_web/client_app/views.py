@@ -33,12 +33,7 @@ def index_3_2(request: HttpRequest):
 # страничка с новостями
 def index_4_1(request: HttpRequest):
     if request.method == RequestMethod.POST:
-        # ut.log_error(request.POST, wt=False)
-        order_form = OrderForm(request.POST, request.FILES)
-        ut.log_error(f'>>>> {order_form.data}', wt=False)
-        if order_form.is_valid():
-            utils.order_form_processing(request=request, form=order_form)
-            return redirect('redirect')
+       utils.form_processing(request)
 
     news = News.objects.filter(is_active=True).order_by('-created_at').all()
     news_json = serialize(format='json', queryset=news)
@@ -197,7 +192,7 @@ def index_7_2(request: HttpRequest):
             'url': f'..{file.file.url}',
             'name': file_name,
             'size': ut.get_size_file_str(file.file_size),
-            'icon': f"..{os.path.join('static', 'site', 'img', 'files', f'{file_type}.svg')}",
+            'icon': f"../{os.path.join('static', 'site', 'img', 'files', f'{file_type}.svg')}",
             # 'icon': f'..\static\site\img\files\{file_name[-3:]}.svg'
         })
 
