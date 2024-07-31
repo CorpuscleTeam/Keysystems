@@ -10,7 +10,7 @@ DEBUG = bool(int(os.getenv('DEBUG')))
 
 back_branch = os.getenv('IS_BACK')
 # if back_branch:
-IS_BACK = True #if back_branch else False
+IS_BACK = True if back_branch else False
 
 ALLOWED_HOSTS = ['*']
 

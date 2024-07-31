@@ -21,23 +21,37 @@ document.querySelector('.page_flex_body').appendChild(updateFiles_grid)
 for (let i = 0; i < updateSoft72['update_files'].length; i++) {
     // загрузить файл
     let updateFile = document.createElement('button')
-    updateFile.classList.add('update_file_item')
+    updateFile.classList.add('update_file_btn')
     updateFiles_grid.appendChild(updateFile)
+
+    // ссылка на скачивание файла
+    let updateFileLink = document.createElement('a')
+    updateFileLink.setAttribute('href', updateSoft72['update_files'][i]['url'])
+    updateFileLink.setAttribute('download', updateSoft72['update_files'][i]['name']);
+    updateFile.appendChild(updateFileLink)
+
+    let updateFileItem = document.createElement('div')
+    updateFileItem.classList.add('update_file_item')
+    updateFileLink.appendChild(updateFileItem)
 
     // картинка слева
     let updateFileLeft = document.createElement('div')
     updateFileLeft.classList.add('update_file_img')
-    updateFile.appendChild(updateFileLeft)
+    updateFileItem.appendChild(updateFileLeft)
 
     let updateFileImg = document.createElement('img')
     // добавить переменную
-    updateFileImg.setAttribute('src', fileImg)
+    updateFileImg.setAttribute('src', updateSoft72['update_files'][i]['icon'])
     updateFileLeft.appendChild(updateFileImg)
 
-    // картинки центр
+    // центр - название файла, размер
     let updateFileCenter = document.createElement('div')
     updateFileCenter.classList.add('update_file_center')
-    updateFile.appendChild(updateFileCenter)
+    updateFileItem.appendChild(updateFileCenter)
+
+    // let updateCenterItem = document.createElement('div')
+    // updateCenterItem.classList.add('update_center_item')
+    // updateFileCenter.appendChild(updateCenterItem)
 
     let updateFileName = document.createElement('p')
     updateFileName.classList.add('update_file_name')
@@ -46,14 +60,13 @@ for (let i = 0; i < updateSoft72['update_files'].length; i++) {
 
     let updateFileSize = document.createElement('p')
     updateFileSize.classList.add('update_file_size')
-    updateFileSize.innerHTML = `325 kb`
-    // updateFileSize.innerHTML = updateSoft72['size']
+    updateFileSize.innerHTML = updateSoft72['update_files'][i]['size']
     updateFileCenter.appendChild(updateFileSize)
 
     // картинка справа
     let updateFileRight = document.createElement('div')
     updateFileRight.classList.add('update_file_dnl')
-    updateFile.appendChild(updateFileRight)
+    updateFileItem.appendChild(updateFileRight)
 
     let updateFileDnl = document.createElement('img')
     updateFileDnl.setAttribute('src', fileDnl)
