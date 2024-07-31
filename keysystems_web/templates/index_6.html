@@ -246,9 +246,10 @@
         let update_count = {{ update_count }}
 
         // Модальное окно "Настройки"
-        let inn = 1234
-        let institution = "Наименование чреждение"
-        let region = "Челябинская область"
+        let inn = {{ inn }}
+        let institution = '{{ institution }}'
+        let region = '{{ region }}'
+        let email = '{{ email }}'
 
         // переменная уведомления 
         let push = JSON.parse('{{ notices|escapejs }}')
