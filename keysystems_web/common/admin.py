@@ -26,7 +26,7 @@ class ViewAdminUser(admin.ModelAdmin):
     readonly_fields = ['last_login', 'date_joined']
 
     fieldsets = (
-        ('О пользователе', {'fields': ('username', 'full_name')}),
+        ('О пользователе', {'fields': ('username', 'full_name', 'customer')}),
         ('Права', {'fields': ('is_active', 'is_staff', 'is_superuser')}),
         ('Даты', {'fields': ('last_login', 'date_joined')}),
     )

@@ -2,19 +2,30 @@ from django.shortcuts import render, redirect
 from django.http.request import HttpRequest
 from django.core.files.storage import FileSystemStorage
 from django.core.serializers import serialize
-from django.db.models import OuterRef, Exists
+from django.utils.text import get_valid_filename
 from django.db.models import Count, Q
 from datetime import datetime
 
 import os
 import json
 
-from keysystems_web.settings import FILE_STORAGE, IS_BACK
+from keysystems_web.settings import FILE_STORAGE, DEBUG
 from .forms import OrderForm, UserSettingForm
 from .models import News, ViewNews, UpdateSoft
 from common.models import OrderTopic, Soft, Order, DownloadedFile, Notice, UsedSoft
 from common import log_error, months_str_ru
 from enums import OrderStatus, FormType
+
+
+# проверяет доступ к странице
+def is_access_denied(request: HttpRequest) -> bool:
+    log_error(f'DEBUG: {DEBUG}', wt=False)
+    if DEBUG:
+        return False
+    if request.user.is_authenticated and not request.user.is_staff:
+        return False
+    else:
+        return True
 
 
 # Собирает данные для стандартного окружения клиентской части
@@ -23,14 +34,18 @@ def get_main_client_front_data(request: HttpRequest) -> dict:
     topics_json = serialize(format='json', queryset=OrderTopic.objects.filter(is_active=True).all())
 
     if request.user.is_authenticated:
+        # количество заявок
         user_orders_count = Order.objects.filter(from_user=request.user).exclude(status=OrderStatus.DONE).count()
+        # количество непросмотренных уведомлений
         notice_count = Notice.objects.filter(viewed=False, user_ks=request.user).count()
-
-        unviewed_updates_count = UpdateSoft.objects.filter(~Q(view_update__user_ks_id=request.user)).distinct().count()
-
+        # Получаем все объекты UpdateSoft, которые пользователь не просмотрел
+        unviewed_updates = UpdateSoft.objects.filter(~Q(view_update__user_ks=request.user)).distinct()
+        # Считаем количество непросмотренных обновлений
+        unviewed_updates_count = unviewed_updates.count()
+        # используемый софт
         used_soft = UsedSoft.objects.get(user=request.user)
 
-        log_error(used_soft, wt=False)
+        log_error(f'>>>> {request.user.customer.inn}', wt=False)
 
         return {
             'topics': topics_json,
@@ -38,6 +53,7 @@ def get_main_client_front_data(request: HttpRequest) -> dict:
             'orders_count': user_orders_count,
             'notice': notice_count,
             'update_count': unviewed_updates_count,
+            'unviewed_updates': unviewed_updates,
             'main_data': json.dumps(
                 {
                     'inn': request.user.customer.inn,
@@ -92,21 +108,22 @@ def form_processing(request: HttpRequest) -> None:
                 topic=topic,
                 customer=request.user.customer
             )
-            # new_order.save()
+            new_order.save()
 
             files = request.FILES.getlist('addfile')
 
-            # folder_path = os.path.join(FILE_STORAGE, str(request.user.customer.inn), str(new_order.pk))
-            folder_path = os.path.join(FILE_STORAGE, str(request.user.customer.inn), 'test')
-            log_error(f'>>>> folder_path: {FILE_STORAGE}\n{folder_path}', wt=False)
+            folder_path = os.path.join(FILE_STORAGE, str(request.user.customer.inn), str(new_order.pk))
+            # folder_path = os.path.join(FILE_STORAGE, str(request.user.customer.inn), 'test')
             if not os.path.exists(folder_path) and files:
-                os.mkdir(folder_path)
+                os.makedirs(folder_path)
 
-            fs = FileSystemStorage()
+            fs = FileSystemStorage(location=folder_path)  # Устанавливаем локальное хранилище для указанной папки
             for uploaded_file in files:
-                file_path = os.path.join(folder_path, uploaded_file.name)
-                filename = fs.save(file_path, uploaded_file)
-                file_url = fs.url(filename)
+                file_name = get_valid_filename(uploaded_file.name)
+
+                # Сохраняем файл
+                filename = fs.save(file_name, uploaded_file)  # Используем только имя файла
+                file_url = fs.url(filename)  # Получаем URL файла
 
                 DownloadedFile.objects.create(
                     user_ks=request.user,
