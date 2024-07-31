@@ -40,15 +40,17 @@ def get_main_client_front_data(request: HttpRequest) -> dict:
             'orders_count': user_orders_count,
             'notice': notice_count,
             'update_count': unviewed_updates_count,
-            'main_data': {
-                'inn': request.user.customer.inn,
-                'institution': request.user.customer.title,
-                'region': request.user.customer.district.title,
-                'email': request.user.username,
-                'full_name': request.user.full_name,
-                'used_soft': used_soft.id,
-                'phone': request.user.phone,
-            }
+            'main_data': json.dumps(
+                {
+                    'inn': request.user.customer.inn,
+                    'institution': request.user.customer.title,
+                    'region': request.user.customer.district.title,
+                    'email': request.user.username,
+                    'full_name': request.user.full_name,
+                    'used_soft': used_soft.id,
+                    'phone': request.user.phone,
+                }
+            )
         }
     else:
         return {
@@ -57,16 +59,17 @@ def get_main_client_front_data(request: HttpRequest) -> dict:
             'orders_count': 2,
             'notice': 3,
             'update_count': 12,
-            'main_data': {
-                'inn': "1234567890",
-                'institution': "OOO Oooo",
-                'region': 'ChO',
-                'email': 'ex@mail.com',
-                'full_name': 'Мурат Насырович Шлакоблокунь',
-                'used_soft': 2,
-                'phone': '79012345678',
-            }
-
+            'main_data': json.dumps(
+                {
+                    'inn': "1234567890",
+                    'institution': "OOO Oooo",
+                    'region': 'ChO',
+                    'email': 'ex@mail.com',
+                    'full_name': 'Мурат Насырович Шлакоблокунь',
+                    'used_soft': 2,
+                    'phone': '79012345678',
+                }
+            )
         }
 
 
