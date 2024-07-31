@@ -2,7 +2,7 @@ from django.db import models
 from ckeditor.fields import RichTextField
 
 from common.models import UserKS, Soft
-from enums import ENTRY_TYPES, OrderStatus
+from enums import OrderStatus
 
 
 # Новости

@@ -14,7 +14,7 @@ from . import client_utils as utils
 from common.models import OrderTopic, Notice, Order, Soft
 from common.serializers import OrderSerializer
 import common as ut
-from enums import RequestMethod, NewsEntryType, OrderStatus, notices_dict
+from enums import RequestMethod, OrderStatus, notices_dict
 
 
 # удалить аналог 2_2
@@ -33,7 +33,7 @@ def index_3_2(request: HttpRequest):
 # страничка с новостями
 def index_4_1(request: HttpRequest):
     if request.method == RequestMethod.POST:
-        ut.log_error(request.POST, wt=False)
+        # ut.log_error(request.POST, wt=False)
         order_form = OrderForm(request.POST, request.FILES)
         ut.log_error(f'>>>> {order_form.data}', wt=False)
         if order_form.is_valid():
@@ -192,11 +192,13 @@ def index_7_2(request: HttpRequest):
     update_files = []
     for file in files:
         file_name = file.file.name.split('/')[-1]
+        file_type = file_name[-3:] if file_name[-3:] in ut.upload_file_type else 'file'
         update_files.append({
             'url': f'..{file.file.url}',
             'name': file_name,
             'size': ut.get_size_file_str(file.file_size),
-            'icon': f'..\static\site\img\files\{file_name[-3:]}.svg'
+            'icon': f"..{os.path.join('static', 'site', 'img', 'files', f'{file_type}.svg')}",
+            # 'icon': f'..\static\site\img\files\{file_name[-3:]}.svg'
         })
 
     update_json = {

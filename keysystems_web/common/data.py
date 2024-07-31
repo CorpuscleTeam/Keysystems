@@ -51,3 +51,6 @@ yakutia_districts = [
     "Эвено-Бытантайский национальный район",
     "Якутск (городской округ)"
 ]
+
+
+upload_file_type = ['avi', 'doc', 'gif', 'jpg', 'mov', 'mp3', 'mp4', 'pdf', 'png', 'xls', 'zip']

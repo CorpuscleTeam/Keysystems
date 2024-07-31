@@ -24,15 +24,9 @@ ORDER_CHOICES = (
 )
 
 
-class NewsEntryType(str, Enum):
-    NEWS = 'news'
-    UPDATE = 'update'
-
-
-ENTRY_TYPES = (
-    (NewsEntryType.NEWS.value, 'Новость'),
-    (NewsEntryType.UPDATE.value, 'Обновление ПО')
-)
+class FormType(str, Enum):
+    ORDER = 'order'
+    SETTING = 'setting'
 
 
 # уведомления
