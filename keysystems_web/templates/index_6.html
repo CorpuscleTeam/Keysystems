@@ -246,10 +246,11 @@
         let update_count = {{ update_count }}
 
         // Модальное окно "Настройки"
-        let inn = {{ inn }}
-        let institution = '{{ institution }}'
-        let region = '{{ region }}'
-        let email = '{{ email }}'
+        let mainData = JSON.parse('{{ main_data|escapejs }}')
+        // let inn = {{ inn }}
+        // let institution = '{{ institution }}'
+        // let region = '{{ region }}'
+        // let email = '{{ email }}'
 
         // переменная уведомления 
         let push = JSON.parse('{{ notices|escapejs }}')
