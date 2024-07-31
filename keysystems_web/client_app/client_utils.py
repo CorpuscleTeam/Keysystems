@@ -22,7 +22,7 @@ def get_main_client_front_data(request: HttpRequest) -> dict:
     soft_json = serialize(format='json', queryset=Soft.objects.filter(is_active=True).all())
     topics_json = serialize(format='json', queryset=OrderTopic.objects.filter(is_active=True).all())
 
-    log_error('hhhhhhhhhhhhhhhhhhhh', wt=False)
+    log_error(request.user.customer.district.title, wt=False)
 
     if request.user.is_authenticated:
         user_orders_count = Order.objects.filter(from_user=request.user).exclude(status=OrderStatus.DONE).count()
@@ -37,26 +37,36 @@ def get_main_client_front_data(request: HttpRequest) -> dict:
         return {
             'topics': topics_json,
             'soft': soft_json,
-            'inn': request.user.customer.inn,
-            'institution': request.user.customer.title,
-            'region': request.user.customer.district,
             'orders_count': user_orders_count,
             'notice': notice_count,
             'update_count': unviewed_updates_count,
-            'used_soft': used_soft.id
+            'main_data': {
+                'inn': request.user.customer.inn,
+                'institution': request.user.customer.title,
+                'region': request.user.customer.district.title,
+                'email': request.user.username,
+                'full_name': request.user.full_name,
+                'used_soft': used_soft.id,
+                'phone': request.user.phone,
+            }
         }
     else:
         return {
             'topics': topics_json,
             'soft': soft_json,
-            'inn': "8",
-            'institution': "89sdfghghghg",
-            'region': 'ChO',
             'orders_count': 2,
             'notice': 3,
             'update_count': 12,
-            'used_soft': 2,
-            'email': 'ex@mail.com'
+            'main_data': {
+                'inn': "1234567890",
+                'institution': "OOO Oooo",
+                'region': 'ChO',
+                'email': 'ex@mail.com',
+                'full_name': 'Мурат Насырович Шлакоблокунь',
+                'used_soft': 2,
+                'phone': '79012345678',
+            }
+
         }
 
 
@@ -70,6 +80,7 @@ def form_processing(request: HttpRequest) -> None:
     type_form = request.POST.get('type_form')
     if type_form == FormType.ORDER:
         form = OrderForm(request.POST, request.FILES)
+        # log_error(f'>>>> form.is_valid(): {form.is_valid()}\n{form.errors}\n{form.data}', wt=False)
         if form.is_valid():
             soft = Soft.objects.get(pk=form.cleaned_data['type_soft'])
             topic = OrderTopic.objects.get(pk=form.cleaned_data['type_soft'])
@@ -102,7 +113,7 @@ def form_processing(request: HttpRequest) -> None:
 
     elif type_form == FormType.SETTING:
         form = UserSettingForm(request.POST)
-        log_error(f'>>>> form.is_valid(): {form.is_valid()}\n{form.errors}\n{form.data}', wt=False)
+        # log_error(f'>>>> form.is_valid(): {form.is_valid()}\n{form.errors}\n{form.data}', wt=False)
         if not form.is_valid():
             return
 

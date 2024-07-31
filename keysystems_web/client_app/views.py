@@ -59,8 +59,8 @@ def index_4_1(request: HttpRequest):
 
 
 def index_4_2(request: HttpRequest):
-    # if not main_news:
-    #     return redirect('redirect')
+    if request.method == RequestMethod.POST:
+        utils.form_processing(request)
 
     news_id = request.GET.get('news', 1)
     main_news = News.objects.get(pk=int(news_id))
@@ -98,6 +98,9 @@ def index_4_2(request: HttpRequest):
 
 
 def index_5_1(request: HttpRequest):
+    if request.method == RequestMethod.POST:
+        utils.form_processing(request)
+
     orders = Order.objects.select_related('soft', 'topic', 'from_user', 'executor', 'customer').order_by('-created_at')
 
     new_orders = orders.filter(status=OrderStatus.NEW).all()
@@ -111,9 +114,6 @@ def index_5_1(request: HttpRequest):
     client_data = utils.get_main_client_front_data(request)
     context = {
         **client_data,
-        # 'new_orders': serialize(format='json', queryset=new_orders),
-        # 'active_orders': serialize(format='json', queryset=active_orders),
-        # 'done_orders': serialize(format='json', queryset=done_orders),
         'new_orders': json.dumps(new_orders_ser.data),
         'active_orders': json.dumps(active_orders_ser.data),
         'done_orders': json.dumps(done_orders_ser.data),
@@ -122,6 +122,8 @@ def index_5_1(request: HttpRequest):
 
 
 def index_6(request: HttpRequest):
+    if request.method == RequestMethod.POST:
+        utils.form_processing(request)
     # notices = Notice.objects.filter(user_ks=request.user).order_by('-created_at').all()
     notices = Notice.objects.filter().order_by('-created_at').all()
 
@@ -147,6 +149,8 @@ def index_6(request: HttpRequest):
 
 
 def index_7_1(request: HttpRequest):
+    if request.method == RequestMethod.POST:
+        utils.form_processing(request)
     # updates = UpdateSoft.objects.select_related('soft').prefetch_related('files').filter(is_active=True).order_by('-created_at').all()
     updates = UpdateSoft.objects.select_related('soft').filter(is_active=True).order_by('-created_at').all()
 
@@ -180,6 +184,9 @@ def index_7_1(request: HttpRequest):
 
 
 def index_7_2(request: HttpRequest):
+    if request.method == RequestMethod.POST:
+        utils.form_processing(request)
+
     update_id = request.GET.get('update', 1)
     update = UpdateSoft.objects.select_related('soft').filter(id=int(update_id)).order_by('-created_at').first()
 
@@ -193,7 +200,6 @@ def index_7_2(request: HttpRequest):
             'name': file_name,
             'size': ut.get_size_file_str(file.file_size),
             'icon': f"../{os.path.join('static', 'site', 'img', 'files', f'{file_type}.svg')}",
-            # 'icon': f'..\static\site\img\files\{file_name[-3:]}.svg'
         })
 
     update_json = {
@@ -213,6 +219,9 @@ def index_7_2(request: HttpRequest):
 
 
 def index_8(request: HttpRequest):
+    if request.method == RequestMethod.POST:
+        utils.form_processing(request)
+
     faq = FAQ.objects.filter(is_active=True).order_by('-created_at').all()
 
     client_data = utils.get_main_client_front_data(request)
