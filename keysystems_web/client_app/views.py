@@ -197,7 +197,7 @@ def index_7_2(request: HttpRequest):
             'url': f'..{file.file.url}',
             'name': file_name,
             'size': ut.get_size_file_str(file.file_size),
-            'icon': f"..{os.path.join('static', 'site', 'img', 'files', f'{file_type}.svg')}",
+            'icon': f"../{os.path.join('static', 'site', 'img', 'files', f'{file_type}.svg')}",
             # 'icon': f'..\static\site\img\files\{file_name[-3:]}.svg'
         })
 
