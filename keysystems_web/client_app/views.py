@@ -14,7 +14,7 @@ from . import client_utils as utils
 from common.models import OrderTopic, Notice, Order, Soft
 from common.serializers import OrderSerializer
 import common as ut
-from enums import RequestMethod, NewsEntryType, OrderStatus, notices_dict
+from enums import RequestMethod, OrderStatus, notices_dict
 
 
 # удалить аналог 2_2
@@ -33,7 +33,7 @@ def index_3_2(request: HttpRequest):
 # страничка с новостями
 def index_4_1(request: HttpRequest):
     if request.method == RequestMethod.POST:
-        ut.log_error(request.POST, wt=False)
+        # ut.log_error(request.POST, wt=False)
         order_form = OrderForm(request.POST, request.FILES)
         ut.log_error(f'>>>> {order_form.data}', wt=False)
         if order_form.is_valid():
