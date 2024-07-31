@@ -37,31 +37,35 @@ def get_main_client_front_data(request: HttpRequest) -> dict:
         return {
             'topics': topics_json,
             'soft': soft_json,
-            'inn': request.user.customer.inn,
-            'institution': request.user.customer.title,
-            'region': request.user.customer.district.title,
-            'email': request.user.username,
-            'full_name': request.user.full_name,
-            'phone': request.user.phone,
             'orders_count': user_orders_count,
             'notice': notice_count,
             'update_count': unviewed_updates_count,
-            'used_soft': used_soft.id
+            'main_data': {
+                'inn': request.user.customer.inn,
+                'institution': request.user.customer.title,
+                'region': request.user.customer.district.title,
+                'email': request.user.username,
+                'full_name': request.user.full_name,
+                'used_soft': used_soft.id,
+                'phone': request.user.phone,
+            }
         }
     else:
         return {
             'topics': topics_json,
             'soft': soft_json,
-            'inn': "1234567890",
-            'institution': "OOO Oooo",
-            'region': 'ChO',
             'orders_count': 2,
             'notice': 3,
             'update_count': 12,
-            'used_soft': 2,
-            'email': 'ex@mail.com',
-            'full_name': 'Мурат Насырович Шлакоблокунь',
-            'phone': '79012345678',
+            'main_data': {
+                'inn': "1234567890",
+                'institution': "OOO Oooo",
+                'region': 'ChO',
+                'email': 'ex@mail.com',
+                'full_name': 'Мурат Насырович Шлакоблокунь',
+                'used_soft': 2,
+                'phone': '79012345678',
+            }
         }
 
 
