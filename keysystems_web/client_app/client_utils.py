@@ -11,8 +11,8 @@ import json
 
 from keysystems_web.settings import FILE_STORAGE, IS_BACK
 from .forms import OrderForm, UserSettingForm
-from .models import News, ViewNews, UpdateSoft, ViewUpdate
-from common.models import OrderTopic, Soft, Order, DownloadedFile, Notice
+from .models import News, ViewNews, UpdateSoft
+from common.models import OrderTopic, Soft, Order, DownloadedFile, Notice, UsedSoft
 from common import log_error, months_str_ru
 from enums import OrderStatus, FormType
 
@@ -22,14 +22,17 @@ def get_main_client_front_data(request: HttpRequest) -> dict:
     soft_json = serialize(format='json', queryset=Soft.objects.filter(is_active=True).all())
     topics_json = serialize(format='json', queryset=OrderTopic.objects.filter(is_active=True).all())
 
-    if IS_BACK:
+    log_error('hhhhhhhhhhhhhhhhhhhh', wt=False)
+
+    if request.user:
         user_orders_count = Order.objects.filter(from_user=request.user).exclude(status=OrderStatus.DONE).count()
         notice_count = Notice.objects.filter(viewed=False, user_ks=request.user).count()
 
-        # update_soft = UpdateSoft.objects.select_related('view_update').all()
         unviewed_updates_count = UpdateSoft.objects.filter(~Q(view_update__user_ks_id=request.user)).distinct().count()
 
-        # log_error(unviewed_updates_count, wt=False)
+        used_soft = UsedSoft.objects.get(user=request.user)
+
+        log_error(used_soft, wt=False)
 
         return {
             'topics': topics_json,
@@ -40,16 +43,19 @@ def get_main_client_front_data(request: HttpRequest) -> dict:
             'orders_count': user_orders_count,
             'notice': notice_count,
             'update_count': unviewed_updates_count,
+            'used_soft': used_soft.id
         }
     else:
         return {
             'topics': topics_json,
             'soft': soft_json,
+            'inn': "1234567890",
             'institution': "OOO Oooo",
             'region': 'ChO',
             'orders_count': 2,
             'notice': 3,
             'update_count': 12,
+            'used_soft': 2
         }
 
 
@@ -95,7 +101,7 @@ def form_processing(request: HttpRequest) -> None:
 
     elif type_form == FormType.SETTING:
         form = UserSettingForm(request.POST)
-        log_error(f'>>>> form.is_valid(): {form.is_valid()}', wt=False)
+        log_error(f'>>>> form.is_valid(): {form.is_valid()}\n{form.errors}\n{form.data}', wt=False)
         if not form.is_valid():
             return
 
@@ -103,12 +109,12 @@ def form_processing(request: HttpRequest) -> None:
         user.username = form.cleaned_data['settings_email']
         user.full_name = form.cleaned_data['settings_responsible']
         user.phone = form.cleaned_data['settings_phone']
-        # user.save()
+        user.save()
 
-        soft = UpdateSoft.objects.get(user=user)
-        used_soft = UpdateSoft.objects.get(user=user)
+        soft = Soft.objects.get(id=form.cleaned_data['type_soft'])
+        used_soft = UsedSoft.objects.get(user=user)
         used_soft.soft = soft
-        # used_soft.save()
+        used_soft.save()
         log_error(f'>>>> save user', wt=False)
 
 

@@ -93,6 +93,9 @@ class UsedSoft(models.Model):
 
     objects = models.Manager()
 
+    def __str__(self):
+        return f"{self.id}"
+
     class Meta:
         verbose_name = 'ПО пользователей'
         verbose_name_plural = 'ПО пользователей'
