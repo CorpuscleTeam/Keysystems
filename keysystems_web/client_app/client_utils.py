@@ -94,11 +94,13 @@ def form_processing(request: HttpRequest) -> None:
                 topic=topic,
                 customer=request.user.customer
             )
-            new_order.save()
+            # new_order.save()
 
             files = request.FILES.getlist('addfile')
 
-            folder_path = os.path.join(FILE_STORAGE, str(request.user.customer.inn), str(new_order.pk))
+            # folder_path = os.path.join(FILE_STORAGE, str(request.user.customer.inn), str(new_order.pk))
+            folder_path = os.path.join(FILE_STORAGE, str(request.user.customer.inn), 'test')
+            log_error(f'>>>> folder_path: {FILE_STORAGE}\n{folder_path}', wt=False)
             if not os.path.exists(folder_path) and files:
                 os.mkdir(folder_path)
 
