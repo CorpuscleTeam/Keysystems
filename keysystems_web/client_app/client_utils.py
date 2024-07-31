@@ -22,8 +22,6 @@ def get_main_client_front_data(request: HttpRequest) -> dict:
     soft_json = serialize(format='json', queryset=Soft.objects.filter(is_active=True).all())
     topics_json = serialize(format='json', queryset=OrderTopic.objects.filter(is_active=True).all())
 
-    log_error(request.user.customer.district.title, wt=False)
-
     if request.user.is_authenticated:
         user_orders_count = Order.objects.filter(from_user=request.user).exclude(status=OrderStatus.DONE).count()
         notice_count = Notice.objects.filter(viewed=False, user_ks=request.user).count()
