@@ -66,6 +66,7 @@ def get_main_client_front_data(request: HttpRequest) -> dict:
                 'used_soft': 2,
                 'phone': '79012345678',
             }
+
         }
 
 
