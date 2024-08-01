@@ -1,5 +1,6 @@
 from django.db import models
-from ckeditor.fields import RichTextField
+# from ckeditor.fields import RichTextField
+from django.db.models.fields import TextField as RichTextField
 
 from common.models import UserKS, Soft
 from enums import OrderStatus
