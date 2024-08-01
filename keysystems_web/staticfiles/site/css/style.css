@@ -143,6 +143,8 @@ input[placeholder] {
     border: var(--border_grey_radius);
     border-radius: 2px;
     height: 37px;
+    font-family: "Oswald", sans-serif;
+    padding-left: 10px;
 }
 
 .confirm {
@@ -837,4 +839,63 @@ textarea {
     font-size: 16px;
     line-height: 21px;
     margin-bottom: 32px;
+}
+
+/* кнопка - скачать файл - index_7_2 */
+.update_file_btn {
+    padding: 0;
+    border: none;
+    background-color: rgba(238, 238, 238, 1);
+}
+.update_files_grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+}
+.update_file_item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+    
+    min-width: 0;
+    padding: 10px 16px;
+}
+
+.update_file_img, .update_file_dnl {
+    flex: 0 1 auto;
+}
+.update_file_center {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
+/* .update_center_item { */
+    /* align-self: flex-start; */
+    /* display: flex;
+    flex-direction: column; */
+/* } */
+.update_file_name {
+    /* display: block; */
+    font-size: 14px;
+    line-height: 18px;
+    color: var(--color_dark);
+    font-family: "Oswald", sans-serif;
+    text-align: left;
+    margin-left: 0;
+    padding-left: 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 180px;
+    width: 100%;
+}
+.update_file_size {
+    /* display: block; */
+    text-align: left;
+    font-size: 12px;
+    line-height: 17px;
+    color: rgba(153, 153, 153, 1);
+    font-family: "Oswald", sans-serif;
 }
