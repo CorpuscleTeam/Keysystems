@@ -21,9 +21,9 @@ services:
 
   pgadmin:
     image: elestio/pgadmin
-    container_name: pgadmin
+    container_name: pgadmin_ks
     ports:
-      - "8080:80"
+      - "8082:80"
     volumes:
       - pgadmin_data:/var/lib/pgadmin
     env_file:
