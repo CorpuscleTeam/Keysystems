@@ -58,7 +58,7 @@ def index_4_1(request: HttpRequest):
         **client_data,
         'news': news_json,
     }
-    return render(request, 'index_4_1.html', context)
+    return render(request, 'client/index_4_1.html', context)
 
 
 def index_4_2(request: HttpRequest):
@@ -100,7 +100,7 @@ def index_4_2(request: HttpRequest):
         'previous_news': previous_news.id if previous_news else 0,
         'next_news': next_news.id if next_news else 0,
     }
-    return render(request, 'index_4_2.html', context)
+    return render(request, 'client/index_4_2.html', context)
 
 
 def index_5_1(request: HttpRequest):
@@ -128,7 +128,7 @@ def index_5_1(request: HttpRequest):
         'active_orders': json.dumps(active_orders_ser.data),
         'done_orders': json.dumps(done_orders_ser.data),
     }
-    return render(request, 'index_5_1.html', context)
+    return render(request, 'client/index_5_1.html', context)
 
 
 def index_6(request: HttpRequest):
@@ -163,7 +163,7 @@ def index_6(request: HttpRequest):
         **client_data,
         'notices': json.dumps(notice_list)
     }
-    return render(request, 'index_6.html', context)
+    return render(request, 'client/index_6.html', context)
 
 
 def index_7_1(request: HttpRequest):
@@ -211,7 +211,7 @@ def index_7_1(request: HttpRequest):
         **client_data,
         'update_json': json.dumps(updates_json)
     }
-    return render(request, 'index_7_1.html', context)
+    return render(request, 'client/index_7_1.html', context)
 
 
 def index_7_2(request: HttpRequest):
@@ -249,7 +249,7 @@ def index_7_2(request: HttpRequest):
         **client_data,
         'update_json': json.dumps(update_json)
     }
-    return render(request, 'index_7_2.html', context)
+    return render(request, 'client/index_7_2.html', context)
 
 
 def index_8(request: HttpRequest):
@@ -266,4 +266,4 @@ def index_8(request: HttpRequest):
         **client_data,
         'faq': serialize(format='json', queryset=faq)
     }
-    return render(request, 'index_8.html', context)
+    return render(request, 'client/index_8.html', context)
