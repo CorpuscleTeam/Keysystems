@@ -899,3 +899,8 @@ textarea {
     color: rgba(153, 153, 153, 1);
     font-family: "Oswald", sans-serif;
 }
+
+/* Кураторская панель */
+.display_none {
+    display: none;
+}
