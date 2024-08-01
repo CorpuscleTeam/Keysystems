@@ -22,7 +22,7 @@ def get_data_string(dt: datetime) -> str:
     else:
         data_str = f'{dt.day} {months_str_ru.get(dt.month)} {dt.year}'
 
-    log_error(f'{dt} | {dt.hour} {dt.hour < 10} | {dt.minute} {dt.minute < 10}', wt=False)
+    # log_error(f'{dt} | {dt.hour} {dt.hour < 10} | {dt.minute} {dt.minute < 10}', wt=False)
     hour_str = dt.hour if dt.hour > 10 else f'0{dt.hour}'
     minute_str = dt.minute if dt.minute > 10 else f'0{dt.minute}'
     return f'{data_str} / {hour_str}:{minute_str}'
