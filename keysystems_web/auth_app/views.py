@@ -67,7 +67,7 @@ def index_2(request: HttpRequest):
             error_msg = 'Ошибка ввода'
 
     context = {'error_msg': error_msg}
-    return render(request, 'index_2.html', context)
+    return render(request, 'auth/index_2.html', context)
 
 
 #
@@ -95,7 +95,7 @@ def index_2_1(request: HttpRequest):
 
     inn = request.GET.get('inn', '')
     context = {'inn': inn, 'error_msg': error_msg}
-    return render(request, 'index_2_1.html', context)
+    return render(request, 'auth/index_2_1.html', context)
 
 
 # принимает пароль и регистрирует пользователя
@@ -124,7 +124,7 @@ def index_2_2(request: HttpRequest):
         'error_msg': error_msg,
         'user_id': user_id
     }
-    return render(request, 'index_2_2.html', context)
+    return render(request, 'auth/index_2_2.html', context)
 
 
 # регистрация заполните форму
@@ -159,4 +159,4 @@ def index_3_1(request: HttpRequest):
         'soft': serialize(format='json', queryset=Soft.objects.filter(is_active=True).all()),
         'inn': request.GET.get('inn', '')
     }
-    return render(request, 'index_3_1.html', context)
+    return render(request, 'auth/index_3_1.html', context)
