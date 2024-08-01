@@ -19,7 +19,7 @@ from enums import OrderStatus, FormType
 
 # проверяет доступ к странице
 def is_access_denied(request: HttpRequest) -> bool:
-    log_error(f'DEBUG: {DEBUG}', wt=False)
+    # log_error(f'DEBUG: {DEBUG}', wt=False)
     if DEBUG:
         return False
     if request.user.is_authenticated and not request.user.is_staff:
@@ -45,7 +45,7 @@ def get_main_client_front_data(request: HttpRequest) -> dict:
         # используемый софт
         used_soft = UsedSoft.objects.get(user=request.user)
 
-        log_error(f'>>>> {request.user.customer.inn}', wt=False)
+        # log_error(f'>>>> {request.user.customer.inn}', wt=False)
 
         return {
             'topics': topics_json,
