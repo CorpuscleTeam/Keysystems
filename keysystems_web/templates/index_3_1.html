@@ -49,14 +49,14 @@
                         {% csrf_token %}
                         <p>
                             <label for="inn">Введите ваш ИНН</label>
-                            <input type="text" name="inn" id="inn">
+                            <input type="text" name="inn" id="inn" value="{{ inn }}">
                         </p>
                         <p class="enter_select">
                             <label for="reg_progr" class="required">Програмное обеспечение</label>
                             <select name="reg_progr" id="reg_progr">
-                                <option value="">1</option>
+                                <!-- <option value="">1</option>
                                 <option value="">2</option>
-                                <option value="">3</option>
+                                <option value="">3</option> -->
                             </select>
                         </p>
                         <p>
@@ -109,8 +109,15 @@
     </div>
 
     <!-- JS -->
+
+    <!-- переменная ПО -->
+    <script>
+        let optionPO = JSON.parse('{{ soft|escapejs }}')
+    </script>
+
     <script type="text/javascript" src="{% static 'site/js/materialize.min.js' %}"></script>
     <script type="text/javascript" src="{% static 'site/js/main_modal.js' %}"></script>
+    <script type="text/javascript" src="{% static 'site/js/main_reg_3_1.js' %}"></script>
 
 </body>
 

@@ -64,6 +64,7 @@ groupOfNewOrders.appendChild(newOrderFlex)
 for (let i = 0; i < new_orders.length; i++) {
     let modalLinkCard = document.createElement('a')
     modalLinkCard.classList.add('modal_link_cards')
+    modalLinkCard.classList.add('modal-trigger')
     modalLinkCard.setAttribute('href', '#statusOrder') // добавить ссылку на модальное окно заявки
 
     let newOrder = document.createElement('div')
@@ -115,6 +116,7 @@ groupOfActiveOrders.appendChild(activeOrderFlex)
 for (let i = 0; i < active_orders.length; i++) {
     let modalLinkCard = document.createElement('a')
     modalLinkCard.classList.add('modal_link_cards')
+    modalLinkCard.classList.add('modal-trigger')
     modalLinkCard.setAttribute('href', '#statusOrder') // добавить ссылку на модальное окно заявки
 
     let activeOrder = document.createElement('div')
@@ -166,6 +168,7 @@ groupOfDoneOrders.appendChild(doneOrderFlex)
 for (let i = 0; i < done_orders.length; i++) {
     let modalLinkCard = document.createElement('a')
     modalLinkCard.classList.add('modal_link_cards')
+    modalLinkCard.classList.add('modal-trigger')
     modalLinkCard.setAttribute('href', '#statusOrder') // добавить ссылку на модальное окно заявки
 
     let doneOrder = document.createElement('div')
