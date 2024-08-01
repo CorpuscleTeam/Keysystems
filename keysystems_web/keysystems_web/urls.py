@@ -5,6 +5,8 @@ from django.conf.urls.static import static
 from . import settings
 from auth_app import views as reg
 from client_app import views as client
+from curator_app import views as curator
+
 
 # 8, 5_1, 6 7_1, 7_2
 urlpatterns = [
@@ -24,6 +26,10 @@ urlpatterns = [
     path('index_6', client.index_6, name='index_6'),
     path('index_7_1', client.index_7_1, name='index_7_1'),
     path('index_7_2', client.index_7_2, name='index_7_2'),
+
+    path('cur_index_1_1', curator.cur_index_1_1, name='cur_index_1_1'),
+    path('cur_index_2_1', curator.cur_index_2_1, name='cur_index_2_1'),
+    path('cur_index_3', curator.cur_index_3, name='cur_index_3'),
 
     path('admin/', admin.site.urls),
     path('ckeditor/', include('ckeditor_uploader.urls')),

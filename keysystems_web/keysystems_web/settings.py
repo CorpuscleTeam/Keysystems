@@ -6,10 +6,10 @@ import os
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 SECRET_KEY = os.getenv('DJANGO_KEY')
-DEBUG = bool(int(os.getenv('DEBUG')))
+# DEBUG = bool(int(os.getenv('DEBUG')))
+DEBUG = True
 
 back_branch = os.getenv('IS_BACK')
-# if back_branch:
 IS_BACK = True if back_branch else False
 
 ALLOWED_HOSTS = ['*']
@@ -31,6 +31,7 @@ INSTALLED_APPS = [
     'common',
     'client_app',
     'auth_app',
+    'curator_app',
 ]
 
 MIDDLEWARE = [
