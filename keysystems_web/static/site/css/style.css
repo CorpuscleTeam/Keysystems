@@ -143,6 +143,8 @@ input[placeholder] {
     border: var(--border_grey_radius);
     border-radius: 2px;
     height: 37px;
+    font-family: "Oswald", sans-serif;
+    padding-left: 10px;
 }
 
 .confirm {
