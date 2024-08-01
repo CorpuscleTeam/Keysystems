@@ -14,7 +14,7 @@ from enums import RequestMethod
 # Определяет начальную страницу пользователя
 def start_page_redirect(request: HttpRequest):
     if request.user.is_authenticated and request.user.is_staff:
-        return redirect('in_dev.html')
+        return redirect('in_dev')
 
     elif request.user.is_authenticated:
         return redirect('index_4_1')
@@ -27,6 +27,12 @@ def start_page_redirect(request: HttpRequest):
 def logout_view(request):
     logout(request)
     return redirect('redirect')
+
+
+# заглушка
+def indev_view(request):
+    context = {}
+    return render(request, 'in_dev.html', context)
 
 
 # первая клиентская страница. Просит инн
