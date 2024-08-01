@@ -82,7 +82,7 @@ for (let i = 0; i < new_orders.length; i++) {
 
     let numOfOrder = document.createElement('p')
     numOfOrder.classList.add('numOfOrder')
-    numOfOrder.innerHTML = new_orders[i]['id']
+    numOfOrder.innerHTML = new_orders[i]['id_str']
     newOrder.appendChild(numOfOrder)
 
     modalLinkCard.appendChild(newOrder)
@@ -134,7 +134,7 @@ for (let i = 0; i < active_orders.length; i++) {
 
     let numOfOrder = document.createElement('p')
     numOfOrder.classList.add('numOfOrder')
-    numOfOrder.innerHTML = active_orders[i]['id']
+    numOfOrder.innerHTML = active_orders[i]['id_str']
     activeOrder.appendChild(numOfOrder)
 
     modalLinkCard.appendChild(activeOrder)
@@ -186,7 +186,7 @@ for (let i = 0; i < done_orders.length; i++) {
 
     let numOfOrder = document.createElement('p')
     numOfOrder.classList.add('numOfOrder')
-    numOfOrder.innerHTML = done_orders[i]['id']
+    numOfOrder.innerHTML = done_orders[i]['id_str']
     doneOrder.appendChild(numOfOrder)
 
     modalLinkCard.appendChild(doneOrder)

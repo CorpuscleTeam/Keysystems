@@ -9,7 +9,7 @@ import json
 
 from keysystems_web.settings import FILE_STORAGE
 from .forms import OrderForm
-from .models import News, FAQ, UpdateSoft, UpdateSoftFiles
+from .models import News, FAQ, UpdateSoft, UpdateSoftFiles, ViewUpdate
 from . import client_utils as utils
 from common.models import OrderTopic, Notice, Order, Soft
 from common.serializers import OrderSerializer
@@ -32,6 +32,9 @@ def index_3_2(request: HttpRequest):
 
 # страничка с новостями
 def index_4_1(request: HttpRequest):
+    if utils.is_access_denied(request):
+        return redirect('redirect')
+
     if request.method == RequestMethod.POST:
        utils.form_processing(request)
 
@@ -55,10 +58,13 @@ def index_4_1(request: HttpRequest):
         **client_data,
         'news': news_json,
     }
-    return render(request, 'index_4_1.html', context)
+    return render(request, 'client/index_4_1.html', context)
 
 
 def index_4_2(request: HttpRequest):
+    if utils.is_access_denied(request):
+        return redirect('redirect')
+
     if request.method == RequestMethod.POST:
         utils.form_processing(request)
 
@@ -94,10 +100,14 @@ def index_4_2(request: HttpRequest):
         'previous_news': previous_news.id if previous_news else 0,
         'next_news': next_news.id if next_news else 0,
     }
-    return render(request, 'index_4_2.html', context)
+    return render(request, 'client/index_4_2.html', context)
 
 
 def index_5_1(request: HttpRequest):
+
+    if utils.is_access_denied(request):
+        return redirect('redirect')
+
     if request.method == RequestMethod.POST:
         utils.form_processing(request)
 
@@ -118,14 +128,20 @@ def index_5_1(request: HttpRequest):
         'active_orders': json.dumps(active_orders_ser.data),
         'done_orders': json.dumps(done_orders_ser.data),
     }
-    return render(request, 'index_5_1.html', context)
+    return render(request, 'client/index_5_1.html', context)
 
 
 def index_6(request: HttpRequest):
+    if utils.is_access_denied(request):
+        return redirect('redirect')
+
     if request.method == RequestMethod.POST:
         utils.form_processing(request)
-    # notices = Notice.objects.filter(user_ks=request.user).order_by('-created_at').all()
-    notices = Notice.objects.filter().order_by('-created_at').all()
+
+    if request.user.is_authenticated:
+        notices = Notice.objects.filter(user_ks=request.user).order_by('-created_at').all()
+    else:
+        notices = Notice.objects.filter().order_by('-created_at').all()
 
     notice_list = []
     for notice in notices:
@@ -140,15 +156,20 @@ def index_6(request: HttpRequest):
                 }
             )
 
+    # обнуляем непросмотренные уведомления
+    Notice.objects.filter(user_ks=request.user, viewed=False).update(viewed=True)
     client_data = utils.get_main_client_front_data(request)
     context = {
         **client_data,
         'notices': json.dumps(notice_list)
     }
-    return render(request, 'index_6.html', context)
+    return render(request, 'client/index_6.html', context)
 
 
 def index_7_1(request: HttpRequest):
+    if utils.is_access_denied(request):
+        return redirect('redirect')
+
     if request.method == RequestMethod.POST:
         utils.form_processing(request)
     # updates = UpdateSoft.objects.select_related('soft').prefetch_related('files').filter(is_active=True).order_by('-created_at').all()
@@ -176,14 +197,27 @@ def index_7_1(request: HttpRequest):
         ut.log_error(updates_json, wt=False)
 
     client_data = utils.get_main_client_front_data(request)
+
+    # записываем просмотренные обновления и обнуляем счётчик для фронта
+    if client_data.get('unviewed_updates'):
+        for update in client_data['unviewed_updates']:
+            ViewUpdate.objects.create(
+                update_soft=update,
+                user_ks=request.user
+            )
+        client_data['update_count'] = 0
+
     context = {
         **client_data,
         'update_json': json.dumps(updates_json)
     }
-    return render(request, 'index_7_1.html', context)
+    return render(request, 'client/index_7_1.html', context)
 
 
 def index_7_2(request: HttpRequest):
+    if utils.is_access_denied(request):
+        return redirect('redirect')
+
     if request.method == RequestMethod.POST:
         utils.form_processing(request)
 
@@ -215,10 +249,13 @@ def index_7_2(request: HttpRequest):
         **client_data,
         'update_json': json.dumps(update_json)
     }
-    return render(request, 'index_7_2.html', context)
+    return render(request, 'client/index_7_2.html', context)
 
 
 def index_8(request: HttpRequest):
+    if utils.is_access_denied(request):
+        return redirect('redirect')
+
     if request.method == RequestMethod.POST:
         utils.form_processing(request)
 
@@ -229,4 +266,4 @@ def index_8(request: HttpRequest):
         **client_data,
         'faq': serialize(format='json', queryset=faq)
     }
-    return render(request, 'index_8.html', context)
+    return render(request, 'client/index_8.html', context)

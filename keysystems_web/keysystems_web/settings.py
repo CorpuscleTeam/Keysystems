@@ -6,10 +6,10 @@ import os
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 SECRET_KEY = os.getenv('DJANGO_KEY')
-DEBUG = bool(int(os.getenv('DEBUG')))
+# DEBUG = bool(int(os.getenv('DEBUG')))
+DEBUG = True
 
 back_branch = os.getenv('IS_BACK')
-# if back_branch:
 IS_BACK = True if back_branch else False
 
 ALLOWED_HOSTS = ['*']
@@ -31,6 +31,7 @@ INSTALLED_APPS = [
     'common',
     'client_app',
     'auth_app',
+    'curator_app',
 ]
 
 MIDDLEWARE = [
@@ -124,7 +125,7 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 if not os.path.exists(STATIC_ROOT):
     os.mkdir(STATIC_ROOT)
 
-MEDIA_URL = 'media/'
+MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 if not os.path.exists(MEDIA_ROOT):
     os.mkdir(MEDIA_ROOT)

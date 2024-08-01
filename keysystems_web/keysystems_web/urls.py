@@ -5,11 +5,14 @@ from django.conf.urls.static import static
 from . import settings
 from auth_app import views as reg
 from client_app import views as client
+from curator_app import views as curator
+
 
 # 8, 5_1, 6 7_1, 7_2
 urlpatterns = [
     path('', reg.start_page_redirect, name='redirect'),
     path('logout', reg.logout_view, name='logout'),
+    path('in_dev', reg.indev_view, name='in_dev'),
     path('index_2', reg.index_2, name='index_2'),
     path('index_2_1', reg.index_2_1, name='index_2_1'),
     path('index_2_2', reg.index_2_2, name='index_2_2'),
@@ -24,9 +27,15 @@ urlpatterns = [
     path('index_7_1', client.index_7_1, name='index_7_1'),
     path('index_7_2', client.index_7_2, name='index_7_2'),
 
+    path('cur_index_1_1', curator.cur_index_1_1, name='cur_index_1_1'),
+    path('cur_index_2_1', curator.cur_index_2_1, name='cur_index_2_1'),
+    path('cur_index_3', curator.cur_index_3, name='cur_index_3'),
+
     path('admin/', admin.site.urls),
     path('ckeditor/', include('ckeditor_uploader.urls')),
 ]
 
-if settings.DEBUG:
-    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+# if settings.DEBUG:
+urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+

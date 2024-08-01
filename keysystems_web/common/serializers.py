@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from .models import Order, Soft, OrderTopic, UserKS, Customer
-
+from .logs import log_error
 
 class SoftSerializer(serializers.ModelSerializer):
     class Meta:
@@ -33,7 +33,11 @@ class OrderSerializer(serializers.ModelSerializer):
     executor = UserKSSerializer()
     customer = CustomerSerializer()
 
+    id_str = serializers.SerializerMethodField()
+
     class Meta:
         model = Order
-        fields = ['id', 'from_user', 'customer', 'text', 'soft', 'topic', 'executor', 'status']
-        # fields = ['id', 'text', 'soft', 'status']
+        fields = ['id', 'from_user', 'customer', 'text', 'soft', 'topic', 'executor', 'status', 'id_str']
+
+    def get_id_str(self, obj):
+        return f'#{str(obj.id).zfill(5)}'
