@@ -58,7 +58,9 @@ services:
       - ../nginx/conf.d/base.conf:/etc/nginx/conf.d/base.conf
 #      - ../ssl:/etc/nginx/ssl
       - ../keysystems_web/staticfiles:/var/html/static/
+      - ../keysystems_web/staticfiles:/var/html/staticfiles/
       - ../keysystems_web/media:/var/html/media/
+      - ../nginx/logs:/var/log/nginx
     depends_on:
       - web
 
