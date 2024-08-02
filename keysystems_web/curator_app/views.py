@@ -17,12 +17,12 @@ from enums import RequestMethod, OrderStatus, notices_dict
 # удалить аналог 2_2
 def cur_index_1_1(request: HttpRequest):
     context = {
-        'main_data': {
+        'main_data': json.dumps({
             'inn': 1234567890,
             'fio': 'Тестов Тест Тестович',
             'orders_count': 3,
             'notice': 6
-        }
+        })
     }
     return render(request, 'curator/cur_index_1_1.html', context)
 
