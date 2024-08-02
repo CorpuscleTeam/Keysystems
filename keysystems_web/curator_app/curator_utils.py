@@ -62,11 +62,13 @@ def get_orders_curator(request: HttpRequest, for_user: bool = False):
     new_orders = orders.filter(status=OrderStatus.NEW).all()
     active_orders = orders.filter(status=OrderStatus.ACTIVE).all()
     done_orders = orders.filter(status=OrderStatus.DONE).all()
-
-    return json.dumps(
-        {
-            'new': OrderSerializer(new_orders, many=True).data,
-            'active': OrderSerializer(active_orders, many=True).data,
-            'done': OrderSerializer(done_orders, many=True).data,
-        }
-    )
+    for order in orders.all():
+        logging.warning(f'{order.status} {order.id}')
+    # return json.dumps(
+    #     {
+    #         'new': OrderSerializer(new_orders, many=True).data,
+    #         'active': OrderSerializer(active_orders, many=True).data,
+    #         'done': OrderSerializer(done_orders, many=True).data,
+    #     }
+    # )
+    return json.dumps(OrderSerializer(orders.all(), many=True).data)
