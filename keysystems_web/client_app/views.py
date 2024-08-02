@@ -12,22 +12,9 @@ from .forms import OrderForm
 from .models import News, FAQ, UpdateSoft, UpdateSoftFiles, ViewUpdate
 from . import client_utils as utils
 from common.models import OrderTopic, Notice, Order, Soft
-from common.serializers import OrderSerializer
+from common.serializers import OrderSerializer, NoticeSerializer
 import common as ut
 from enums import RequestMethod, OrderStatus, notices_dict
-
-
-# удалить аналог 2_2
-def index_3_2(request: HttpRequest):
-    context = {}
-    return render(request, 'index_3_2.html', context)
-
-'''
-'type_appeal': ['1'], 
-'type_soft': ['1'], 
-'description': ['уаккав'], 
-'addfile': ['Снимок экрана 2024-05-25 162508.png']}>
-'''
 
 
 # страничка с новостями
@@ -61,6 +48,7 @@ def index_4_1(request: HttpRequest):
     return render(request, 'client/index_4_1.html', context)
 
 
+# новость подробно
 def index_4_2(request: HttpRequest):
     if utils.is_access_denied(request):
         return redirect('redirect')
@@ -103,6 +91,7 @@ def index_4_2(request: HttpRequest):
     return render(request, 'client/index_4_2.html', context)
 
 
+# заявки
 def index_5_1(request: HttpRequest):
 
     if utils.is_access_denied(request):
@@ -131,6 +120,7 @@ def index_5_1(request: HttpRequest):
     return render(request, 'client/index_5_1.html', context)
 
 
+# уведомления
 def index_6(request: HttpRequest):
     if utils.is_access_denied(request):
         return redirect('redirect')
@@ -144,28 +134,31 @@ def index_6(request: HttpRequest):
         notices = Notice.objects.filter().order_by('-created_at').all()
 
     notice_list = []
-    for notice in notices:
-        text: str = notices_dict.get(notice.type_notice)
-        if text:
-            notice_list.append(
-                {
-                    'order_id': notice.order.id,
-                    'num_push': notice.id,
-                    'date': ut.get_data_string(notice.created_at),
-                    'text': text.format(pk=notice.id)
-                }
-            )
+    # for notice in notices:
+    #     text: str = notices_dict.get(notice.type_notice)
+    #     if text:
+    #         notice_list.append(
+    #             {
+    #                 'order_id': notice.order.id,
+    #                 'num_push': notice.id,
+    #                 'date': ut.get_data_string(notice.created_at),
+    #                 'text': text.format(pk=notice.id)
+    #             }
+    #         )
+
+    notice = NoticeSerializer(notices)
 
     # обнуляем непросмотренные уведомления
     Notice.objects.filter(user_ks=request.user, viewed=False).update(viewed=True)
     client_data = utils.get_main_client_front_data(request)
     context = {
         **client_data,
-        'notices': json.dumps(notice_list)
+        'notices': notice.serialize()
     }
     return render(request, 'client/index_6.html', context)
 
 
+# обновление списком
 def index_7_1(request: HttpRequest):
     if utils.is_access_denied(request):
         return redirect('redirect')
@@ -214,6 +207,7 @@ def index_7_1(request: HttpRequest):
     return render(request, 'client/index_7_1.html', context)
 
 
+# обновление подробнее
 def index_7_2(request: HttpRequest):
     if utils.is_access_denied(request):
         return redirect('redirect')
@@ -252,6 +246,7 @@ def index_7_2(request: HttpRequest):
     return render(request, 'client/index_7_2.html', context)
 
 
+# FAQ частозадаваемые
 def index_8(request: HttpRequest):
     if utils.is_access_denied(request):
         return redirect('redirect')

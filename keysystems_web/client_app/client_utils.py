@@ -19,7 +19,6 @@ from enums import OrderStatus, FormType
 
 # проверяет доступ к странице
 def is_access_denied(request: HttpRequest) -> bool:
-    # log_error(f'DEBUG: {DEBUG}', wt=False)
     if DEBUG:
         return False
     if request.user.is_authenticated and not request.user.is_staff:
