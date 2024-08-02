@@ -59,7 +59,7 @@
             </a>
         </li>
         <li class="sidenav_mobile_li">
-            <a href="#!" class="sidenav-close">
+            <a href="cur_index_2_1.html" class="sidenav-close">
                 <div class="sidenav_li_left">
                     <img src="{% static 'site/img/request.svg' %}" alt="">
                     <p>Все заявки</p>
@@ -67,7 +67,7 @@
             </a>
         </li>
         <li class="sidenav_mobile_li">
-            <a href="#">
+            <a href="cur_index_3.html">
                 <div class="sidenav_li_flex mobile_notice">
                     <div class="sidenav_li_left">
                         <img src="{% static 'site/img/push.svg' %}" alt="">
@@ -91,7 +91,7 @@
         <div class="conteiner">
             <div class="header_client_menu">
                 <ul class="header_client_menu_ul">
-                    <li>
+                    <li class="curator_fio">
                         <!-- скрипт имя куратора -->
                     </li>
                     <li>
@@ -113,17 +113,17 @@
                 <!-- Меню -->
                 <div class="page_flex_menu">
                     <ul class="page_menu_ul">
-                        <!-- <li>
+                        <li class="display_none">
                             <a class="waves-effect waves-light btn modal-trigger" href="#modal_create_request">
                                 <div class="page_create_request_flex">
                                     <img src="{% static 'site/img/plus.svg' %}" alt="+">
                                     <p>Создать заявку</p>
                                 </div>
                             </a>
-                        </li> -->
+                        </li>
                         <li>
-                            <a href="index_5_1">
-                                <div class="page_menu_li_flex page_orders">
+                            <a href="#">
+                                <div class="page_menu_li_flex page_orders  page_menu_active">
                                     <div class="page_menu_li_left">
                                         <img src="{% static 'site/img/request.svg' %}" alt="">
                                         <p>Мои заявки</p>
@@ -134,15 +134,15 @@
                             </a>
                         </li>
                         <li>
-                            <a href="#">
-                                <div class="page_menu_li_news page_menu_active">
+                            <a href="cur_index_3.html">
+                                <div class="page_menu_li_news">
                                     <img src="{% static 'site/img/request.svg' %}" alt="">
                                     <p>Все заявки</p>
                                 </div>
                             </a>
                         </li>
                         <li>
-                            <a href="index_6">
+                            <a href="cur_index_3.html">
                                 <div class="page_menu_li_flex page_notice">
                                     <div class="page_menu_li_left">
                                         <img src="{% static 'site/img/push.svg' %}" alt="">
@@ -185,11 +185,16 @@
 
     <script>
     // для переменных
+    let curator = JSON.parse('{{ main_data|escapejs }}')
 
     </script>
 
     <script type="text/javascript" src="{% static 'site/js/materialize.min.js' %}"></script>
     <script type="text/javascript" src="{% static 'site/js/main_sidenav.js' %}"></script>
+    <script type="text/javascript" src="{% static 'site/js/main_sidenav.js' %}"></script>
+    <script type="text/javascript" src="{% static 'site/js/cur_curaton_fio.js' %}"></script>
+    <script type="text/javascript" src="{% static 'site/js/cur_nitice.js' %}"></script>
+    
 
 </body>
 

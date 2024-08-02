@@ -356,7 +356,7 @@ input[placeholder] {
     background-color: rgba(255, 255, 255, 1);
     border: var(--border_grey);
     box-shadow: var(--border_shadow);
-    height: 370px;
+    max-height: 370px;
     padding: 30px;
 }
 .page_menu_ul {
@@ -898,4 +898,9 @@ textarea {
     line-height: 17px;
     color: rgba(153, 153, 153, 1);
     font-family: "Oswald", sans-serif;
+}
+
+/* Кураторская панель */
+.display_none {
+    display: none !important;
 }
