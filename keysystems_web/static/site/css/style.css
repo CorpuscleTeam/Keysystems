@@ -356,7 +356,7 @@ input[placeholder] {
     background-color: rgba(255, 255, 255, 1);
     border: var(--border_grey);
     box-shadow: var(--border_shadow);
-    height: 370px;
+    max-height: 370px;
     padding: 30px;
 }
 .page_menu_ul {
@@ -902,5 +902,5 @@ textarea {
 
 /* Кураторская панель */
 .display_none {
-    display: none;
+    display: none !important;
 }
