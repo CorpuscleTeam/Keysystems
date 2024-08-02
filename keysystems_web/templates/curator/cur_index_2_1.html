@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'site/css/basic_style.css' %}">
+    <link rel="stylesheet" href="{% static 'site/css/sidenav.css' %}">
+    <link rel="stylesheet" href="{% static 'site/css/modal_create_request.css' %}">
+    <link rel="stylesheet" href="{% static 'site/css/style.css' %}">
+    <link rel="stylesheet" href="{% static 'site/css/media.css' %}">
+    <title>Личный кабинет КСЯ</title>
+</head>
+
+<body>
+
+    <header class="header_start_client">
+        <div class="conteiner">
+            <div class="header_logo">
+                <img src="{% static 'site/img/header_logo+кураторская_панель.svg' %}" alt=""> 
+            </div>
+        </div>
+    </header>
+
+    <!-- Menu Mobile -->
+    <header class="header_mobile_client">
+        <div class="header_mobile_client_logo">
+            <img src="{% static 'site/img/logo_mobile.svg' %}" alt="">
+        </div>
+        <!-- <a class="btn_back" href="http://ksykt.ru/"><button>&larr; Назад</button></a> -->
+        <div class="header_mobile_client_burger">
+            <a href="#" data-target="slide-out" class="sidenav-trigger"><i class="material-icons"><img src="{% static 'site/img/burger.svg' %}" alt=""></i></a>
+        </div>
+    </header>
+
+    <!-- SideNav Mobile -->
+    <ul id="slide-out" class="sidenav">
+        <li class="sidnav_li_inn">
+            <!-- добавить скрипт с кураторами -->
+        </li>
+        <!-- <li class="create_request">
+            <a class="sidnav_waves-effect sidnav_waves-light sidnav_btn modal-trigger" href="#modal_create_request">
+                <div class="create_request_flex">
+                    <img src="{% static 'site/img/plus.svg' %}" alt="+">
+                    <p>Создать заявку</p>
+                </div>
+            </a>
+        </li> -->
+        <li class="sidenav_mobile_li">
+            <a href="cur_index_1_1.html">
+                <div class="sidenav_li_flex mobile_orders">
+                    <div class="sidenav_li_left">
+                        <img src="{% static 'site/img/request.svg' %}" alt="">
+                        <p>Мои заявки</p>
+                    </div>
+                    <!-- добавить скрипт -->
+                </div>
+            </a>
+        </li>
+        <li class="sidenav_mobile_li">
+            <a href="#" class="sidenav-close">
+                <div class="sidenav_li_left">
+                    <img src="{% static 'site/img/request.svg' %}" alt="">
+                    <p>Все заявки</p>
+                </div>
+            </a>
+        </li>
+        <li class="sidenav_mobile_li">
+            <a href="cur_index_3.html">
+                <div class="sidenav_li_flex mobile_notice">
+                    <div class="sidenav_li_left">
+                        <img src="{% static 'site/img/push.svg' %}" alt="">
+                        <p>Уведомления</p>
+                    </div>
+                    <!-- добавить скрипт -->
+                </div>
+            </a>
+        </li>
+        <li>
+            <a href="logout">
+                <div class="sidenav_li_left">
+                    <img src="{% static 'site/img/logout.svg' %}" alt="setting">
+                    <p>ВЫЙТИ</p>
+                </div>
+            </a>
+        </li>
+    </ul>
+
+    <header class="header_client">
+        <div class="conteiner">
+            <div class="header_client_menu">
+                <ul class="header_client_menu_ul">
+                    <li class="curator_fio">
+                        <!-- скрипт имя куратора -->
+                    </li>
+                    <li>
+                        <a href="logout">
+                            <img src="{% static 'site/img/logout.svg' %}" alt="setting">
+                            <p>ВЫЙТИ</p>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </header>
+
+    <!-- Тело страницы -->
+    <section class="page">
+        <div class="conteiner">
+            <div class="page_flex">
+
+                <!-- Меню -->
+                <div class="page_flex_menu">
+                    <ul class="page_menu_ul">
+                        <li class="display_none">
+                            <a class="waves-effect waves-light btn modal-trigger" href="#modal_create_request">
+                                <div class="page_create_request_flex">
+                                    <img src="{% static 'site/img/plus.svg' %}" alt="+">
+                                    <p>Создать заявку</p>
+                                </div>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="cur_index_1_1.html">
+                                <div class="page_menu_li_flex page_orders  page_menu_active">
+                                    <div class="page_menu_li_left">
+                                        <img src="{% static 'site/img/request.svg' %}" alt="">
+                                        <p>Мои заявки</p>
+                                    </div>
+                                    <!-- скрипт для количества заявок -->
+                                    <!-- <div class="page_menu_li_right orders_count"></div> -->
+                                </div>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#">
+                                <div class="page_menu_li_news">
+                                    <img src="{% static 'site/img/request.svg' %}" alt="">
+                                    <p>Все заявки</p>
+                                </div>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="cur_index_3.html">
+                                <div class="page_menu_li_flex page_notice">
+                                    <div class="page_menu_li_left">
+                                        <img src="{% static 'site/img/push.svg' %}" alt="">
+                                        <p>Уведомления</p>
+                                    </div>
+                                    <!-- <div class="page_menu_li_right notice">1</div> -->
+                                </div>
+                            </a>
+                        </li>
+                        <!-- <li>
+                            <a href="index_7_1">
+                                <div class="page_menu_li_flex page_update">
+                                    <div class="page_menu_li_left">
+                                        <img src="{% static 'site/img/update.svg' %}" alt="">
+                                        <p>Обновление ПО</p>
+                                    </div> -->
+                                    <!-- <div class="page_menu_li_right update_count">24</div> -->
+                                <!-- </div>
+                            </a>
+                        </li> -->
+                    </ul>
+                </div>
+
+                <!-- Основная часть -->
+                <div class="page_flex_body">
+                    <h2 class="page_body_h2">Все заявки</h2>
+
+                </div>
+            </div>
+        </div>
+    </section>
+
+
+    <!-- Футер -->
+    <!-- <footer class="footer_client">
+        <div class="conteiner">
+            <a class="footer_client_a modal-trigger" href="#modal_create_request">Написать в техподдержку</a>
+        </div>
+    </footer> -->
+
+    <script>
+    // для переменных
+    let curator = JSON.parse('{{ main_data|escapejs }}')
+
+    </script>
+
+    <script type="text/javascript" src="{% static 'site/js/materialize.min.js' %}"></script>
+    <script type="text/javascript" src="{% static 'site/js/main_sidenav.js' %}"></script>
+    <script type="text/javascript" src="{% static 'site/js/main_sidenav.js' %}"></script>
+    <script type="text/javascript" src="{% static 'site/js/cur_curaton_fio.js' %}"></script>
+    <script type="text/javascript" src="{% static 'site/js/cur_nitice.js' %}"></script>
+    
+
+</body>
+
+</html>
