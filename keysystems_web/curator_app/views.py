@@ -7,47 +7,56 @@ from datetime import datetime
 import os
 import json
 
-from keysystems_web.settings import FILE_STORAGE
+from . import curator_utils as utils
 from common.models import OrderTopic, Notice, Order, Soft
-from common.serializers import OrderSerializer
+from common.serializers import NoticeSerializer
 import common as ut
 from enums import RequestMethod, OrderStatus, notices_dict
 
 
-# удалить аналог 2_2
+# мои задачи
 def cur_index_1_1(request: HttpRequest):
+    if utils.is_access_denied(request):
+        return redirect('redirect')
+
+    curator_data = utils.get_main_curator_front_data(request)
     context = {
-        'main_data': json.dumps({
-            'inn': 1234567890,
-            'fio': 'Тестов Тест Тестович',
-            'orders_count': 3,
-            'notice': 6
-        })
+        'main_data': curator_data,
+        'orders': utils.get_orders_curator(request, for_user=True)
     }
     return render(request, 'curator/cur_index_1_1.html', context)
 
 
-# удалить аналог 2_2
+# общие задачи
 def cur_index_2_1(request: HttpRequest):
+    if utils.is_access_denied(request):
+        return redirect('redirect')
+
+    curator_data = utils.get_main_curator_front_data(request)
     context = {
-        'main_data': {
-            'inn': 1234567890,
-            'fio': 'Тестов Тест Тестович',
-            'orders_count': 3,
-            'notice': 6
-        }
+        'main_data': curator_data,
+        'orders': utils.get_orders_curator(request)
     }
     return render(request, 'curator/cur_index_2_1.html', context)
 
 
-# удалить аналог 2_2
+# уведомления
 def cur_index_3(request: HttpRequest):
+    if utils.is_access_denied(request):
+        return redirect('redirect')
+
+    if request.user.is_authenticated:
+        notices = Notice.objects.filter(user_ks=request.user).order_by('-created_at').all()
+    else:
+        notices = Notice.objects.filter().order_by('-created_at').all()
+
+    notice = NoticeSerializer(notices)
+
+    # обнуляем непросмотренные уведомления
+    Notice.objects.filter(user_ks=request.user, viewed=False).update(viewed=True)
+    curator_data = utils.get_main_curator_front_data(request)
     context = {
-        'main_data': {
-            'inn': 1234567890,
-            'fio': 'Тестов Тест Тестович',
-            'orders_count': 3,
-            'notice': 6
-        }
+        'main_data': curator_data,
+        'notices': notice.serialize()
     }
     return render(request, 'curator/cur_index_3.html', context)

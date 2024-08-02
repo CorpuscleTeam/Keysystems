@@ -1,4 +1,5 @@
 from pathlib import Path
+from logging.handlers import TimedRotatingFileHandler
 
 import os
 
@@ -6,8 +7,8 @@ import os
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 SECRET_KEY = os.getenv('DJANGO_KEY')
-# DEBUG = bool(int(os.getenv('DEBUG')))
-DEBUG = True
+DEBUG = bool(int(os.getenv('DEBUG')))
+# DEBUG = True
 
 back_branch = os.getenv('IS_BACK')
 IS_BACK = True if back_branch else False
@@ -138,3 +139,44 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 AUTH_USER_MODEL = 'common.UserKS'
 
 CKEDITOR_UPLOAD_PATH = "ck_storage/"
+
+LOG_DIR = os.path.join(BASE_DIR, 'logs')
+if not os.path.exists(LOG_DIR):
+    os.makedirs(LOG_DIR)
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'formatters': {
+        'verbose': {
+            'format': '{levelname} {asctime} {module} {message}',
+            'style': '{',
+        },
+        'simple': {
+            'format': '{levelname} {message}',
+            'style': '{',
+        },
+    },
+    'handlers': {
+        'file': {
+            'level': 'WARNING',
+            'class': 'logging.handlers.TimedRotatingFileHandler',
+            'filename': os.path.join(LOG_DIR, 'django.log'),
+            'when': 'midnight',
+            'backupCount': 7,
+            'formatter': 'verbose',
+        },
+        'console': {
+            'level': 'INFO',
+            'class': 'logging.StreamHandler',
+            'formatter': 'simple',
+        },
+    },
+    'loggers': {
+        'django': {
+            'handlers': ['file', 'console'],
+            'level': 'DEBUG',
+            'propagate': True,
+        },
+    },
+}

@@ -1,6 +1,11 @@
+import json
+
 from rest_framework import serializers
 from .models import Order, Soft, OrderTopic, UserKS, Customer
+from common import get_data_string
 from .logs import log_error
+from enums import notices_dict
+
 
 class SoftSerializer(serializers.ModelSerializer):
     class Meta:
@@ -41,3 +46,23 @@ class OrderSerializer(serializers.ModelSerializer):
 
     def get_id_str(self, obj):
         return f'#{str(obj.id).zfill(5)}'
+
+
+class NoticeSerializer:
+    def __init__(self, notices: list):
+        self.notices = notices
+        self.notice_list = []
+
+    def serialize(self) -> str:
+        for notice in self.notices:
+            text: str = notices_dict.get(notice.type_notice)
+            if text:
+                self.notice_list.append(
+                    {
+                        'order_id': notice.order.id,
+                        'num_push': notice.id,
+                        'date': get_data_string(notice.created_at),
+                        'text': text.format(pk=notice.id)
+                    }
+                )
+        return json.dumps(self.notice_list)
