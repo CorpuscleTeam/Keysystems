@@ -1,7 +1,7 @@
 import json
 
 from rest_framework import serializers
-from .models import Order, Soft, OrderTopic, UserKS, Customer
+from .models import Order, Soft, OrderTopic, UserKS, OrderCurator, Customer
 from common import get_data_string
 from .logs import log_error
 from enums import notices_dict
@@ -31,21 +31,37 @@ class CustomerSerializer(serializers.ModelSerializer):
         fields = ['id', 'inn', 'district', 'title']
 
 
+class OrderCuratorSerializer(serializers.ModelSerializer):
+    user = UserKSSerializer()
+
+    class Meta:
+        model = OrderCurator
+        fields = ['id', 'user']
+
+
 class OrderSerializer(serializers.ModelSerializer):
     soft = SoftSerializer()
     topic = OrderTopicSerializer()
     from_user = UserKSSerializer()
-    executor = UserKSSerializer()
     customer = CustomerSerializer()
+    order_curators = OrderCuratorSerializer(many=True, source='order_curator')
 
     id_str = serializers.SerializerMethodField()
+    curators = serializers.SerializerMethodField()
 
     class Meta:
         model = Order
-        fields = ['id', 'from_user', 'customer', 'text', 'soft', 'topic', 'executor', 'status', 'id_str']
+        fields = ['id', 'from_user', 'customer', 'text', 'soft', 'topic', 'status', 'id_str', 'order_curators', 'curators']
 
     def get_id_str(self, obj):
         return f'#{str(obj.id).zfill(5)}'
+
+    def get_curators(self, obj):
+        curators = [curator.user.full_name for curator in obj.order_curator.all()]
+        if curators:
+            return ', '.join(curators)
+        else:
+            return 'Нет куратора'
 
 
 class NoticeSerializer:

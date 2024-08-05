@@ -2,7 +2,7 @@ from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from django.contrib.auth.forms import UserCreationForm, UserChangeForm
 
-from .models import Soft, Customer, OrderTopic, UserKS, Order, District, Notice
+from .models import Soft, Customer, OrderTopic, UserKS, Order, District, Notice, OrderCurator
 # from .forms import CustomUserChangeForm
 
 
@@ -74,10 +74,16 @@ class ViewAdminCostumer(admin.ModelAdmin):
     readonly_fields = ['created_at', 'updated_at']
 
 
+class OrderCuratorInline(admin.TabularInline):
+    model = OrderCurator
+    extra = 1
+
+
 # админка обращения
 @admin.register(Order)
 class ViewAdminOrder(admin.ModelAdmin):
-    list_display = ['from_user', 'soft', 'topic', 'executor', 'status']
+    inlines = [OrderCuratorInline]
+    list_display = ['from_user', 'soft', 'topic', 'status']
     readonly_fields = ['created_at', 'updated_at']
 
 
