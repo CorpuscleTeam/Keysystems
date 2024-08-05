@@ -2,6 +2,8 @@ from django.shortcuts import render, redirect
 from django.http.request import HttpRequest
 from django.core.files.storage import FileSystemStorage
 from django.core.serializers import serialize
+from django.db.models import Prefetch
+
 from datetime import datetime
 
 import os
@@ -11,7 +13,7 @@ from keysystems_web.settings import FILE_STORAGE
 from .forms import OrderForm
 from .models import News, FAQ, UpdateSoft, UpdateSoftFiles, ViewUpdate
 from . import client_utils as utils
-from common.models import OrderTopic, Notice, Order, Soft
+from common.models import OrderTopic, Notice, Order, Soft, OrderCurator
 from common.serializers import OrderSerializer, NoticeSerializer
 import common as ut
 from enums import RequestMethod, OrderStatus, notices_dict
@@ -100,7 +102,7 @@ def index_5_1(request: HttpRequest):
     if request.method == RequestMethod.POST:
         utils.form_processing(request)
 
-    orders = Order.objects.select_related('soft', 'topic', 'from_user', 'executor', 'customer').order_by('-created_at')
+    orders = Order.objects.select_related('soft', 'topic', 'from_user', 'customer').order_by('-created_at')
 
     new_orders = orders.filter(status=OrderStatus.NEW).all()
     active_orders = orders.filter(status=OrderStatus.ACTIVE).all()
@@ -110,12 +112,19 @@ def index_5_1(request: HttpRequest):
     active_orders_ser = OrderSerializer(active_orders, many=True)
     done_orders_ser = OrderSerializer(done_orders, many=True)
 
+    orders = Order.objects.select_related(
+        'soft', 'topic', 'from_user', 'customer'
+    ).prefetch_related(
+        Prefetch('order_curator', queryset=OrderCurator.objects.select_related('user'))
+    ).order_by('-created_at')
+
     client_data = utils.get_main_client_front_data(request)
     context = {
         **client_data,
         'new_orders': json.dumps(new_orders_ser.data),
         'active_orders': json.dumps(active_orders_ser.data),
         'done_orders': json.dumps(done_orders_ser.data),
+        'orders_tst': json.dumps(OrderSerializer(orders, many=True).data)
     }
     return render(request, 'client/index_5_1.html', context)
 

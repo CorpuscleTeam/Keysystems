@@ -35,7 +35,8 @@ def cur_index_2_1(request: HttpRequest):
     curator_data = utils.get_main_curator_front_data(request)
     context = {
         'main_data': curator_data,
-        'orders': utils.get_orders_curator(request)
+        'orders': utils.get_orders_curator(request),
+        'order_all_data': 1
     }
     return render(request, 'curator/cur_index_2_1.html', context)
 
@@ -52,8 +53,9 @@ def cur_index_3(request: HttpRequest):
 
     notice = NoticeSerializer(notices)
 
+    if request.user.is_authenticated:
     # обнуляем непросмотренные уведомления
-    Notice.objects.filter(user_ks=request.user, viewed=False).update(viewed=True)
+        Notice.objects.filter(user_ks=request.user, viewed=False).update(viewed=True)
     curator_data = utils.get_main_curator_front_data(request)
     context = {
         'main_data': curator_data,

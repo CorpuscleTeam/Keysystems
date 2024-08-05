@@ -33,7 +33,7 @@ def is_access_denied(request: HttpRequest) -> bool:
 def get_main_curator_front_data(request: HttpRequest) -> str:
     if request.user.is_authenticated:
         # количество заявок
-        user_orders_count = Order.objects.filter(executor=request.user).exclude(status=OrderStatus.DONE).count()
+        user_orders_count = Order.objects.filter().exclude(status=OrderStatus.DONE).count()
         # количество непросмотренных уведомлений
         notice_count = Notice.objects.filter(viewed=False, user_ks=request.user).count()
         return json.dumps(
@@ -63,10 +63,12 @@ def get_orders_curator(request: HttpRequest, for_user: bool = False):
     active_orders = orders.filter(status=OrderStatus.ACTIVE).all()
     done_orders = orders.filter(status=OrderStatus.DONE).all()
 
-    return json.dumps(
-        {
-            'new': OrderSerializer(new_orders, many=True).data,
-            'active': OrderSerializer(active_orders, many=True).data,
-            'done': OrderSerializer(done_orders, many=True).data,
-        }
-    )
+    return json.dumps(OrderSerializer(orders.all(), many=True).data)
+
+    # return json.dumps(
+    #     {
+    #         'new': OrderSerializer(new_orders, many=True).data,
+    #         'active': OrderSerializer(active_orders, many=True).data,
+    #         'done': OrderSerializer(done_orders, many=True).data,
+    #     }
+    # )
