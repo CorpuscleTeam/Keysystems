@@ -57,18 +57,6 @@ def get_main_curator_front_data(request: HttpRequest) -> str:
 
 # возвращае заказы по фильтрам
 def get_orders_curator(request: HttpRequest, for_user: bool = False):
-    orders = Order.objects.select_related('soft', 'topic', 'from_user', 'executor', 'customer').order_by('-created_at')
-
-    new_orders = orders.filter(status=OrderStatus.NEW).all()
-    active_orders = orders.filter(status=OrderStatus.ACTIVE).all()
-    done_orders = orders.filter(status=OrderStatus.DONE).all()
+    orders = Order.objects.select_related('soft', 'topic', 'from_user', 'customer').order_by('-created_at')
 
     return json.dumps(OrderSerializer(orders.all(), many=True).data)
-
-    # return json.dumps(
-    #     {
-    #         'new': OrderSerializer(new_orders, many=True).data,
-    #         'active': OrderSerializer(active_orders, many=True).data,
-    #         'done': OrderSerializer(done_orders, many=True).data,
-    #     }
-    # )
