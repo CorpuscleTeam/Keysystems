@@ -91,7 +91,7 @@ def get_main_client_front_data(request: HttpRequest) -> dict:
 
 
 def form_processing(request: HttpRequest) -> None:
-    log_error(f'>>>> {request.POST}', wt=False)
+    # log_error(f'>>>> {request.POST}', wt=False)
 
     type_form = request.POST.get('type_form')
     if type_form == FormType.ORDER:

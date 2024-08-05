@@ -124,7 +124,7 @@ def index_5_1(request: HttpRequest):
         'new_orders': json.dumps(new_orders_ser.data),
         'active_orders': json.dumps(active_orders_ser.data),
         'done_orders': json.dumps(done_orders_ser.data),
-        'orders_tst': json.dumps(OrderSerializer(orders, many=True).data)
+        'orders': json.dumps(OrderSerializer(orders, many=True).data)
     }
     return render(request, 'client/index_5_1.html', context)
 
