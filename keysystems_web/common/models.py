@@ -129,13 +129,13 @@ class Order(models.Model):
     text = models.CharField('Текст', max_length=255)
     soft = models.ForeignKey(Soft, on_delete=models.DO_NOTHING, related_name='order', verbose_name='ПО')
     topic = models.ForeignKey(OrderTopic, on_delete=models.DO_NOTHING, related_name='order', verbose_name='Тема')
-    executor = models.ForeignKey(
-        UserKS,
-        on_delete=models.DO_NOTHING,
-        related_name='executed_orders',
-        null=True, blank=True,
-        verbose_name='Ответственный'
-    )
+    # executor = models.ForeignKey(
+    #     UserKS,
+    #     on_delete=models.DO_NOTHING,
+    #     related_name='executed_orders',
+    #     null=True, blank=True,
+    #     verbose_name='Ответственный'
+    # )
     status = models.CharField('Статус', default=OrderStatus.NEW.value, choices=ORDER_CHOICES)
 
     objects = models.Manager()
@@ -184,3 +184,42 @@ class Notice(models.Model):
         verbose_name = 'Уведомление'
         verbose_name_plural = 'Уведомления'
         db_table = 'notice'
+
+
+# районы и по кураторов
+class CuratorDist(models.Model):
+    id = models.AutoField(primary_key=True)
+    created_at = models.DateTimeField('Создана', auto_now_add=True)
+    updated_at = models.DateTimeField('Обновлена', auto_now=True)
+    user = models.ForeignKey(UserKS, on_delete=models.DO_NOTHING, related_name='curator_dist')
+    district = models.ForeignKey(District, on_delete=models.DO_NOTHING, related_name='curator_dist')
+    soft = models.ForeignKey(Soft, on_delete=models.DO_NOTHING, related_name='curator_dist')
+
+    objects: models.Manager = models.Manager()
+
+    def __str__(self):
+        return f"{self.user}"
+
+    class Meta:
+        verbose_name = 'Распределение кураторов'
+        verbose_name_plural = 'Распределения кураторов'
+        db_table = 'curator_dist'
+
+
+# кураторы заявки
+class OrderCurator(models.Model):
+    id = models.AutoField(primary_key=True)
+    created_at = models.DateTimeField('Создана', auto_now_add=True)
+    updated_at = models.DateTimeField('Обновлена', auto_now=True)
+    user = models.ForeignKey(UserKS, on_delete=models.DO_NOTHING, related_name='order_curator')
+    order = models.ForeignKey(Order, on_delete=models.DO_NOTHING, related_name='order_curator')
+
+    objects: models.Manager = models.Manager()
+
+    def __str__(self):
+        return f"{self.user}"
+
+    class Meta:
+        verbose_name = 'Распределение кураторов'
+        verbose_name_plural = 'Распределения кураторов'
+        db_table = 'order_curator'

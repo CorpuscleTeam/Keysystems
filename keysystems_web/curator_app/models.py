@@ -5,7 +5,7 @@ from common.models import District, UserKS, Soft, Order
 from enums import OrderStatus, ORDER_CHOICES, notices_tuple
 
 
-# районы и по кураторов
+# # районы и по кураторов
 # class CuratorDist(models.Model):
 #     id = models.AutoField(primary_key=True)
 #     created_at = models.DateTimeField('Создана', auto_now_add=True)

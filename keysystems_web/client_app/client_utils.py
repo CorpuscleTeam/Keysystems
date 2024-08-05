@@ -12,7 +12,7 @@ import json
 from keysystems_web.settings import FILE_STORAGE, DEBUG
 from .forms import OrderForm, UserSettingForm
 from .models import News, ViewNews, UpdateSoft
-from common.models import OrderTopic, Soft, Order, DownloadedFile, Notice, UsedSoft
+from common.models import OrderTopic, Soft, Order, DownloadedFile, Notice, UsedSoft, CuratorDist, OrderCurator
 from common import log_error, months_str_ru
 from enums import OrderStatus, FormType
 
@@ -91,7 +91,7 @@ def get_main_client_front_data(request: HttpRequest) -> dict:
 
 
 def form_processing(request: HttpRequest) -> None:
-    log_error(f'>>>> {request.POST}', wt=False)
+    # log_error(f'>>>> {request.POST}', wt=False)
 
     type_form = request.POST.get('type_form')
     if type_form == FormType.ORDER:
@@ -108,6 +108,13 @@ def form_processing(request: HttpRequest) -> None:
                 customer=request.user.customer
             )
             new_order.save()
+
+            order_curators = CuratorDist.objects.filter(soft=soft, district=request.user.customer.district).all()
+            for curator in order_curators:
+                OrderCurator.objects.create(
+                    user=curator,
+                    order=new_order
+                )
 
             files = request.FILES.getlist('addfile')
 
