@@ -55,7 +55,9 @@ def cur_index_3(request: HttpRequest):
 
     if request.user.is_authenticated:
     # обнуляем непросмотренные уведомления
+
         Notice.objects.filter(user_ks=request.user, viewed=False).update(viewed=True)
+
     curator_data = utils.get_main_curator_front_data(request)
     context = {
         'main_data': curator_data,
