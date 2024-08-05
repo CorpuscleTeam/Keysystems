@@ -1,36 +1,49 @@
 import json
 
 from rest_framework import serializers
-from .models import Order, Soft, OrderTopic, UserKS, OrderCurator, Customer
+from .models import Order, Soft, OrderTopic, UserKS, OrderCurator, Customer, District
 from common import get_data_string
 from .logs import log_error
 from enums import notices_dict
 
 
+# районы
+class DistrictSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = District
+        fields = ['title']
+
+
+# ПО
 class SoftSerializer(serializers.ModelSerializer):
     class Meta:
         model = Soft
         fields = ['id', 'title', 'description', 'is_active']
 
 
+# Обращения
 class OrderTopicSerializer(serializers.ModelSerializer):
     class Meta:
         model = OrderTopic
         fields = ['id', 'topic', 'is_active']
 
 
+# пользователи
 class UserKSSerializer(serializers.ModelSerializer):
     class Meta:
         model = UserKS
         fields = ['id', 'full_name', 'username']
 
 
+# районыклиент
 class CustomerSerializer(serializers.ModelSerializer):
+    district = DistrictSerializer()
     class Meta:
         model = Customer
         fields = ['id', 'inn', 'district', 'title']
 
 
+# кураторы
 class OrderCuratorSerializer(serializers.ModelSerializer):
     user = UserKSSerializer()
 
@@ -39,6 +52,7 @@ class OrderCuratorSerializer(serializers.ModelSerializer):
         fields = ['id', 'user']
 
 
+# заказы полные данные
 class OrderSerializer(serializers.ModelSerializer):
     soft = SoftSerializer()
     topic = OrderTopicSerializer()
@@ -64,6 +78,7 @@ class OrderSerializer(serializers.ModelSerializer):
             return 'Нет куратора'
 
 
+# уведомления
 class NoticeSerializer:
     def __init__(self, notices: list):
         self.notices = notices
