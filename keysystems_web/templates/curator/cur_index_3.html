@@ -187,6 +187,11 @@
     // для переменных
     let curator = JSON.parse('{{ main_data|escapejs }}')
 
+    let card_push = JSON.parse('{{ notices|escapejs }}')
+
+    let arrow_right = "{% static 'site/img/arrow-right.svg' %}"
+
+
     </script>
 
     <script type="text/javascript" src="{% static 'site/js/materialize.min.js' %}"></script>
@@ -194,6 +199,7 @@
     <script type="text/javascript" src="{% static 'site/js/main_sidenav.js' %}"></script>
     <script type="text/javascript" src="{% static 'site/js/cur_curaton_fio.js' %}"></script>
     <script type="text/javascript" src="{% static 'site/js/cur_nitice.js' %}"></script>
+    <script type="text/javascript" src="{% static 'site/js/cur_push_3.js' %}"></script>
     
 
 </body>

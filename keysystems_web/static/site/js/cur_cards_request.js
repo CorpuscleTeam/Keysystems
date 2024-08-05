@@ -44,7 +44,7 @@ function createOrderCard(order) {
         regionOfOrder.appendChild(regionOfOrderImg)
 
         let regionOfOrderUser = document.createElement('p')
-        regionOfOrderUser.innerHTML = order['customer']['district']
+        regionOfOrderUser.innerHTML = order['customer']['district']['title']
         regionOfOrder.appendChild(regionOfOrderUser)
     }
 
