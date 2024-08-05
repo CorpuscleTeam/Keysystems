@@ -46,7 +46,7 @@ def index_2(request: HttpRequest):
         form = AuthBaseForm(request.POST)
         if form.is_valid():
             input_inn = form.cleaned_data["inn"]
-            costumer = Customer.objects.get(inn=input_inn)
+            costumer = Customer.objects.filter(inn=input_inn).first()
             users_inn = UserKS.objects.filter(customer=costumer).all()
             log_error(f'>>len(users_inn): {len(users_inn)}', wt=False)
 
@@ -141,10 +141,12 @@ def index_3_1(request: HttpRequest):
 
             password = pass_gen()
             #  тут пароль отправляем на почту
-            send_pass_email(email=reg_form.cleaned_data['email'], password=password)
+            email = reg_form.cleaned_data['email']
+            email = email[len('mailto:'):] if email.startswith('mailto:') else email
+            send_pass_email(email=email, password=password)
 
             new_user = UserKS(
-                username=reg_form.cleaned_data['email'],
+                username=email,
                 customer=Customer.objects.get(inn=reg_form.cleaned_data['inn']),
                 full_name=reg_form.cleaned_data['fio'],
                 phone=reg_form.cleaned_data['tel'],
