@@ -129,13 +129,6 @@ class Order(models.Model):
     text = models.CharField('Текст', max_length=255)
     soft = models.ForeignKey(Soft, on_delete=models.DO_NOTHING, related_name='order', verbose_name='ПО')
     topic = models.ForeignKey(OrderTopic, on_delete=models.DO_NOTHING, related_name='order', verbose_name='Тема')
-    # executor = models.ForeignKey(
-    #     UserKS,
-    #     on_delete=models.DO_NOTHING,
-    #     related_name='executed_orders',
-    #     null=True, blank=True,
-    #     verbose_name='Ответственный'
-    # )
     status = models.CharField('Статус', default=OrderStatus.NEW.value, choices=ORDER_CHOICES)
 
     objects = models.Manager()

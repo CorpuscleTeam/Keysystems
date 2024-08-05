@@ -5,6 +5,7 @@ from django.urls import reverse
 from django.contrib.auth.hashers import make_password, check_password
 from django.core.serializers import serialize
 
+from keysystems_web.settings import DEBUG
 from .forms import AuthBaseForm, RegistrationForm, PasswordForm, AuthUserForm
 from common.models import UserKS, Soft, Customer, District, UsedSoft
 from common import log_error, pass_gen, send_pass_email, yakutia_districts
@@ -37,7 +38,7 @@ def indev_view(request):
 
 # первая клиентская страница. Просит инн
 def index_2(request: HttpRequest):
-    if request.user.is_authenticated:
+    if request.user.is_authenticated and not DEBUG:
         return redirect('redirect')
 
     error_msg = ''
@@ -72,7 +73,7 @@ def index_2(request: HttpRequest):
 
 #
 def index_2_1(request: HttpRequest):
-    if request.user.is_authenticated:
+    if request.user.is_authenticated and not DEBUG:
         return redirect('redirect')
 
     error_msg = ''
@@ -101,18 +102,18 @@ def index_2_1(request: HttpRequest):
 # принимает пароль и регистрирует пользователя
 # kP4f2PwD
 def index_2_2(request: HttpRequest):
-    if request.user.is_authenticated:
+    if request.user.is_authenticated and not DEBUG:
         return redirect('redirect')
 
     error_msg = None
     if request.method == RequestMethod.POST:
         pass_form = PasswordForm(request.POST)
-        log_error(f'>>>>>> {pass_form.is_valid()}', wt=False)
+        # log_error(f'>>>>>> {pass_form.is_valid()}', wt=False)
         if pass_form.is_valid():
-            user_id = request.POST.get('user_id')
+            user_id = request.POST.get('user_id', 0)
             # user = CustomUser.objects.filter(id=user_id).first()
-            user = UserKS.objects.get(id=user_id)
-            if check_password(pass_form.cleaned_data['password'], user.password):
+            user = UserKS.objects.filter(id=user_id).first()
+            if user and check_password(pass_form.cleaned_data['password'], user.password):
                 login(request, user)
                 return redirect('redirect')
 
@@ -129,7 +130,7 @@ def index_2_2(request: HttpRequest):
 
 # регистрация заполните форму
 def index_3_1(request: HttpRequest):
-    if request.user.is_authenticated:
+    if request.user.is_authenticated and not DEBUG:
         return redirect('redirect')
 
     if request.method == RequestMethod.POST:
