@@ -1,10 +1,4 @@
-// console.log(orders)
 console.log(cur_orders)
-// let orders = orders1
-
-// for (let i=0; i<orders.length; i++) {
-
-// }
 
 function createOrderCard(order) {
     // console.log(order['status'])
@@ -26,6 +20,36 @@ function createOrderCard(order) {
     softNewOrder.innerHTML = order['soft']['title']
     newOrder.appendChild(softNewOrder)
 
+    // исполнители только для cur_index_2_1
+    if (userForOrder == 1) {
+        let curatorOfOrder = document.createElement('div')
+        curatorOfOrder.classList.add('curator_order_flex')
+        newOrder.appendChild(curatorOfOrder)
+
+        let curatorOfOrderImg = document.createElement('img')
+        curatorOfOrderImg.setAttribute('src', curator_user_img)
+        curatorOfOrder.appendChild(curatorOfOrderImg)
+
+        let curatorOfOrderUser = document.createElement('p')
+        curatorOfOrderUser.innerHTML = order['curators']
+        curatorOfOrder.appendChild(curatorOfOrderUser)
+
+        // регион тольок для cur_index_2_1
+        let regionOfOrder = document.createElement('div')
+        regionOfOrder.classList.add('region_order_flex')
+        newOrder.appendChild(regionOfOrder)
+
+        let regionOfOrderImg = document.createElement('img')
+        regionOfOrderImg.setAttribute('src', region_user_img)
+        regionOfOrder.appendChild(regionOfOrderImg)
+
+        let regionOfOrderUser = document.createElement('p')
+        regionOfOrderUser.innerHTML = order['customer']['district']
+        regionOfOrder.appendChild(regionOfOrderUser)
+    }
+
+
+    // для всех
     let numOfOrder = document.createElement('p')
     numOfOrder.classList.add('numOfOrder')
     numOfOrder.innerHTML = order['id_str']
@@ -126,13 +150,13 @@ groupOfDoneOrders.appendChild(doneOrderFlex)
 for (let i = 0; i < cur_orders.length; i++) {
     let card = createOrderCard(cur_orders[i])
 
-    if (cur_orders[i]['status']=='new') {
+    if (cur_orders[i]['status'] == 'new') {
         newOrderFlex.appendChild(card)
     }
-    if (cur_orders[i]['status']=='active') {
+    if (cur_orders[i]['status'] == 'active') {
         activeOrderFlex.appendChild(card)
     }
-    if (cur_orders[i]['status']=='done') {
+    if (cur_orders[i]['status'] == 'done') {
         doneOrderFlex.appendChild(card)
     }
 }

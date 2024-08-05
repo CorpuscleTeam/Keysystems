@@ -189,6 +189,8 @@
     let cur_orders = JSON.parse('{{ orders|escapejs }}')
     console.log(cur_orders)
 
+    let userForOrder = {{ order_all_data|default:0 }}
+
     </script>
 
     <script type="text/javascript" src="{% static 'site/js/materialize.min.js' %}"></script>
