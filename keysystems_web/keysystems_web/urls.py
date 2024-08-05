@@ -6,6 +6,7 @@ from . import settings
 from auth_app import views as reg
 from client_app import views as client
 from curator_app import views as curator
+from common.views import get_order_data
 
 
 # 8, 5_1, 6 7_1, 7_2
@@ -33,6 +34,8 @@ urlpatterns = [
 
     path('admin/', admin.site.urls),
     path('ckeditor/', include('ckeditor_uploader.urls')),
+
+    path('order-data/<int:order_id>/', get_order_data, name='order_data'),
 ]
 
 # if settings.DEBUG:

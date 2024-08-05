@@ -1,3 +1,5 @@
+import logging
+
 from django.shortcuts import render, redirect
 from django.http.request import HttpRequest
 from django.core.files.storage import FileSystemStorage
@@ -52,7 +54,6 @@ def cur_index_3(request: HttpRequest):
         notices = Notice.objects.filter().order_by('-created_at').all()
 
     notice = NoticeSerializer(notices)
-
     if request.user.is_authenticated:
     # обнуляем непросмотренные уведомления
 
@@ -61,6 +62,6 @@ def cur_index_3(request: HttpRequest):
     curator_data = utils.get_main_curator_front_data(request)
     context = {
         'main_data': curator_data,
-        'notices': notice.serialize()
+        'notices': notice.serialize(),
     }
     return render(request, 'curator/cur_index_3.html', context)

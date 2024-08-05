@@ -38,6 +38,7 @@ class UserKSSerializer(serializers.ModelSerializer):
 # районыклиент
 class CustomerSerializer(serializers.ModelSerializer):
     district = DistrictSerializer()
+
     class Meta:
         model = Customer
         fields = ['id', 'inn', 'district', 'title']
