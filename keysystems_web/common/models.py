@@ -2,7 +2,7 @@ from django.db import models
 from django.contrib.auth.models import AbstractUser, Group, Permission
 from datetime import datetime
 
-from enums import OrderStatus, ORDER_CHOICES, notices_tuple
+from enums import OrderStatus, ORDER_CHOICES, notices_tuple, CHAT_CHOICES
 
 
 # список районов
@@ -216,3 +216,41 @@ class OrderCurator(models.Model):
         verbose_name = 'Распределение кураторов'
         verbose_name_plural = 'Распределения кураторов'
         db_table = 'order_curator'
+
+
+# сообщения чатов
+class Message(models.Model):
+    id = models.AutoField(primary_key=True)
+    created_at = models.DateTimeField('Создана', auto_now_add=True)
+    from_user = models.ForeignKey(UserKS, on_delete=models.CASCADE, related_name='message')
+    chat = models.CharField('Чат', choices=CHAT_CHOICES)
+    order = models.ForeignKey(Order, on_delete=models.CASCADE, related_name='message')
+    text = models.TextField('Текст')
+
+    objects: models.Manager = models.Manager()
+
+    def __str__(self):
+        return f"Message {self.id}"
+
+    class Meta:
+        verbose_name = 'Сообщение'
+        verbose_name_plural = 'Сообщения'
+        db_table = 'messages'
+
+
+# просмотренные сообщений
+class ViewMessage(models.Model):
+    id = models.AutoField(primary_key=True)
+    created_at = models.DateTimeField('Создана', auto_now_add=True)
+    message = models.ForeignKey(Message, on_delete=models.CASCADE, related_name='view_message')
+    user_ks = models.ForeignKey(UserKS, on_delete=models.CASCADE, related_name='view_message')
+
+    objects: models.Manager = models.Manager()
+
+    def __str__(self):
+        return f"{self.id}"
+
+    class Meta:
+        verbose_name = 'Просмотр сообщения'
+        verbose_name_plural = 'Просмотр сообщений'
+        db_table = 'view_news'

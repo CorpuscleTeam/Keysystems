@@ -29,6 +29,17 @@ class FormType(str, Enum):
     SETTING = 'setting'
 
 
+class ChatType(str, Enum):
+    CLIENT = 'client'
+    CURATOR = 'curator'
+
+
+CHAT_CHOICES = (
+        (ChatType.CLIENT.value, 'С клиентом'),
+        (ChatType.CURATOR.value, 'Кураторский')
+)
+
+
 # уведомления
 class Notice(str, Enum):
     ORDER_ACTIVE = 'order_active'
