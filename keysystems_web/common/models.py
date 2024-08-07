@@ -253,4 +253,4 @@ class ViewMessage(models.Model):
     class Meta:
         verbose_name = 'Просмотр сообщения'
         verbose_name_plural = 'Просмотр сообщений'
-        db_table = 'view_news'
+        db_table = 'view_message'

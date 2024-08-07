@@ -38,7 +38,8 @@ def get_main_curator_front_data(request: HttpRequest) -> str:
         notice_count = Notice.objects.filter(viewed=False, user_ks=request.user).count()
         return json.dumps(
             {
-                'inn': request.user.customer.inn,
+                # 'inn': request.user.customer.inn,
+                'inn': 1234567890,
                 'fio': request.user.full_name,
                 'orders_count': user_orders_count,
                 'notice': notice_count
