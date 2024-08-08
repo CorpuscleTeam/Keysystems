@@ -65,7 +65,20 @@ for (let i = 0; i < new_orders.length; i++) {
     let modalLinkCard = document.createElement('a')
     modalLinkCard.classList.add('modal_link_cards')
     modalLinkCard.classList.add('modal-trigger')
+    modalLinkCard.setAttribute('data-order-id', new_orders[i]['id'])
+    // modalLinkCard.setAttribute('href', `#${new_orders[i]['id']}`) // добавить ссылку на модальное окно заявки
     modalLinkCard.setAttribute('href', '#statusOrder') // добавить ссылку на модальное окно заявки
+
+    document.querySelectorAll('.modal_link_cards').forEach(link => {
+        link.addEventListener('click', function(event) {
+            const orderId = this.getAttribute('data-order-id');
+            console.log(orderId); // Здесь вы получаете значение data-order-id
+    
+            // Здесь вы можете обновить содержимое модального окна с использованием orderId
+            const modalContent = document.querySelector('#statusOrder .modal-content');
+            modalContent.innerHTML = `ID заказа: ${orderId}`;
+        });
+    });
 
     let newOrder = document.createElement('div')
     newOrder.classList.add('card_order')

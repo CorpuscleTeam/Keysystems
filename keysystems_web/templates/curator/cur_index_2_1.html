@@ -123,7 +123,7 @@
                         </li>
                         <li>
                             <a href="cur_index_1_1">
-                                <div class="page_menu_li_flex page_orders  page_menu_active">
+                                <div class="page_menu_li_flex page_orders">
                                     <div class="page_menu_li_left">
                                         <img src="{% static 'site/img/request.svg' %}" alt="">
                                         <p>Мои заявки</p>
@@ -135,7 +135,7 @@
                         </li>
                         <li>
                             <a href="#">
-                                <div class="page_menu_li_news">
+                                <div class="page_menu_li_news   page_menu_active">
                                     <img src="{% static 'site/img/request.svg' %}" alt="">
                                     <p>Все заявки</p>
                                 </div>
@@ -189,8 +189,10 @@
     <script>
     // для переменных
     let curator = JSON.parse('{{ main_data|escapejs }}')
-    let cur_orders = JSON.parse('{{ orders|escapejs }}')
-    console.log(cur_orders)
+
+    // карточки заявок
+    let card_orders = JSON.parse('{{ orders|escapejs }}')
+    console.log(card_orders)
 
     // картинки
     let curator_user_img = "{% static 'site/img/curator_user.svg' %}"
@@ -201,6 +203,8 @@
     // для 2_1
     let userForOrder = {{ order_all_data|default:0 }}
 
+    let link = "{% static 'site/img/close-large.svg' %}"
+
     </script>
 
     <script type="text/javascript" src="{% static 'site/js/materialize.min.js' %}"></script>
@@ -210,6 +214,7 @@
     <script type="text/javascript" src="{% static 'site/js/cur_nitice.js' %}"></script>
     <script type="text/javascript" src="{% static 'site/js/cur_cards_request.js' %}"></script>
     <script type="text/javascript" src="{% static 'site/js/cur_filters_2_1.js' %}"></script>
+    <script type="text/javascript" src="{% static 'site/js/cur_main_5_3.js' %}"></script>
     
 
 </body>

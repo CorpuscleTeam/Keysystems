@@ -186,10 +186,17 @@
     <script>
     // для переменных
     let curator = JSON.parse('{{ main_data|escapejs }}')
-    let cur_orders = JSON.parse('{{ orders|escapejs }}')
-    console.log(cur_orders)
+
+    // для создания карточек заявок
+    let card_orders = JSON.parse('{{ orders|escapejs }}')
+    console.log(card_orders)
 
     let userForOrder = {{ order_all_data|default:0 }}
+
+    let link = "{% static 'site/img/close-large.svg' %}"
+
+    // картинка справа скачать файл
+    let fileDnl = "{% static 'site/img/download.svg' %}"
 
     </script>
 
@@ -199,6 +206,7 @@
     <script type="text/javascript" src="{% static 'site/js/cur_curaton_fio.js' %}"></script>
     <script type="text/javascript" src="{% static 'site/js/cur_nitice.js' %}"></script>
     <script type="text/javascript" src="{% static 'site/js/cur_cards_request.js' %}"></script>
+    <script type="text/javascript" src="{% static 'site/js/cur_main_5_3.js' %}"></script>
     
 
 </body>
