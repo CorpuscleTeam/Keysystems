@@ -190,7 +190,7 @@ def index_7_1(request: HttpRequest):
         updates_json.append(
             {
                 'pk': update.pk,
-                'date': ut.get_data_string(update.created_at),
+                'date': ut.get_date_string(update.created_at),
                 'soft': update.soft.title,
                 'description': update.description,
                 'update_files': update_files
@@ -240,7 +240,7 @@ def index_7_2(request: HttpRequest):
         })
 
     update_json = {
-        'date': ut.get_data_string(update.created_at),
+        'date': ut.get_date_string(update.created_at),
         'soft': update.soft.title,
         'description': update.description,
         'update_files': update_files

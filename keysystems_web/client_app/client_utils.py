@@ -1,3 +1,5 @@
+import logging
+
 from django.shortcuts import render, redirect
 from django.http.request import HttpRequest
 from django.core.files.storage import FileSystemStorage
@@ -129,12 +131,14 @@ def form_processing(request: HttpRequest) -> None:
 
                 # Сохраняем файл
                 filename = fs.save(file_name, uploaded_file)  # Используем только имя файла
+
                 file_url = fs.url(filename)  # Получаем URL файла
 
                 DownloadedFile.objects.create(
                     user_ks=request.user,
                     order=new_order,
-                    url=file_url
+                    url=file_url,
+                    file_size=uploaded_file.size
                 )
 
     elif type_form == FormType.SETTING:

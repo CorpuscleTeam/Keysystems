@@ -1,8 +1,12 @@
+from urllib.parse import urlparse
+
+import os
 import json
+import logging
 
 from rest_framework import serializers
-from .models import Order, Soft, OrderTopic, UserKS, OrderCurator, Customer, District
-from common import get_data_string
+from .models import Order, Soft, OrderTopic, UserKS, OrderCurator, Customer, District, DownloadedFile
+from common import get_date_string, get_size_file_str, get_file_icon_link
 from .logs import log_error
 from enums import notices_dict
 
@@ -12,6 +16,35 @@ class DistrictSerializer(serializers.ModelSerializer):
     class Meta:
         model = District
         fields = ['title']
+
+
+# районы
+class DownloadedFileSerializer(serializers.ModelSerializer):
+    filename = serializers.SerializerMethodField()
+    url = serializers.SerializerMethodField()
+    file_size = serializers.SerializerMethodField()
+    icon = serializers.SerializerMethodField()
+
+    class Meta:
+        model = DownloadedFile
+        # fields = ['url']
+        fields = ['url', 'filename', 'file_size', 'icon']
+
+    def get_filename(self, obj):
+        parsed_url = urlparse(obj.url)
+        return os.path.basename(parsed_url.path)
+
+    def get_url(self, obj):
+        return f'..{obj.url}'
+
+    def get_file_size(self, obj):
+        if obj.file_size:
+            return get_size_file_str(obj.file_size)
+        else:
+            return 'н/д'
+
+    def get_icon(self, obj):
+        return get_file_icon_link(obj.url)
 
 
 # ПО
@@ -59,6 +92,7 @@ class OrderSerializer(serializers.ModelSerializer):
     topic = OrderTopicSerializer()
     from_user = UserKSSerializer()
     customer = CustomerSerializer()
+    files = DownloadedFileSerializer(many=True, source='downloaded_file')
     order_curators = OrderCuratorSerializer(many=True, source='order_curator')
 
     id_str = serializers.SerializerMethodField()
@@ -66,7 +100,9 @@ class OrderSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Order
-        fields = ['id', 'from_user', 'customer', 'text', 'soft', 'topic', 'status', 'id_str', 'order_curators', 'curators']
+        fields = [
+            'id', 'from_user', 'customer', 'text', 'soft', 'topic', 'status', 'id_str', 'order_curators', 'curators', 'files'
+        ]
 
     def get_id_str(self, obj):
         return f'#{str(obj.id).zfill(5)}'
@@ -93,7 +129,7 @@ class NoticeSerializer:
                     {
                         'order_id': notice.order.id,
                         'num_push': notice.id,
-                        'date': get_data_string(notice.created_at),
+                        'date': get_date_string(notice.created_at),
                         'text': text.format(pk=notice.id)
                     }
                 )
