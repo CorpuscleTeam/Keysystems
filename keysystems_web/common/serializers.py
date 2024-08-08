@@ -5,7 +5,7 @@ import json
 import logging
 
 from rest_framework import serializers
-from .models import Order, Soft, OrderTopic, UserKS, OrderCurator, Customer, District, DownloadedFile
+from . import models as cm
 from common import get_date_string, get_size_file_str, get_file_icon_link
 from .logs import log_error
 from enums import notices_dict
@@ -14,7 +14,7 @@ from enums import notices_dict
 # районы
 class DistrictSerializer(serializers.ModelSerializer):
     class Meta:
-        model = District
+        model = cm.District
         fields = ['title']
 
 
@@ -26,7 +26,7 @@ class DownloadedFileSerializer(serializers.ModelSerializer):
     icon = serializers.SerializerMethodField()
 
     class Meta:
-        model = DownloadedFile
+        model = cm.DownloadedFile
         # fields = ['url']
         fields = ['url', 'filename', 'file_size', 'icon']
 
@@ -50,21 +50,21 @@ class DownloadedFileSerializer(serializers.ModelSerializer):
 # ПО
 class SoftSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Soft
+        model = cm.Soft
         fields = ['id', 'title', 'description', 'is_active']
 
 
 # Обращения
 class OrderTopicSerializer(serializers.ModelSerializer):
     class Meta:
-        model = OrderTopic
+        model = cm.OrderTopic
         fields = ['id', 'topic', 'is_active']
 
 
 # пользователи
 class UserKSSerializer(serializers.ModelSerializer):
     class Meta:
-        model = UserKS
+        model = cm.UserKS
         fields = ['id', 'full_name', 'username']
 
 
@@ -73,7 +73,7 @@ class CustomerSerializer(serializers.ModelSerializer):
     district = DistrictSerializer()
 
     class Meta:
-        model = Customer
+        model = cm.Customer
         fields = ['id', 'inn', 'district', 'title']
 
 
@@ -82,7 +82,7 @@ class OrderCuratorSerializer(serializers.ModelSerializer):
     user = UserKSSerializer()
 
     class Meta:
-        model = OrderCurator
+        model = cm.OrderCurator
         fields = ['id', 'user']
 
 
@@ -99,7 +99,7 @@ class OrderSerializer(serializers.ModelSerializer):
     curators = serializers.SerializerMethodField()
 
     class Meta:
-        model = Order
+        model = cm.Order
         fields = [
             'id', 'from_user', 'customer', 'text', 'soft', 'topic', 'status', 'id_str', 'order_curators', 'curators', 'files'
         ]
@@ -113,6 +113,15 @@ class OrderSerializer(serializers.ModelSerializer):
             return ', '.join(curators)
         else:
             return 'Нет куратора'
+
+
+# сообщения
+class MessageSerializer(serializers.ModelSerializer):
+    from_user = UserKSSerializer()
+
+    class Meta:
+        model = cm.Message
+        fields = ['created_at', 'from_user', 'text']
 
 
 # уведомления
