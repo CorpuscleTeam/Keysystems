@@ -904,3 +904,37 @@ textarea {
 .display_none {
     display: none !important;
 }
+
+/* карточки заявки 2_1 */
+.curator_order_flex, .region_order_flex {
+    display: flex;
+}
+.region_order_flex {
+    margin-bottom: 10px;
+}
+.curator_order_flex img, .region_order_flex img {
+    margin-right: 4px;
+}
+.curator_order_flex p, .region_order_flex p {
+    font-size: 12px;
+    color: rgba(153, 153, 153, 1);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 130px;
+    width: 100%;
+}
+
+/* шапка заголовок-фильтры */
+.page_flex_body_title {
+    display: flex;
+    justify-content: space-between;
+    align-items: end;
+}
+.filter_flex_right {
+    display: flex;
+    margin-bottom: 30px;
+}
+.filter_flex_right img {
+    margin-right: 8px;
+}

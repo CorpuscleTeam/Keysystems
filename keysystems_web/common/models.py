@@ -149,6 +149,7 @@ class DownloadedFile(models.Model):
     user_ks = models.ForeignKey(UserKS, on_delete=models.DO_NOTHING, related_name='downloaded_file')
     order = models.ForeignKey(Order, on_delete=models.CASCADE, related_name='downloaded_file')
     url = models.CharField('Ссылка', max_length=255, default=OrderStatus.NEW.value, choices=ORDER_CHOICES)
+    file_size = models.PositiveIntegerField('Размер файла (в байтах)', null=True, blank=True)
 
     objects = models.Manager()
 

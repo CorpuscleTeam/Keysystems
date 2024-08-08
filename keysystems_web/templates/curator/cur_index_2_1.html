@@ -48,7 +48,7 @@
             </a>
         </li> -->
         <li class="sidenav_mobile_li">
-            <a href="cur_index_1_1.html">
+            <a href="cur_index_1_1">
                 <div class="sidenav_li_flex mobile_orders">
                     <div class="sidenav_li_left">
                         <img src="{% static 'site/img/request.svg' %}" alt="">
@@ -67,7 +67,7 @@
             </a>
         </li>
         <li class="sidenav_mobile_li">
-            <a href="cur_index_3.html">
+            <a href="cur_index_3">
                 <div class="sidenav_li_flex mobile_notice">
                     <div class="sidenav_li_left">
                         <img src="{% static 'site/img/push.svg' %}" alt="">
@@ -122,7 +122,7 @@
                             </a>
                         </li>
                         <li>
-                            <a href="cur_index_1_1.html">
+                            <a href="cur_index_1_1">
                                 <div class="page_menu_li_flex page_orders  page_menu_active">
                                     <div class="page_menu_li_left">
                                         <img src="{% static 'site/img/request.svg' %}" alt="">
@@ -142,7 +142,7 @@
                             </a>
                         </li>
                         <li>
-                            <a href="cur_index_3.html">
+                            <a href="cur_index_3">
                                 <div class="page_menu_li_flex page_notice">
                                     <div class="page_menu_li_left">
                                         <img src="{% static 'site/img/push.svg' %}" alt="">
@@ -168,7 +168,10 @@
 
                 <!-- Основная часть -->
                 <div class="page_flex_body">
-                    <h2 class="page_body_h2">Все заявки</h2>
+                    <div class="page_flex_body_title">
+                        <h2 class="page_body_h2">Все заявки</h2>
+
+                    </div>
 
                 </div>
             </div>
@@ -186,6 +189,17 @@
     <script>
     // для переменных
     let curator = JSON.parse('{{ main_data|escapejs }}')
+    let cur_orders = JSON.parse('{{ orders|escapejs }}')
+    console.log(cur_orders)
+
+    // картинки
+    let curator_user_img = "{% static 'site/img/curator_user.svg' %}"
+    let region_user_img = "{% static 'site/img/map.svg' %}"
+    let filter_img = "{% static 'site/img/filter.svg' %}"
+
+
+    // для 2_1
+    let userForOrder = {{ order_all_data|default:0 }}
 
     </script>
 
@@ -194,6 +208,8 @@
     <script type="text/javascript" src="{% static 'site/js/main_sidenav.js' %}"></script>
     <script type="text/javascript" src="{% static 'site/js/cur_curaton_fio.js' %}"></script>
     <script type="text/javascript" src="{% static 'site/js/cur_nitice.js' %}"></script>
+    <script type="text/javascript" src="{% static 'site/js/cur_cards_request.js' %}"></script>
+    <script type="text/javascript" src="{% static 'site/js/cur_filters_2_1.js' %}"></script>
     
 
 </body>
