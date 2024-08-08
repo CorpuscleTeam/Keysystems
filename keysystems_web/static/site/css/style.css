@@ -55,6 +55,10 @@
     max-width: 340px;
     width: 100%;
     margin: 0 auto;
+    
+}
+.reg_3_1 {
+    margin-top: 160px;
 }
 .enter_item p {
     margin-bottom: 28px;
@@ -131,13 +135,34 @@ input[placeholder] {
     font-weight: 400;
     margin: 0;
 }
-.enter_checkbox input {
+.enter_checkbox input[type="checkbox"] {
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
     text-align: left;
     width: 24px;
     height: 24px;
     margin: 0 8px 0 0;
-    /* border-radius: 0;
-    border: 2px solid rgba(200, 200, 200, 1); */
+    border-radius: 0;
+    border: 2px solid rgba(200, 200, 200, 1);
+    background-color: #fff;
+    cursor: pointer;
+}
+.enter_checkbox input[type="checkbox"]:checked {
+    background-color: var(--color_green);
+    border: none;
+    position: relative;
+}
+.enter_checkbox input[type="checkbox"]:checked::after {
+    content: "";
+    position: absolute;
+    top: 6px;
+    left: 10px;
+    width: 5px;
+    height: 10px;
+    border: solid white;
+    border-width: 0 2px 2px 0;
+    transform: rotate(45deg);
 }
 
 .required::after {
@@ -185,6 +210,10 @@ input[placeholder] {
     border: 1px solid rgba(204, 204, 204, 1);
     background-color: rgba(238, 238, 238, 1);
     color: var(--color_dark);
+    cursor: pointer;
+}
+.modalConfirm-footer a:hover, .mod_support_flex a:hover {
+    background-color: rgba(221, 221, 221, 1);
 }
 .modalConfirm-footer button, .mod_support_flex button {
     display: flex;
@@ -195,6 +224,10 @@ input[placeholder] {
     font-family: "Oswald", sans-serif;
     border: none;
     font-size: 16px;
+    cursor: pointer;
+}
+.modalConfirm-footer button:hover, .mod_support_flex button:hover {
+    background-color: rgba(110, 165, 10, 1);
 }
 
 
@@ -412,6 +445,7 @@ input[placeholder] {
     padding-left: 24px;
     height: 100%;
 }
+
 .page_menu_li_flex {
     display: flex;
     justify-content: space-between;
@@ -420,11 +454,6 @@ input[placeholder] {
     padding-right: 24px;
     height: 100%;
     border: 2px solid var(--color_dark);
-}
-.page_menu_li_flex:hover, .page_menu_li_news:hover {
-    border: 2px solid var(--color_green);
-    color: var(--color_green);
-    filter: brightness(0) saturate(100%) invert(73%) sepia(20%) saturate(6008%) hue-rotate(38deg) brightness(93%) contrast(89%);
 }
 .page_menu_li_left {
     display: flex;
@@ -436,12 +465,6 @@ input[placeholder] {
 .page_menu_active p {
     color: var(--color_green);
 }
-/* .page_menu_li_flex:hover .page_menu_li_right {
-    border: none;
-    color: rgba(255, 255, 255, 1) !important;
-    filter: none;
-    background-color: var(--color_green);
-} */
 .page_menu_li_right {
     min-width: 22px;
     height: 22px;
@@ -453,14 +476,6 @@ input[placeholder] {
     align-items: center;
     font-size: 10px;
 }
-/* .page_menu_li_flex:hover > *:not(.page_menu_li_right) {
-    color: var(--color_green) !important;
-} */
-
-/* !!! разобраться с ховерами !!! */
-.page_menu_li_right:hover {
-    color: rgba(255, 255, 255, 1) !important;
-}
 .page_menu_li_news {
     display: flex;
     justify-content: flex-start;
@@ -471,9 +486,24 @@ input[placeholder] {
     border: 2px solid var(--color_dark);
     color: var(--color_dark);
 }
-/* .page_menu_li_news p {
-    color: var(--color_dark);
-} */
+
+/* ховеры для меню */
+.page_menu_li_flex:hover {
+    border: 2px solid var(--color_green);
+}
+.page_menu_li_flex:hover .page_menu_li_left p,
+.page_menu_li_flex:hover .page_menu_li_left img,
+.page_menu_li_news:hover {
+    /* border: 2px solid var(--color_green); */
+    color: var(--color_green);
+    filter: brightness(0) saturate(100%) invert(73%) sepia(20%) saturate(6008%) hue-rotate(38deg) brightness(93%) contrast(89%);
+}
+.page_menu_li_flex:hover .page_menu_li_right {
+    background-color: var(--color_green);
+    color: rgba(255, 255, 255, 1);
+    filter: none;
+}
+
 
 /* Основная часть */
 .page_flex_body {
@@ -536,6 +566,9 @@ input[placeholder] {
     align-items: center;
     padding-left: 24px;
 }
+.add_file:hover {
+    background-color: rgba(221, 221, 221, 1);
+}
 .add_file img {
     margin-right: 8px;
 }
@@ -548,6 +581,10 @@ input[placeholder] {
     font-family: "Oswald", sans-serif;
     font-size: 16px;
     height: 46px;
+    cursor: pointer;
+}
+.submit_request:hover {
+    background-color: rgba(110, 165, 10, 1);
 }
 
 /* CSS для textarea и счетчика символов внутри */
@@ -557,6 +594,8 @@ textarea {
     height: 100px;
     resize: none;
     border: rgba(204, 204, 204, 1) 1px solid;
+    font-family: "Oswald", sans-serif;
+    padding-left: 10px;
 }
 
 #charCount {
