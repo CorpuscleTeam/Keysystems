@@ -123,7 +123,7 @@
                         </li>
                         <li>
                             <a href="cur_index_1_1">
-                                <div class="page_menu_li_flex page_orders  page_menu_active">
+                                <div class="page_menu_li_flex page_orders">
                                     <div class="page_menu_li_left">
                                         <img src="{% static 'site/img/request.svg' %}" alt="">
                                         <p>Мои заявки</p>
@@ -143,7 +143,7 @@
                         </li>
                         <li>
                             <a href="#">
-                                <div class="page_menu_li_flex page_notice">
+                                <div class="page_menu_li_flex page_notice   page_menu_active">
                                     <div class="page_menu_li_left">
                                         <img src="{% static 'site/img/push.svg' %}" alt="">
                                         <p>Уведомления</p>
@@ -187,9 +187,12 @@
     // для переменных
     let curator = JSON.parse('{{ main_data|escapejs }}')
 
-    let card_push = JSON.parse('{{ notices|escapejs }}')
+    let push = JSON.parse('{{ notices|escapejs }}')
 
+    // картинка справа стрелка
     let arrow_right = "{% static 'site/img/arrow-right.svg' %}"
+    // картинка закрыть МО
+    let link = "{% static 'site/img/close-large.svg' %}"
 
 
     </script>
@@ -200,7 +203,7 @@
     <script type="text/javascript" src="{% static 'site/js/cur_curaton_fio.js' %}"></script>
     <script type="text/javascript" src="{% static 'site/js/cur_nitice.js' %}"></script>
     <script type="text/javascript" src="{% static 'site/js/cur_push_3.js' %}"></script>
-    
+    <script type="text/javascript" src="{% static 'site/js/cur_main_5_3.js' %}"></script>
 
 </body>
 

@@ -156,9 +156,9 @@ def index_6(request: HttpRequest):
     #         )
 
     notice = NoticeSerializer(notices)
-
+    if request.user.is_authenticated:
     # обнуляем непросмотренные уведомления
-    Notice.objects.filter(user_ks=request.user, viewed=False).update(viewed=True)
+        Notice.objects.filter(user_ks=request.user, viewed=False).update(viewed=True)
     client_data = utils.get_main_client_front_data(request)
     context = {
         **client_data,

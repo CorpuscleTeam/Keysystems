@@ -1,3 +1,5 @@
+// на странице 2_1 кураторской панели
+
 let filter_flex_link = document.createElement('a')
 filter_flex_link.setAttribute('src', '#') // добавить ссылку на модальное окно
 filter_flex_link.classList.add('page_body_right')

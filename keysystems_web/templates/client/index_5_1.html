@@ -253,11 +253,15 @@
 
         // Переменные "заявки"
         // Переменная "Новые заявки"
-        let new_orders = JSON.parse('{{ new_orders|escapejs }}')
+        // let new_orders = JSON.parse('{{ new_orders|escapejs }}')
         // Переменная "Заявки в рабботе"
-        let active_orders = JSON.parse('{{ active_orders|escapejs }}')
+        // let active_orders = JSON.parse('{{ active_orders|escapejs }}')
         // переменная "Выполненые заявки"
-        let done_orders = JSON.parse('{{ done_orders|escapejs }}')
+        // let done_orders = JSON.parse('{{ done_orders|escapejs }}')
+
+        let card_orders = JSON.parse('{{ orders|escapejs }}')
+
+        let userForOrder = {{ order_all_data|default:0 }}
 
 
 
@@ -269,8 +273,9 @@
     <script type="text/javascript" src="{% static 'site/js/main_ord_notice_updait.js' %}"></script>
     <script type="text/javascript" src="{% static 'site/js/main_settings.js' %}"></script>
     <!-- <script type="text/javascript" src="{% static 'site/js/main_tech_support.js' %}"></script> -->
-    <script type="text/javascript" src="{% static 'site/js/request_5_1.js' %}"></script>
-    <script type="text/javascript" src="{% static 'site/js/main_5_3.js' %}"></script>
+    <!-- <script type="text/javascript" src="{% static 'site/js/request_5_1.js' %}"></script> -->
+    <script type="text/javascript" src="{% static 'site/js/cur_cards_request.js' %}"></script>
+    <script type="text/javascript" src="{% static 'site/js/cur_main_5_3.js' %}"></script>
     <script type="text/javascript" src="{% static 'site/js/inn_institution.js' %}"></script>
 
 

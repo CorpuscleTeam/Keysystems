@@ -1,10 +1,12 @@
-console.log(cur_orders)
+console.log(card_orders)
 
 function createOrderCard(order) {
     // console.log(order['status'])
     let modalLinkCard = document.createElement('a')
     modalLinkCard.classList.add('modal_link_cards')
+    modalLinkCard.classList.add('modal_cr_order')
     modalLinkCard.classList.add('modal-trigger')
+    modalLinkCard.setAttribute('data-order-id', order['id'])
     modalLinkCard.setAttribute('href', '#statusOrder') // добавить ссылку на модальное окно заявки
 
     let newOrder = document.createElement('div')
@@ -147,16 +149,16 @@ let doneOrderFlex = document.createElement('div')
 doneOrderFlex.classList.add('order_flex')
 groupOfDoneOrders.appendChild(doneOrderFlex)
 
-for (let i = 0; i < cur_orders.length; i++) {
-    let card = createOrderCard(cur_orders[i])
+for (let i = 0; i < card_orders.length; i++) {
+    let card = createOrderCard(card_orders[i])
 
-    if (cur_orders[i]['status'] == 'new') {
+    if (card_orders[i]['status'] == 'new') {
         newOrderFlex.appendChild(card)
     }
-    if (cur_orders[i]['status'] == 'active') {
+    if (card_orders[i]['status'] == 'active') {
         activeOrderFlex.appendChild(card)
     }
-    if (cur_orders[i]['status'] == 'done') {
+    if (card_orders[i]['status'] == 'done') {
         doneOrderFlex.appendChild(card)
     }
 }

@@ -31,6 +31,7 @@
 .header_start_menu {
     display: flex;
     justify-content: space-between;
+
 }
 .btn_back button {
     width: 102px;
@@ -40,6 +41,7 @@
     font-weight: 400;
     font-size: 16px;
     color: var(--color_green);
+    cursor: pointer;
 }
 
 .enter {
@@ -85,6 +87,8 @@
     width: 100%;
     height: 38px;
     margin-bottom: 20px;
+    padding-left: 10px;
+    font-family: "Oswald", sans-serif;
 }
 input[placeholder] {
     font-family: "Oswald", sans-serif;
@@ -103,6 +107,10 @@ input[placeholder] {
     font-size: 16px;
     font-weight: 400;
     font-family: "Oswald", sans-serif;
+    cursor: pointer;
+}
+.enter_button:hover {
+    background-color: rgba(110, 165, 10, 1);
 }
 .register-link a {
     color: var(--color_dark);
@@ -127,7 +135,9 @@ input[placeholder] {
     text-align: left;
     width: 24px;
     height: 24px;
-    margin: 0 2px 0 0;
+    margin: 0 8px 0 0;
+    /* border-radius: 0;
+    border: 2px solid rgba(200, 200, 200, 1); */
 }
 
 .required::after {
@@ -428,7 +438,7 @@ input[placeholder] {
 }
 /* .page_menu_li_flex:hover .page_menu_li_right {
     border: none;
-    color: rgba(255, 255, 255, 1);
+    color: rgba(255, 255, 255, 1) !important;
     filter: none;
     background-color: var(--color_green);
 } */
@@ -443,14 +453,14 @@ input[placeholder] {
     align-items: center;
     font-size: 10px;
 }
-.page_menu_li_flex:hover > *:not(.page_menu_li_right) {
-    color: var(--color_green);
-}
+/* .page_menu_li_flex:hover > *:not(.page_menu_li_right) {
+    color: var(--color_green) !important;
+} */
 
 /* !!! разобраться с ховерами !!! */
-/* .page_menu_li_right:hover {
-    color: rgba(255, 255, 255, 1);
-} */
+.page_menu_li_right:hover {
+    color: rgba(255, 255, 255, 1) !important;
+}
 .page_menu_li_news {
     display: flex;
     justify-content: flex-start;

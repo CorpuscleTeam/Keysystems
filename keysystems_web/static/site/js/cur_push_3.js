@@ -1,4 +1,4 @@
-console.log(card_push)
+console.log(push)
 
 /* 
 [
@@ -25,11 +25,13 @@ console.log(card_push)
 let allPush = document.createElement('div')
 allPush.classList.add('page_body_push_flex')
 
-for(let i=0; i<card_push.length; i++) {
+for(let i=0; i<push.length; i++) {
     // console.log(push[i])
     let modalLinkPush = document.createElement('a')
     modalLinkPush.classList.add('modal_link_push')
-    modalLinkPush.setAttribute('href', '#') // добавить ссылку как в 5.1
+    modalLinkPush.classList.add('modal_cr_order')
+    modalLinkPush.setAttribute('data-order-id', push[i]['order_id'])
+    modalLinkPush.setAttribute('href', '#statusOrder') // добавить ссылку как в 5.1
 
     let newCardPush = document.createElement('div')
     newCardPush.classList.add('new_card_push')
@@ -42,12 +44,12 @@ for(let i=0; i<card_push.length; i++) {
 
     let textNewCard = document.createElement('p')
     textNewCard.classList.add('text_new_push')
-    textNewCard.innerHTML = card_push[i]['text']
+    textNewCard.innerHTML = push[i]['text']
     newCardLeft.appendChild(textNewCard)
 
     let timeNewCard = document.createElement('p')
     timeNewCard.classList.add('time_new_push')
-    timeNewCard.innerHTML = card_push[i]['date']
+    timeNewCard.innerHTML = push[i]['date']
     newCardLeft.appendChild(timeNewCard)
 
     // правая часть стрелочка
