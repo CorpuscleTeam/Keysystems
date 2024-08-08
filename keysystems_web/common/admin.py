@@ -2,7 +2,7 @@ from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from django.contrib.auth.forms import UserCreationForm, UserChangeForm
 
-from .models import Soft, Customer, OrderTopic, UserKS, Order, District, Notice, OrderCurator
+from .models import Soft, Customer, OrderTopic, UserKS, Order, District, Notice, OrderCurator, Message
 # from .forms import CustomUserChangeForm
 
 
@@ -97,3 +97,9 @@ class ViewAdminNews(admin.ModelAdmin):
 @admin.register(Notice)
 class ViewAdminNews(admin.ModelAdmin):
     list_display = ['type_notice']
+
+
+# сообщения
+@admin.register(Message)
+class ViewAdminNews(admin.ModelAdmin):
+    list_display = ['created_at', 'from_user', 'chat', 'text']
