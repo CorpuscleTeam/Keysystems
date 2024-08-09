@@ -49,6 +49,4 @@ def get_order_data(request, order_id):
 #     })
 
 
-
-
-
+logging.warning("ПРОСТ")
