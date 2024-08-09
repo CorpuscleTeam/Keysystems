@@ -67,9 +67,19 @@
 
     </div>
 
-    <div id="tab2" class="tab-content">
-        <p>Customer Name: ${data.customer_name}</p>
-        <p>Address: ${data.customer_address}</p>
+    <div id="tab2" class="client-tab-content">
+        <div class="chat-window">
+            <div class="chat-header">
+                <h4>Чат</h4>
+            </div>
+            <div class="chat-body">
+                <div class="chat-messages"></div>
+            </div>
+            <div class="chat-footer">
+                <input type="text" id="chat-input" placeholder="Введите сообщение..." />
+                <button id="send-btn">Отправить</button>
+            </div>
+        </div>
     </div>
 
     <div id="tab3" class="tab-content">
