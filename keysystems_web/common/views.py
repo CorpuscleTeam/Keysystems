@@ -1,6 +1,8 @@
 from django.http import JsonResponse
 from django.db.models import Count, Q
+from django.shortcuts import render
 
+import random
 import logging
 
 from .models import Order, Message
@@ -35,3 +37,10 @@ def get_order_data(request, order_id):
     except Exception as ex:
         log_error(ex)
         return JsonResponse({'error': 'not found'}, status=404)
+
+
+def chat_view(request, room_name):
+    return render(request, f'chat/{room_name}.html', {
+        'room_name': room_name,
+        's_data': random.randint(1000, 9999)
+    })

@@ -28,7 +28,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'ckeditor',
     'ckeditor_uploader',
-    # 'channels',
+    'channels',
     'common',
     'client_app',
     'auth_app',
@@ -72,6 +72,7 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'keysystems_web.wsgi.application'
+ASGI_APPLICATION = "keysystems_web.routing.application"
 
 
 DATABASES = {
@@ -177,6 +178,16 @@ LOGGING = {
             'handlers': ['file', 'console'],
             'level': 'WARNING',
             'propagate': True,
+        },
+    },
+}
+
+
+CHANNEL_LAYERS = {
+    'default': {
+        'BACKEND': 'channels_redis.core.RedisChannelLayer',
+        'CONFIG': {
+            "hosts": [('redis_ks', 6379)],
         },
     },
 }
