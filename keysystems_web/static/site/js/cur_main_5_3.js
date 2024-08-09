@@ -1,4 +1,39 @@
 console.log('cur_main_5_3.js')
+/* 
+{
+    "id": 10,
+    "from_user": {
+        "id": 3,
+        "full_name": "as df gh",
+        "username": "grudoav@gmail.com"
+    },
+    "customer": {
+        "id": 1,
+        "inn": 1234567890,
+        "district": {
+            "title": "Верхнеколымский район"
+        },
+        "title": "ООО plastic world"
+    },
+    "text": "Учет поступления платежей в бюджет",
+    "soft": {
+        "id": 1,
+        "title": "ПО 1",
+        "description": "Описание ПО 1",
+        "is_active": true
+    },
+    "topic": {
+        "id": 1,
+        "topic": "Сломалос(",
+        "is_active": true
+    },
+    "status": "done",
+    "id_str": "#00010",
+    "order_curators": [],
+    "curators": "Нет куратора",
+    "files": []
+} 
+    */
 
 document.addEventListener('DOMContentLoaded', function () {
     var elems = document.querySelectorAll('.modal');
@@ -58,7 +93,7 @@ document.querySelectorAll('.modal_cr_order').forEach(link => {
                         <li class="tab">
                             <a href="#tab3">
                                 <p class="order_tab">Чат кураторов</p>
-                                    
+
                             </a>
                         </li>
                     </ul>
@@ -83,8 +118,20 @@ document.querySelectorAll('.modal_cr_order').forEach(link => {
                     </div>
 
                     <div id="tab2" class="tab-content">
-                        <p>Customer Name: ${data.customer_name}</p>
-                        <p>Address: ${data.customer_address}</p>
+                        <div id="tab2" class="tab-content client_chat">
+                            <div class="chat-window">
+                                <div class="chat-header">
+                                    <h4>Чат</h4>
+                                </div>
+                                <div class="chat-body">
+                                    <div class="chat-messages"></div>
+                                </div>
+                                <div class="chat-footer">
+                                    <input type="text" id="chat-input" placeholder="Введите сообщение..." />
+                                    <button id="send-btn">Отправить</button>
+                                </div>
+                            </div>
+                        </div>
                     </div>
 
                     <div id="tab3" class="tab-content">
