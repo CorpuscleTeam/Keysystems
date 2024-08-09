@@ -1,38 +1,116 @@
 console.log('cur_main_5_3.js')
 /* 
 {
-    "id": 10,
-    "from_user": {
-        "id": 3,
-        "full_name": "as df gh",
-        "username": "grudoav@gmail.com"
-    },
-    "customer": {
-        "id": 1,
-        "inn": 1234567890,
-        "district": {
-            "title": "Верхнеколымский район"
+    "order": {
+        "id": 4,
+        "from_user": {
+            "id": 3,
+            "full_name": "as df gh",
+            "username": "grudoav@gmail.com"
         },
-        "title": "ООО plastic world"
+        "customer": {
+            "id": 1,
+            "inn": 1234567890,
+            "district": {
+                "title": "Верхнеколымский район"
+            },
+            "title": "ООО plastic world"
+        },
+        "text": "Учет поступления платежей в бюджет",
+        "soft": {
+            "id": 1,
+            "title": "ПО 1",
+            "description": "Описание ПО 1",
+            "is_active": true
+        },
+        "topic": {
+            "id": 1,
+            "topic": "Сломалос(",
+            "is_active": true
+        },
+        "status": "new",
+        "id_str": "#00004",
+        "order_curators": [
+            {
+                "id": 1,
+                "user": {
+                    "id": 3,
+                    "full_name": "as df gh",
+                    "username": "grudoav@gmail.com"
+                }
+            },
+            {
+                "id": 2,
+                "user": {
+                    "id": 3,
+                    "full_name": "as df gh",
+                    "username": "grudoav@gmail.com"
+                }
+            },
+            {
+                "id": 3,
+                "user": {
+                    "id": 3,
+                    "full_name": "as df gh",
+                    "username": "grudoav@gmail.com"
+                }
+            },
+            {
+                "id": 4,
+                "user": {
+                    "id": 3,
+                    "full_name": "as df gh",
+                    "username": "grudoav@gmail.com"
+                }
+            }
+        ],
+        "curators": "as df gh, as df gh, as df gh, as df gh",
+        "files": []
     },
-    "text": "Учет поступления платежей в бюджет",
-    "soft": {
-        "id": 1,
-        "title": "ПО 1",
-        "description": "Описание ПО 1",
-        "is_active": true
-    },
-    "topic": {
-        "id": 1,
-        "topic": "Сломалос(",
-        "is_active": true
-    },
-    "status": "done",
-    "id_str": "#00010",
-    "order_curators": [],
-    "curators": "Нет куратора",
-    "files": []
-} 
+    "client_chat": [
+        {
+            "created_at": "2024-08-09T16:14:02.119024+09:00",
+            "from_user": {
+                "id": 3,
+                "full_name": "as df gh",
+                "username": "grudoav@gmail.com"
+            },
+            "text": "привет"
+        },
+        {
+            "created_at": "2024-08-09T16:14:29.845423+09:00",
+            "from_user": {
+                "id": 3,
+                "full_name": "as df gh",
+                "username": "grudoav@gmail.com"
+            },
+            "text": "ывдлаофыжваощжвапщшч чваавфвафав"
+        }
+    ],
+    "curator_chat": [
+        {
+            "created_at": "2024-08-09T16:14:16.335624+09:00",
+            "from_user": {
+                "id": 3,
+                "full_name": "as df gh",
+                "username": "grudoav@gmail.com"
+            },
+            "text": "ддллорпаааимтоьл"
+        },
+        {
+            "created_at": "2024-08-09T16:14:45.712592+09:00",
+            "from_user": {
+                "id": 3,
+                "full_name": "as df gh",
+                "username": "grudoav@gmail.com"
+            },
+            "text": "лвыдаофыодплзсзчсдль члаопфвшфцхмм звааэ"
+        }
+    ],
+    "user_id": 4,
+    "unv_msg_client": 3,
+    "unv_msg_curator": 4
+}
     */
 
 document.addEventListener('DOMContentLoaded', function () {
@@ -80,8 +158,8 @@ document.querySelectorAll('.modal_cr_order').forEach(link => {
                         
                         <img src="${imgLink}" alt="">
                     </div>
-                    <h4>${data.customer.title}</h4>
-                    <p>${data.status}</p>
+                    <h4>${data.order.customer.title}</h4>
+                    <p>${data.order.status}</p>
                     <ul class="tabs">
                         <li class="tab"><a href="#tab1">Описание</a></li>
                         <li class="tab">
@@ -100,7 +178,7 @@ document.querySelectorAll('.modal_cr_order').forEach(link => {
 
                     <div id="tab1" class="tab-content active">
                         <h6 class="title_in_modal">Тема</h6>
-                        <p class="text_in_modal">${data.topic.topic}</p>
+                        <p class="text_in_modal">${data.order.topic.topic}</p>
                         <form action="" method="post">
                             <p>
                                 <label for="soft_in_chat">Програмное обеспечение</label>
@@ -109,7 +187,7 @@ document.querySelectorAll('.modal_cr_order').forEach(link => {
                             </p>
                         </form>
                         <h6 class="title_in_modal">Описание</h6>
-                        <p class="text_in_modal">${data.text}</p>
+                        <p class="text_in_modal">${data.order.text}</p>
                         <div class="files_in_modal"></div>
                         <h6 class="title_in_modal">Исполнители</h6>
                         <div class="curators_of_request"></div>
@@ -135,7 +213,7 @@ document.querySelectorAll('.modal_cr_order').forEach(link => {
                     </div>
 
                     <div id="tab3" class="tab-content">
-                        <p>Status: ${data.status}</p>
+                        <p>Status: ${data.order.status}</p>
                     </div>
                 `;
                 console.log(data)
@@ -151,28 +229,57 @@ document.querySelectorAll('.modal_cr_order').forEach(link => {
     });
 });
 
-// document.addEventListener('DOMContentLoaded', function () {
-//     var elems = document.querySelectorAll('.modal');
-//     var instances = M.Modal.init(elems);
+// дальше непонятная хрень с вебсокетом
 
-//     document.querySelectorAll('.modal_link_cards').forEach(link => {
-//         link.addEventListener('click', function(event) {
-//             const orderId = this.getAttribute('data-order-id');
-//             const modalContent = document.querySelector('#statusOrder .modal-content');
-//         });
-//     });
-// });
+// Подключаемся к WebSocket серверу
+let socket = new WebSocket("ws://web/ws/chat/test_order/");
 
-// document.querySelectorAll('.modal_link_cards').forEach(link => {
-//     link.addEventListener('click', function(event) {
-//         const orderId = this.getAttribute('data-order-id');
-//         const modalContent = document.querySelector('#statusOrder .modal-content');
+// Когда соединение установлено
+socket.onopen = function(event) {
+    console.log("WebSocket соединение установлено.");
+};
+
+// Когда приходит сообщение
+// socket.onmessage = function(event) {
+//     let data = JSON.parse(event.data);
+//     let chatMessages = document.querySelector('.chat-messages');
+//     let newMessage = document.createElement('div');
+//     newMessage.classList.add('chat-message');
+//     newMessage.textContent = data.message;
+    
+//     chatMessages.appendChild(newMessage);
+//     chatMessages.scrollTop = chatMessages.scrollHeight;
+// };
+
+// Когда соединение закрывается
+socket.onclose = function(event) {
+    console.log("WebSocket соединение закрыто.");
+};
+
+// Когда происходит ошибка
+socket.onerror = function(error) {
+    console.error("WebSocket ошибка:", error);
+};
+
+// Обработка отправки сообщения
+// document.getElementById('send-btn').addEventListener('click', function() {
+//     let chatInput = document.getElementById('chat-input');
+//     let message = chatInput.value;
+    
+//     if (message.trim() !== "") {
+//         // Отправляем сообщение через WebSocket
+//         socket.send(JSON.stringify({ 'message': message }));
         
-//         // Пример использования orderId для запроса данных с сервера или изменения контента
-//         modalContent.innerHTML = `ID заказа: ${orderId}`;
-//     });
+//         chatInput.value = ""; // Очищаем поле ввода
+//     }
 // });
 
+// Отправка сообщения при нажатии Enter
+// document.getElementById('chat-input').addEventListener('keypress', function(e) {
+//     if (e.key === 'Enter') {
+//         document.getElementById('send-btn').click();
+//     }
+// });
 
 
 
