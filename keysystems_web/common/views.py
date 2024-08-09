@@ -42,8 +42,13 @@ def get_order_data(request, order_id):
         return JsonResponse({'error': 'not found'}, status=404)
 
 
-def chat_view(request, room_name):
-    return render(request, f'chat/{room_name}.html', {
-        'room_name': room_name,
-        's_data': random.randint(1000, 9999)
-    })
+# def chat_view(request, room_name):
+#     return render(request, f'chat/{room_name}.html', {
+#         'room_name': room_name,
+#         's_data': random.randint(1000, 9999)
+#     })
+
+
+
+
+
