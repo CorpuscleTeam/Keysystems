@@ -3,13 +3,18 @@
 <html>
 <head>
     <meta charset="utf-8"/>
+    <link rel="stylesheet" href="../../static/site/css/basic_style.css">
+    <link rel="stylesheet" href="../../static/site/css/style.css">
+    <link rel="stylesheet" href="../../static/site/css/test_for_chat.css">
+
     <title>Chat Room</title>
 </head>
 <body>
-    <textarea id="chat-log" cols="100" rows="20"></textarea><br>
+    <div id="chat-log" cols="100" rows="20" class="chat_area"></div><br>
     <input id="chat-message-input" type="text" size="100"><br>
     <input id="chat-message-submit" type="button" value="Send">
     {{ room_name|json_script:"room-name" }}
+
     <script>
         const roomName = JSON.parse(document.getElementById('room-name').textContent);
 
@@ -23,7 +28,14 @@
 
         chatSocket.onmessage = function(e) {
             const data = JSON.parse(e.data);
-            document.querySelector('#chat-log').value += (data.text + '\n');
+
+            let chat_message = document.createElement('div')
+            chat_message.innerHTML = `${data.message} \n`
+            document.querySelector('#chat-log').appendChild(chat_message)
+            // document.querySelector('#chat-log').innerHTML = `${data.message} \n`;
+            
+            // document.querySelector('#chat-log').value += (data.message + '12' + '\n');
+            
         };
 
         chatSocket.onclose = function(e) {

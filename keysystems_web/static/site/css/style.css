@@ -988,8 +988,53 @@ textarea {
     margin-right: 8px;
 }
 
+
+
+/* МО с чатом 5_3, 1_2_1 */
+.title_in_modal {
+    color: rgba(153, 153, 153, 1);
+    font-size: 16px;
+    padding-top: 20px;
+    margin-bottom: 4px;
+}
+.text_in_modal {
+    color: var(--color_dark);
+    font-size: 16px;
+    line-height: 21px;
+    margin-bottom: 22px;
+}
+/* стили вкладок */
+.tabs {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+}
+.tabs li {
+    list-style: none;
+    height: 38px;
+    padding-left: 10px;
+    padding-right: 10px;
+    font-size: 16px;
+}
+
+.tabs .tab a {
+    color: rgba(153, 153, 153, 1);
+}
+/* Стили для активной вкладки */
+.tabs .tab.active a {
+    color: var(--color_dark);
+}
+
+/* Стили для активного контента */
+/* .tab-content {
+    display: none;
+}
+
+.tab-content.active {
+    display: block;
+} */
 /* окно чата */
-.chat-window {
+/* .chat-window {
     width: 300px;
     height: 400px;
     border: 1px solid #ccc;
@@ -1043,4 +1088,4 @@ textarea {
     margin-left: 5px;
     border-radius: 3px;
     cursor: pointer;
-}
+} */
