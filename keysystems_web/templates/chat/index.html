@@ -3,6 +3,10 @@
 <html>
 <head>
     <meta charset="utf-8"/>
+
+    <link rel="stylesheet" href="../../static/site/css/basic_style.css">
+    <link rel="stylesheet" href="../../static/site/css/style.css">
+
     <title>Chat Rooms</title>
 </head>
 <body>
@@ -10,7 +14,79 @@
     <input id="room-name-input" type="text" size="100"><br>
     <input id="room-name-submit" type="button" value="Enter">
 
+    <div class="modal1_img modal-close">                 
+        <img src="../../static/site/img/close-large.svg" alt="">
+    </div>
+    <h4>Государственное автономное учреждение республики Саха (Якутия) "Мегино-Кангаласская центральная районная больница</h4>
+    <p>Выполнено</p>
+    <ul class="tabs">
+        <li class="tab"><a href="#tab1">Описание</a></li>
+        <li class="tab">
+            <a href="#tab2">
+                <p class="order_tab">Комментарии</p>
+
+            </a>
+        </li>
+        <li class="tab">
+            <a href="#tab3">
+                <p class="order_tab">Чат кураторов</p>
+
+            </a>
+        </li>
+    </ul>
+
+    <div id="tab1" class="tab-content active">
+        <h6 class="title_in_modal">Тема</h6>
+        <p class="text_in_modal">Техническая проблема</p>
+        <form action="" method="post">
+            <p>
+                <label for="soft_in_chat">Програмное обеспечение</label>
+                <select name="soft_in_chat" id="soft_in_chat">
+                    <option value="">PO1</option>
+                    <option value="">PO2</option>
+                    <option value="">PO3</option>
+                </select>
+            </p>
+        </form>
+        <h6 class="title_in_modal">Описание</h6>
+        <p class="text_in_modal">Контроль и автоматизация процессов определения начальных (максимальных) цен и иных ключевых параметров государственных и муниципальных контрактов.</p>
+        <div class="files_in_modal"></div>
+        <h6 class="title_in_modal">Исполнители</h6>
+        <div class="curators_of_request"></div>
+        
+
+    </div>
+
+    <div id="tab2" class="tab-content">
+        <div id="tab2" class="tab-content client_chat">
+            <div class="chat-window">
+                <div class="chat-header">
+                    <h4>Чат</h4>
+                </div>
+                <div class="chat-body">
+                    <div class="chat-messages"></div>
+                </div>
+                <div class="chat-footer">
+                    <input type="text" id="chat-input" placeholder="Введите сообщение..." />
+                    <button id="send-btn">Отправить</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="tab3" class="tab-content">
+        <p>Status: ${data.order.status}</p>
+    </div>
+
+    <!-- инициализация вкладок -->
+    <script type="text/javascript" src="../../static/site/js/materialize.min.js"></script>
     <script>
+        let tabs = document.querySelectorAll('.tabs');
+        M.Tabs.init(tabs);
+    </script>
+
+    <script>
+
         document.querySelector('#room-name-input').focus();
         document.querySelector('#room-name-input').onkeyup = function(e) {
             if (e.key === 'Enter') {  // enter, return

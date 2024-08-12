@@ -1,0 +1,56 @@
+.chat_area {
+    display: block;
+    max-width: 380px;
+    width: 100%;
+    height: 440px;
+    margin: 20px auto;
+    padding: 10px;
+}
+#chat-log .message {
+    background-color: #d8d8d8;
+    margin-bottom: 10px;
+    padding: 5px;
+    border-radius: 5px;
+}
+#chat-log .message.sent {
+    background-color: #b6f4b6;
+    text-align: right;
+    color: #333;
+}
+/* Стили для полученных сообщений */
+#chat-log .message.received {
+    background-color: #eaa0a0;
+    text-align: left;
+    color: #333;
+}
+
+/* Стили для текста ввода сообщения */
+#chat-message-input {
+    display: block;
+    margin: 5px auto;
+    max-width: 380px;
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 14px;
+}
+
+/* Стили для кнопки отправки */
+#chat-message-submit {
+    max-width: 380px;
+    width: 100%;
+    padding: 10px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 14px;
+    display: block;
+    margin: 5px auto;
+}
+
+#chat-message-submit:hover {
+    background-color: #45a049;
+}
