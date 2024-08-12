@@ -232,7 +232,8 @@ document.querySelectorAll('.modal_cr_order').forEach(link => {
 // дальше непонятная хрень с вебсокетом
 
 // Подключаемся к WebSocket серверу
-let socket = new WebSocket("ws://web/ws/chat/test_order/");
+//let socket = new WebSocket("ws://web/ws/chat/");
+let socket = new WebSocket("ws://" + window.location.host + "/ws/chat/");
 
 // Когда соединение установлено
 socket.onopen = function(event) {
