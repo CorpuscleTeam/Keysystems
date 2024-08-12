@@ -16,6 +16,9 @@
     {{ room_name|json_script:"room-name" }}
 
     <script>
+        let context = JSON.parse('{{ chat|escapejs }}')
+        console.log(context)
+
         const roomName = JSON.parse(document.getElementById('room-name').textContent);
 
         const chatSocket = new WebSocket(
