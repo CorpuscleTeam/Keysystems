@@ -28,6 +28,7 @@
 
         chatSocket.onmessage = function(e) {
             const data = JSON.parse(e.data);
+
             let chat_message = document.createElement('div')
             chat_message.innerHTML = `${data.message} \n`
             document.querySelector('#chat-log').appendChild(chat_message)

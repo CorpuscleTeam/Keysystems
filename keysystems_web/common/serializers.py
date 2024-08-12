@@ -6,7 +6,7 @@ import logging
 
 from rest_framework import serializers
 from . import models as cm
-from common import get_date_string, get_size_file_str, get_file_icon_link
+import common as ut
 from .logs import log_error
 from enums import notices_dict
 
@@ -39,12 +39,12 @@ class DownloadedFileSerializer(serializers.ModelSerializer):
 
     def get_file_size(self, obj):
         if obj.file_size:
-            return get_size_file_str(obj.file_size)
+            return ut.get_size_file_str(obj.file_size)
         else:
             return 'н/д'
 
     def get_icon(self, obj):
-        return get_file_icon_link(obj.url)
+        return ut.get_file_icon_link(obj.url)
 
 
 # ПО
@@ -119,9 +119,14 @@ class OrderSerializer(serializers.ModelSerializer):
 class MessageSerializer(serializers.ModelSerializer):
     from_user = UserKSSerializer()
 
+    time = serializers.SerializerMethodField()
+
     class Meta:
         model = cm.Message
-        fields = ['created_at', 'from_user', 'text']
+        fields = ['created_at', 'from_user', 'text', 'time', 'chat']
+
+    def get_time(self, obj):
+        return ut.get_time_string(obj.created_at)
 
 
 # уведомления
@@ -138,7 +143,7 @@ class NoticeSerializer:
                     {
                         'order_id': notice.order.id,
                         'num_push': notice.id,
-                        'date': get_date_string(notice.created_at),
+                        'date': ut.get_date_string(notice.created_at),
                         'text': text.format(pk=notice.id)
                     }
                 )
