@@ -7,5 +7,5 @@
 /keysystems_web/logs/
 /keysystems_web/media/
 **/staticfiles/
-**/staticfiles
+/keysystems_web/staticfiles
 nginx/logs

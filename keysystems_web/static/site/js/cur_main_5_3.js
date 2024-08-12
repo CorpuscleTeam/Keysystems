@@ -232,3 +232,4 @@ document.querySelectorAll('.modal_cr_order').forEach(link => {
 // дальше непонятная хрень с вебсокетом
 
 
+
