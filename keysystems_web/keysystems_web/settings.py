@@ -70,7 +70,9 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'keysystems_web.wsgi.application'
-ASGI_APPLICATION = "keysystems_web.routing.application"
+# ASGI_APPLICATION = "keysystems_web.routing.application"
+ASGI_APPLICATION = "keysystems_web.asgi.application"
+
 
 
 DATABASES = {

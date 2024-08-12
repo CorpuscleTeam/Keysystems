@@ -42,6 +42,14 @@ def get_order_data(request, order_id):
         return JsonResponse({'error': 'not found'}, status=404)
 
 
+def index(request):
+    return render(request, "chat/index.html")
+
+
+def room(request, room_name):
+    return render(request, "chat/room.html", {"room_name": room_name})
+
+
 # def chat_view(request, room_name):
 #     return render(request, f'chat/{room_name}.html', {
 #         'room_name': room_name,
@@ -49,4 +57,3 @@ def get_order_data(request, order_id):
 #     })
 
 
-logging.warning("ПРОСТ")
