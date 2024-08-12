@@ -30,6 +30,13 @@ def get_date_string(dt: datetime) -> str:
     return f'{data_str} / {hour_str}:{minute_str}'
 
 
+# возвращает время для сообщений
+def get_time_string(dt: datetime) -> str:
+    hour_str = dt.hour if dt.hour > 10 else f'0{dt.hour}'
+    minute_str = dt.minute if dt.minute > 10 else f'0{dt.minute}'
+    return f'{hour_str}:{minute_str}'
+
+
 # Создаёт строку с размером файла
 def get_size_file_str(size: int) -> str:
     for unit in ['байт', 'КБ', 'МБ', 'ГБ']:
