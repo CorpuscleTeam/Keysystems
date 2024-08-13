@@ -120,13 +120,36 @@ class MessageSerializer(serializers.ModelSerializer):
     from_user = UserKSSerializer()
 
     time = serializers.SerializerMethodField()
+    file_size = serializers.SerializerMethodField()
+    file_url = serializers.SerializerMethodField()
+    icon = serializers.SerializerMethodField()
+    filename = serializers.SerializerMethodField()
 
     class Meta:
         model = cm.Message
-        fields = ['created_at', 'from_user', 'text', 'time', 'chat']
+        fields = ['type_msg', 'from_user', 'text', 'time', 'chat', 'file_url', 'file_size', 'icon', 'filename']
 
     def get_time(self, obj):
         return ut.get_time_string(obj.created_at)
+
+    def get_file_url(self, obj):
+        return f'..{obj.file_path}' if obj.file_path else None
+
+    def get_file_size(self, obj):
+        if obj.file_size:
+            return ut.get_size_file_str(obj.file_size)
+        else:
+            return 'н/д'
+
+    def get_icon(self, obj):
+        return ut.get_file_icon_link(obj.file_path) if obj.file_path else None
+
+    def get_filename(self, obj):
+        if obj.file_path:
+            parsed_url = urlparse(obj.file_path)
+            return os.path.basename(parsed_url.path)
+        else:
+            return None
 
 
 # уведомления

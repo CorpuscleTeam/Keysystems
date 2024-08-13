@@ -93,7 +93,9 @@
         chatSocket.onmessage = function(e) {
             const data = JSON.parse(e.data);
 
-            let newMsg = createMsg(data, userId, withHeader)
+            withHeader = true
+            console.log(data)
+            let newMsg = createMsg(data.message, userId, withHeader)
             chat_message.appendChild(newMsg)
             
             // chat_message.innerHTML = `${data.message} \n`

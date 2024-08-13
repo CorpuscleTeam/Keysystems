@@ -40,6 +40,17 @@ CHAT_CHOICES = (
 )
 
 
+class MsgType(str, Enum):
+    MSG = 'msg'
+    FILE = 'file'
+
+
+MSG_TYPE_CHOICES = (
+        (MsgType.MSG.value, 'Сообщение'),
+        (MsgType.FILE.value, 'Файл')
+)
+
+
 # уведомления
 class Notice(str, Enum):
     ORDER_ACTIVE = 'order_active'
