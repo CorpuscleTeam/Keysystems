@@ -35,7 +35,7 @@
         let userId = {{ user_id }}
         console.log(userId)
 
-        function createMsg(ObjMsg, userId) {
+        function createMsg(ObjMsg, userId, withHeader = true) {
             let newMsg = document.createElement('div')
             newMsg.classList.add('msg')
             if (userId == ObjMsg['from_user']['id']) {
@@ -43,20 +43,23 @@
             } else {
                 newMsg.classList.add('msgFromHim')
             }
-            let headerMsg = document.createElement('div')
-            headerMsg.classList.add('header_msg')
-            newMsg.appendChild(headerMsg)
 
-            let fromMsg = document.createElement('p')
-            fromMsg.classList.add('from_msg')
-            fromMsg.innerHTML = ObjMsg['from_user']['full_name']
-            headerMsg.appendChild(fromMsg)
+            if (withHeader == true) {
+                let headerMsg = document.createElement('div')
+                headerMsg.classList.add('header_msg')
+                newMsg.appendChild(headerMsg)
 
-            let timeMsg = document.createElement('p')
-            timeMsg.classList.add('time_msg')
-            timeMsg.innerHTML = ObjMsg['time']
-            headerMsg.appendChild(timeMsg)
+                let fromMsg = document.createElement('p')
+                fromMsg.classList.add('from_msg')
+                fromMsg.innerHTML = ObjMsg['from_user']['full_name']
+                headerMsg.appendChild(fromMsg)
 
+                let timeMsg = document.createElement('p')
+                timeMsg.classList.add('time_msg')
+                timeMsg.innerHTML = ObjMsg['time']
+                headerMsg.appendChild(timeMsg)
+            }
+            
             let contextMsg = document.createElement('div')
             contextMsg.classList.add('context_msg')
             contextMsg.innerHTML = ObjMsg['text']
@@ -68,52 +71,58 @@
 
         let chat_message = document.createElement('div')
         for (let i=0; i<arr_message.length; i++) {
-            let newMsg = createMsg(arr_message[i], userId)
+            let withHeader = true
+            if (i>0 && arr_message[i]['from_user']['id'] == arr_message[i-1]['from_user']['id']) {
+                withHeader = false
+            }
+            let newMsg = createMsg(arr_message[i], userId, withHeader)
             chat_message.appendChild(newMsg)
         }
         document.querySelector('#chat-log').appendChild(chat_message)
 
-        // const roomName = JSON.parse(document.getElementById('room-name').textContent);
+        const roomName = JSON.parse(document.getElementById('room-name').textContent);
 
-        // const chatSocket = new WebSocket(
-        //     'ws://'
-        //     + window.location.host
-        //     + '/ws/chat/'
-        //     + roomName
-        //     + '/'
-        // );
+        const chatSocket = new WebSocket(
+            'ws://'
+            + window.location.host
+            + '/ws/chat/'
+            + roomName
+            + '/'
+        );
 
-        // chatSocket.onmessage = function(e) {
-        //     const data = JSON.parse(e.data);
+        chatSocket.onmessage = function(e) {
+            const data = JSON.parse(e.data);
 
+            let newMsg = createMsg(data, userId, withHeader)
+            chat_message.appendChild(newMsg)
             
-        //     chat_message.innerHTML = `${data.message} \n`
+            // chat_message.innerHTML = `${data.message} \n`
             
             // document.querySelector('#chat-log').innerHTML = `${data.message} \n`;
             
             // document.querySelector('#chat-log').value += (data.message + '12' + '\n');
             
-        // };
+        };
 
-        // chatSocket.onclose = function(e) {
-        //     console.error('Chat socket closed unexpectedly');
-        // };
+        chatSocket.onclose = function(e) {
+            console.error('Chat socket closed unexpectedly');
+        };
 
-        // document.querySelector('#chat-message-input').focus();
-        // document.querySelector('#chat-message-input').onkeyup = function(e) {
-        //     if (e.key === 'Enter') {  // enter, return
-        //         document.querySelector('#chat-message-submit').click();
-        //     }
-        // };
+        document.querySelector('#chat-message-input').focus();
+        document.querySelector('#chat-message-input').onkeyup = function(e) {
+            if (e.key === 'Enter') {  // enter, return
+                document.querySelector('#chat-message-submit').click();
+            }
+        };
 
-        // document.querySelector('#chat-message-submit').onclick = function(e) {
-        //     const messageInputDom = document.querySelector('#chat-message-input');
-        //     const message = messageInputDom.value;
-        //     chatSocket.send(JSON.stringify({
-        //         'message': message
-        //     }));
-        //     messageInputDom.value = '';
-        // };
+        document.querySelector('#chat-message-submit').onclick = function(e) {
+            const messageInputDom = document.querySelector('#chat-message-input');
+            const message = messageInputDom.value;
+            chatSocket.send(JSON.stringify({
+                'message': message
+            }));
+            messageInputDom.value = '';
+        };
     </script>
 </body>
 </html>
