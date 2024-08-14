@@ -60,7 +60,8 @@ def room(request: HttpRequest, room_name: str = None):
         "room_name": room_name,
         'client_chat': json.dumps(MessageSerializer(client_messages.all(), many=True).data),
         'curator_chat': json.dumps(MessageSerializer(curator_messages.all(), many=True).data),
-        'chat': json.dumps(MessageSerializer(messages.all(), many=True).data),        'user_id': 2
+        'chat': json.dumps(MessageSerializer(messages.all(), many=True).data),
+        'user_id': 4
     }
     return render(request, "chat/room.html", context)
 

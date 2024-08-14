@@ -56,6 +56,7 @@ class ChatConsumer(WebsocketConsumer):
         now = datetime.now()
         chat = random.choice([ChatType.CLIENT.value, ChatType.CURATOR.value])
         message = {
+
             'from_user': {'id': 2, 'full_name': 'Тест'},
             'text': event["message"],
             'time': ut.get_time_string(now),
@@ -67,4 +68,5 @@ class ChatConsumer(WebsocketConsumer):
                                     f'')
 
         # Send message to WebSocket
+        # self.send(text_data=json.dumps({message}))
         self.send(text_data=json.dumps({"message": message}))

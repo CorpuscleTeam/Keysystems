@@ -2,7 +2,7 @@ from django.db import models
 from django.contrib.auth.models import AbstractUser, Group, Permission
 from datetime import datetime
 
-from enums import OrderStatus, ORDER_CHOICES, notices_tuple, CHAT_CHOICES
+from enums import OrderStatus, ORDER_CHOICES, notices_tuple, CHAT_CHOICES, MsgType, MSG_TYPE_CHOICES
 
 
 # список районов
@@ -148,7 +148,7 @@ class DownloadedFile(models.Model):
     created_at = models.DateTimeField('Создана', default=datetime.now())
     user_ks = models.ForeignKey(UserKS, on_delete=models.DO_NOTHING, related_name='downloaded_file')
     order = models.ForeignKey(Order, on_delete=models.CASCADE, related_name='downloaded_file')
-    url = models.CharField('Ссылка', max_length=255, default=OrderStatus.NEW.value, choices=ORDER_CHOICES)
+    url = models.CharField('Ссылка', max_length=255)
     file_size = models.PositiveIntegerField('Размер файла (в байтах)', null=True, blank=True)
 
     objects = models.Manager()
@@ -223,10 +223,13 @@ class OrderCurator(models.Model):
 class Message(models.Model):
     id = models.AutoField(primary_key=True)
     created_at = models.DateTimeField('Создана', auto_now_add=True)
+    type_msg = models.CharField('Тип сообщения', max_length=255, default=MsgType.MSG.value, choices=MSG_TYPE_CHOICES)
     from_user = models.ForeignKey(UserKS, on_delete=models.CASCADE, related_name='message')
     chat = models.CharField('Чат', choices=CHAT_CHOICES)
     order = models.ForeignKey(Order, on_delete=models.CASCADE, related_name='message')
-    text = models.TextField('Текст')
+    text = models.TextField('Текст', null=True, blank=True)
+    file_path = models.CharField('Путь', null=True, blank=True)
+    file_size = models.PositiveIntegerField('Размер файла (в байтах)', null=True, blank=True)
 
     objects: models.Manager = models.Manager()
 
