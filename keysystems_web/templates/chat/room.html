@@ -1,34 +1,64 @@
 <!-- chat/templates/chat/room.html -->
 <!DOCTYPE html>
 <html>
+
 <head>
-    <meta charset="utf-8"/>
+    <meta charset="utf-8" />
     <link rel="stylesheet" href="../../static/site/css/basic_style.css">
     <link rel="stylesheet" href="../../static/site/css/style.css">
     <link rel="stylesheet" href="../../static/site/css/test_for_chat.css">
 
     <title>Chat Room</title>
 </head>
+
 <body>
-    <div id="chat-log" cols="100" rows="20" class="chat_area"></div><br>
-    <input id="chat-message-input" type="text" size="100"><br>
-    <input id="chat-message-submit" type="button" value="Send">
+
+    <div class="area_flex">
+
+        <div class="client_chat">
+            <div id="chat-log" cols="100" rows="20" class="chat_area"></div>
+            <div class="footer_message">
+                <input id="chat-message-input" class="chat-message-input" type="text" size="100">
+                <p>
+                    <input id="chat-message-file" name="chat-message-file" class="chat_add_file" type="file" multiple style="display: none;">
+                    <label for="chat-message-file" class="chat_add_file">
+                        <img src="../../static/site/img/addFile2.svg" alt="">
+                    </label>
+                </p>
+                <p>
+                    <input id="chat-message-submit" class="chat_submit" type="button" value="Send" style="display: none;">
+                    <label for="chat-message-submit" class="chat_submit">
+                        <img src="../../static/site/img/sentMsg.svg" alt="">
+                    </label>
+                </p>
+            </div>
+        </div>
+
+        <!-- <div class="curator_chat">
+            <div id="chat-log2" cols="100" rows="20" class="chat_area"></div><br>
+            <input id="chat-message-input2" type="text" size="100"><br>
+            <input id="chat-message-file2" name="chat-message-file2" class="chat_add_file" type="file" multiple>
+            <input id="chat-message-submit2" type="button" value="Send">
+        </div> -->
+
+    </div>
+
     {{ room_name|json_script:"room-name" }}
 
     <script>
-/*
-{
-    "created_at": "2024-08-09T16:14:02.119024+09:00",
-    "from_user": {
-        "id": 3,
-        "full_name": "as df gh",
-        "username": "grudoav@gmail.com"
-    },
-    "text": "привет",
-    "time": "07:14",
-    "chat": "client"
-}
-*/
+        /*
+        {
+            "created_at": "2024-08-09T16:14:02.119024+09:00",
+            "from_user": {
+                "id": 3,
+                "full_name": "as df gh",
+                "username": "grudoav@gmail.com"
+            },
+            "text": "привет",
+            "time": "07:14",
+            "chat": "client"
+        }
+        */
 
         let arr_message = JSON.parse('{{ chat|escapejs }}')
         console.log(arr_message)
@@ -59,7 +89,7 @@
                 timeMsg.innerHTML = ObjMsg['time']
                 headerMsg.appendChild(timeMsg)
             }
-            
+
             let contextMsg = document.createElement('div')
             contextMsg.classList.add('context_msg')
             contextMsg.innerHTML = ObjMsg['text']
@@ -70,15 +100,21 @@
 
 
         let chat_message = document.createElement('div')
-        for (let i=0; i<arr_message.length; i++) {
+        chat_message.classList.add('chat_msg_item')
+        for (let i = 0; i < arr_message.length; i++) {
             let withHeader = true
-            if (i>0 && arr_message[i]['from_user']['id'] == arr_message[i-1]['from_user']['id']) {
+            if (i > 0 && arr_message[i]['from_user']['id'] == arr_message[i - 1]['from_user']['id']) {
                 withHeader = false
             }
             let newMsg = createMsg(arr_message[i], userId, withHeader)
             chat_message.appendChild(newMsg)
         }
-        document.querySelector('#chat-log').appendChild(chat_message)
+        // document.querySelector('#chat-log').appendChild(chat_message)
+
+        let chatLog = document.querySelector('#chat-log');
+    chatLog.appendChild(chat_message);
+    // Автоматическая прокрутка чата вниз
+    chatLog.scrollTop = chatLog.scrollHeight;
 
         const roomName = JSON.parse(document.getElementById('room-name').textContent);
 
@@ -90,34 +126,33 @@
             + '/'
         );
 
-        chatSocket.onmessage = function(e) {
+        chatSocket.onmessage = function (e) {
             const data = JSON.parse(e.data);
 
             withHeader = true
-            console.log(data)
             let newMsg = createMsg(data.message, userId, withHeader)
             chat_message.appendChild(newMsg)
-            
+
             // chat_message.innerHTML = `${data.message} \n`
-            
+
             // document.querySelector('#chat-log').innerHTML = `${data.message} \n`;
-            
+
             // document.querySelector('#chat-log').value += (data.message + '12' + '\n');
-            
+
         };
 
-        chatSocket.onclose = function(e) {
+        chatSocket.onclose = function (e) {
             console.error('Chat socket closed unexpectedly');
         };
 
         document.querySelector('#chat-message-input').focus();
-        document.querySelector('#chat-message-input').onkeyup = function(e) {
+        document.querySelector('#chat-message-input').onkeyup = function (e) {
             if (e.key === 'Enter') {  // enter, return
                 document.querySelector('#chat-message-submit').click();
             }
         };
 
-        document.querySelector('#chat-message-submit').onclick = function(e) {
+        document.querySelector('#chat-message-submit').onclick = function (e) {
             const messageInputDom = document.querySelector('#chat-message-input');
             const message = messageInputDom.value;
             chatSocket.send(JSON.stringify({
@@ -127,4 +162,5 @@
         };
     </script>
 </body>
+
 </html>

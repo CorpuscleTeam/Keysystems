@@ -56,7 +56,8 @@ class ChatConsumer(WebsocketConsumer):
         now = datetime.now()
         chat = random.choice([ChatType.CLIENT.value, ChatType.CURATOR.value])
         message = {
-            'from_user': {'id': 4, 'full_name': 'Тест'},
+
+            'from_user': {'id': 2, 'full_name': 'Тест'},
             'text': event["message"],
             'time': ut.get_time_string(now),
             'chat': chat
