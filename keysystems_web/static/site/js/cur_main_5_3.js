@@ -39,79 +39,36 @@ console.log('cur_main_5_3.js')
                     "username": "grudoav@gmail.com"
                 }
             },
-            {
-                "id": 2,
-                "user": {
-                    "id": 3,
-                    "full_name": "as df gh",
-                    "username": "grudoav@gmail.com"
-                }
-            },
-            {
-                "id": 3,
-                "user": {
-                    "id": 3,
-                    "full_name": "as df gh",
-                    "username": "grudoav@gmail.com"
-                }
-            },
-            {
-                "id": 4,
-                "user": {
-                    "id": 3,
-                    "full_name": "as df gh",
-                    "username": "grudoav@gmail.com"
-                }
-            }
+            
         ],
         "curators": "as df gh, as df gh, as df gh, as df gh",
         "files": []
     },
-    "client_chat": [
+    "chat": [
         {
-            "created_at": "2024-08-09T16:14:02.119024+09:00",
+            "type_msg": "msg",
             "from_user": {
                 "id": 3,
                 "full_name": "as df gh",
                 "username": "grudoav@gmail.com"
             },
-            "text": "привет"
+            "text": "привет",
+            "time": "07:14",
+            "chat": "client",
+            "file_url": null,
+            "file_size": "н/д",
+            "icon": null,
+            "filename": null
         },
-        {
-            "created_at": "2024-08-09T16:14:29.845423+09:00",
-            "from_user": {
-                "id": 3,
-                "full_name": "as df gh",
-                "username": "grudoav@gmail.com"
-            },
-            "text": "ывдлаофыжваощжвапщшч чваавфвафав"
-        }
-    ],
-    "curator_chat": [
-        {
-            "created_at": "2024-08-09T16:14:16.335624+09:00",
-            "from_user": {
-                "id": 3,
-                "full_name": "as df gh",
-                "username": "grudoav@gmail.com"
-            },
-            "text": "ддллорпаааимтоьл"
-        },
-        {
-            "created_at": "2024-08-09T16:14:45.712592+09:00",
-            "from_user": {
-                "id": 3,
-                "full_name": "as df gh",
-                "username": "grudoav@gmail.com"
-            },
-            "text": "лвыдаофыодплзсзчсдль члаопфвшфцхмм звааэ"
-        }
+        
     ],
     "user_id": 4,
     "unv_msg_client": 3,
     "unv_msg_curator": 4
 }
     */
+
+
 
 document.addEventListener('DOMContentLoaded', function () {
     var elems = document.querySelectorAll('.modal');
@@ -140,8 +97,10 @@ modalApplicationStatus.appendChild(modalApplicationStatusContent)
 document.body.append(modalApplicationStatus)
 console.log('должно создатьс модальное окно')
 
-{/* <img src="/static/site/img/close-large.svg" alt=""> */}
+{/* <img src="/static/site/img/close-large.svg" alt=""> */ }
 // обработчик событий данные с бэка
+
+
 document.querySelectorAll('.modal_cr_order').forEach(link => {
     // console.log('должно создатьс модальное окно!!')
 
@@ -195,26 +154,50 @@ document.querySelectorAll('.modal_cr_order').forEach(link => {
 
                     </div>
 
-                    <div id="tab2" class="tab-content">
+                    
                         <div id="tab2" class="tab-content client_chat">
-                            <div class="chat-window">
-                                <div class="chat-header">
-                                    <h4>Чат</h4>
-                                </div>
-                                <div class="chat-body">
-                                    <div class="chat-messages"></div>
-                                </div>
-                                <div class="chat-footer">
-                                    <input type="text" id="chat-input" placeholder="Введите сообщение..." />
-                                    <button id="send-btn">Отправить</button>
+                            <div class="client_chat">
+                                <div id="client_chat" cols="100" rows="20" class="chat_area"></div>
+                                <div class="footer_message">
+                                    <input id="client-msg-input" class="chat-message-input" type="text" size="100">
+                                    <p>
+                                        <input id="client-msg-file" name="client-msg-file" class="chat_add_file" type="file" multiple style="display: none;">
+                                        <label for="client-msg-file" class="chat_add_file">
+                                            <img src="${addFile2}" alt="">
+                                        </label>
+                                    </p>
+                                    <p>
+                                        <input id="client-msg-submit" name="client-msg-submit" class="chat_submit" type="button" value="Send" style="display: none;">
+                                        <label for="client-msg-submit" class="chat_submit">
+                                            <img src="${sentMsg}" alt="">
+                                        </label>
+                                    </p>
                                 </div>
                             </div>
                         </div>
-                    </div>
+                    
 
-                    <div id="tab3" class="tab-content">
-                        <p>Status: ${data.order.status}</p>
-                    </div>
+                    
+                        <div id="tab3" class="tab-content curator_chat">
+                            <div class="curator_chat">
+                                <div id="curator_chat" cols="100" rows="20" class="chat_area"></div>
+                                <div class="footer_message">
+                                    <input id="curator-msg-input" name="curator-msg-input" class="chat-message-input" type="text" size="100">
+                                    <p>
+                                        <input id="curator-msg-file" name="curator-msg-file" class="chat_add_file" type="file" multiple style="display: none;">
+                                        <label for="curator-msg-file" class="chat_add_file">
+                                            <img src="${addFile2}" alt="">
+                                        </label>
+                                    </p>
+                                    <p>
+                                        <input id="curator-msg-submit" name="curator-msg-submit" class="chat_submit" type="button" value="Send" style="display: none;">
+                                        <label for="curator-msg-submit" class="chat_submit">
+                                            <img src="${sentMsg}" alt="">
+                                        </label>
+                                    </p>
+                                </div>
+                            </div>
+                        </div>    
                 `;
                 console.log(data)
 
@@ -224,6 +207,21 @@ document.querySelectorAll('.modal_cr_order').forEach(link => {
 
                 // Открываем модальное окно
                 M.Modal.getInstance(modalApplicationStatus).open();
+
+                let client_chat = createChat('#client_chat', data.client_chat, data.user_id)
+
+                // console.log(client_chat.scrollTop, client_chat.scrollHeight)
+                // client_chat.scrollTop = client_chat.scrollHeight
+                // console.log(client_chat.scrollTop, client_chat.scrollHeight)
+
+                let curator_chat = createChat('#curator_chat', data.curator_chat, data.user_id)
+                // curator_chat.scrollTop = curator_chat.scrollHeight
+
+                // прокрутка
+                test = document.querySelector('#client_chat')
+                test.scrollTop = test.scrollHeight
+
+                initOrderSocket(data.room, data.user_id)
             })
             .catch(error => console.error('Error:', error));
     });

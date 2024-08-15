@@ -20,13 +20,15 @@
             <div class="footer_message">
                 <input id="chat-message-input" class="chat-message-input" type="text" size="100">
                 <p>
-                    <input id="chat-message-file" name="chat-message-file" class="chat_add_file" type="file" multiple style="display: none;">
+                    <input id="chat-message-file" name="chat-message-file" class="chat_add_file" type="file" multiple
+                        style="display: none;">
                     <label for="chat-message-file" class="chat_add_file">
                         <img src="../../static/site/img/addFile2.svg" alt="">
                     </label>
                 </p>
                 <p>
-                    <input id="chat-message-submit" class="chat_submit" type="button" value="Send" style="display: none;">
+                    <input id="chat-message-submit" class="chat_submit" type="button" value="Send"
+                        style="display: none;">
                     <label for="chat-message-submit" class="chat_submit">
                         <img src="../../static/site/img/sentMsg.svg" alt="">
                     </label>
@@ -98,6 +100,7 @@
             return newMsg
         }
 
+        let lastUser = 0
 
         let chat_message = document.createElement('div')
         chat_message.classList.add('chat_msg_item')
@@ -108,13 +111,13 @@
             }
             let newMsg = createMsg(arr_message[i], userId, withHeader)
             chat_message.appendChild(newMsg)
+            lastUser = arr_message[i]['from_user']['id']
         }
-        // document.querySelector('#chat-log').appendChild(chat_message)
-
         let chatLog = document.querySelector('#chat-log');
-    chatLog.appendChild(chat_message);
-    // Автоматическая прокрутка чата вниз
-    chatLog.scrollTop = chatLog.scrollHeight;
+        chatLog.appendChild(chat_message);
+        
+        chat_message.scrollTop = chat_message.scrollHeight;
+             
 
         const roomName = JSON.parse(document.getElementById('room-name').textContent);
 
@@ -129,16 +132,17 @@
         chatSocket.onmessage = function (e) {
             const data = JSON.parse(e.data);
 
-            withHeader = true
+            let withHeader = true
+            if (lastUser == data.message.from_user.id) {
+                withHeader = false
+            }
             let newMsg = createMsg(data.message, userId, withHeader)
             chat_message.appendChild(newMsg)
 
-            // chat_message.innerHTML = `${data.message} \n`
+            // Прокрутка вниз при получении нового сообщения
+            chat_message.scrollTop = chat_message.scrollHeight;
 
-            // document.querySelector('#chat-log').innerHTML = `${data.message} \n`;
-
-            // document.querySelector('#chat-log').value += (data.message + '12' + '\n');
-
+            lastUser = data.message.from_user.id
         };
 
         chatSocket.onclose = function (e) {
