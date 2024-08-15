@@ -29,6 +29,7 @@ def get_order_data(request: HttpRequest, order_id):
                 'order': OrderSerializer(order).data,
                 'client_chat': MessageSerializer(client_messages.all(), many=True).data,
                 'curator_chat': MessageSerializer(curator_messages.all(), many=True).data,
+                'chat': MessageSerializer(messages.all(), many=True).data,
                 'user_id': 4,
                 # 'unv_msg_client': client_unviewed_message,
                 # 'unv_msg_curator': curator_unviewed_message
