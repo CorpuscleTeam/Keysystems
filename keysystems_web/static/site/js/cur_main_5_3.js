@@ -102,15 +102,30 @@ console.log('должно создатьс модальное окно')
 
 
 document.querySelectorAll('.modal_cr_order').forEach(link => {
-    // console.log('должно создатьс модальное окно!!')
 
     link.addEventListener('click', function () {
         let orderId = this.getAttribute('data-order-id');
-        // console.log('должно создатьс модальное окно!!')
+
         // Здесь делаем запрос на бэк с использованием Fetch API
         fetch(`/order-data/${orderId}`)
             .then(response => response.json())
             .then(data => {
+
+                if (data.client_chat.length > 0) {
+                    window.lastMsgForClientChat = data.client_chat[data.client_chat.length - 1].from_user.id;
+                } else {
+                    window.lastMsgForClientChat = null; 
+                }
+
+                if (data.curator_chat.length > 0) {
+                    window.lastMsgForClientChat = data.curator_chat[data.curator_chat.length - 1].from_user.id;
+                } else {
+                    window.lastMsgForClientChat = null; 
+                }
+
+                window.selectedTab = '#tab1'
+                window.orderId = orderId
+
                 // Заполняем модальное окно данными из `data`
                 modalApplicationStatusContent.innerHTML = `
                     <div class="modal1_img modal-close">
@@ -208,26 +223,36 @@ document.querySelectorAll('.modal_cr_order').forEach(link => {
                 // Открываем модальное окно
                 M.Modal.getInstance(modalApplicationStatus).open();
 
+
+
                 let client_chat = createChat('#client_chat', data.client_chat, data.user_id)
 
-                // console.log(client_chat.scrollTop, client_chat.scrollHeight)
-                // client_chat.scrollTop = client_chat.scrollHeight
-                // console.log(client_chat.scrollTop, client_chat.scrollHeight)
-
                 let curator_chat = createChat('#curator_chat', data.curator_chat, data.user_id)
-                // curator_chat.scrollTop = curator_chat.scrollHeight
 
-                // прокрутка
-                test = document.querySelector('#client_chat')
-                test.scrollTop = test.scrollHeight
+                // вкладки
+                document.querySelectorAll('.tabs .tab a').forEach(tabLink => {
+                    tabLink.addEventListener('click', function (event) {
+                        event.preventDefault();
 
+                        // Показываем контент для выбранной вкладки
+                        const selectedTab = this.getAttribute('href');
+                        window.selectedTab = selectedTab
+
+                        // вернуться позже сюда!!!
+                        if (selectedTab == '#tab2') {
+                            let chat = document.querySelector('#client_chat_item')
+                            chat.scrollTop = chat.scrollHeight
+                        }
+
+                        // Логируем ID открытой вкладки
+                        console.log('Открыта вкладка:', selectedTab);
+                    });
+                });
+
+                // сокет. оставляем последним
                 initOrderSocket(data.room, data.user_id)
             })
             .catch(error => console.error('Error:', error));
     });
 });
-
-// дальше непонятная хрень с вебсокетом
-
-
 
