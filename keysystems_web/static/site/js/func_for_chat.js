@@ -54,7 +54,8 @@ function createChat(selector, arr_message, userId) {
         lastUser = arr_message[i]['from_user']['id']
     }
 
-    document.querySelector(selector).appendChild(chat_message);
+    let fdf = document.querySelector(selector);
+    fdf.appendChild(chat_message);
 
     return chat_message
     // chat_message.scrollTop = chat_message.scrollHeight;
@@ -65,48 +66,98 @@ function createChat(selector, arr_message, userId) {
 function initOrderSocket(roomName, userId) {
     // const roomName = JSON.parse(document.getElementById('room-name').textContent);
 
-        const chatSocket = new WebSocket(
-            'ws://'
-            + window.location.host
-            + '/ws/chat/'
-            + roomName
-            + '/'
-        );
+    const chatSocket = new WebSocket(
+        'ws://'
+        + window.location.host
+        + '/ws/chat/'
+        + roomName
+        + '/'
+    );
 
-        chatSocket.onmessage = function (e) {
-            const data = JSON.parse(e.data);
+    // получение сообщений
+    chatSocket.onmessage = function (e) {
+        const data = JSON.parse(e.data);
 
-            let withHeader = true
-            // if (lastUser == data.message.from_user.id) {
-            //     withHeader = false
-            // }
+        let withHeader = true
+        // if (lastUser == data.message.from_user.id) {
+        //     withHeader = false
+        // }
+        // let newMsg = createMsg(data.message, userId, withHeader)
+        // let chat_message = document.querySelector('.chat_msg_item')
+        // chat_message.appendChild(newMsg)
+
+        if (data.message.chat == BASE.CLIENT) {
+            if (data.message.from_user.id == window.lastMsgForClientChat) {
+                withHeader = false
+            }
             let newMsg = createMsg(data.message, userId, withHeader)
-            let chat_message = document.querySelector('.chat_msg_item')
+            let chat_message = document.querySelector('#client_chat_item')
             chat_message.appendChild(newMsg)
 
             // Прокрутка вниз при получении нового сообщения
             chat_message.scrollTop = chat_message.scrollHeight;
 
-            // lastUser = data.message.from_user.id
-        };
-
-        chatSocket.onclose = function (e) {
-            console.error('Chat socket closed unexpectedly');
-        };
-
-        document.querySelector('#client-msg-input').focus();
-        document.querySelector('#client-msg-input').onkeyup = function (e) {
-            if (e.key === 'Enter') {  // enter, return
-                document.querySelector('#client-msg-submit').click();
+            window.lastMsgForClientChat = data.message.from_user.id
+        } else {
+            if (data.message.from_user.id == window.lastMsgForCuratorChat) {
+                withHeader = false
             }
-        };
+            let newMsg = createMsg(data.message, userId, withHeader)
+            let chat_message = document.querySelector('#curator_chat_item')
+            chat_message.appendChild(newMsg)
 
-        document.querySelector('#client-msg-submit').onclick = function (e) {
-            const messageInputDom = document.querySelector('#client-msg-input');
-            const message = messageInputDom.value;
-            chatSocket.send(JSON.stringify({
-                'message': message
-            }));
-            messageInputDom.value = '';
-        };
+            // Прокрутка вниз при получении нового сообщения
+            chat_message.scrollTop = chat_message.scrollHeight;
+
+            window.lastMsgForCuratorChat = data.message.from_user.id
+        }
+
+
+
+        // lastUser = data.message.from_user.id
+    };
+
+    chatSocket.onclose = function (e) {
+        console.error('Chat socket closed unexpectedly');
+    };
+
+    // отправка сообщений client_chat
+    document.querySelector('#client-msg-input').focus();
+    document.querySelector('#client-msg-input').onkeyup = function (e) {
+        if (e.key === 'Enter') {  // enter, return
+            document.querySelector('#client-msg-submit').click();
+        }
+    };
+
+    document.querySelector('#client-msg-submit').onclick = function (e) {
+        const messageInputDom = document.querySelector('#client-msg-input');
+        const message = messageInputDom.value;
+        chatSocket.send(JSON.stringify({
+            'message': message,
+            'tab': window.selectedTab,
+            'order_id': window.orderId
+        }));
+        messageInputDom.value = '';
+    };
+
+    // отправка сообщений curator_chat
+    document.querySelector('#curator-msg-input').focus();
+    document.querySelector('#curator-msg-input').onkeyup = function (e) {
+        if (e.key === 'Enter') {  // enter, return
+            document.querySelector('#curator-msg-submit').click();
+        }
+    };
+
+    document.querySelector('#curator-msg-submit').onclick = function (e) {
+        const messageInputDom = document.querySelector('#curator-msg-input');
+        const message = messageInputDom.value;
+        chatSocket.send(JSON.stringify({
+            'message': message,
+            'tab': window.selectedTab,
+            'order_id': window.orderId
+        }));
+        messageInputDom.value = '';
+    };
 }
+
+// 
