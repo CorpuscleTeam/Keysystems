@@ -33,11 +33,11 @@ function createMsg(ObjMsg, userId, withHeader = true) {
 }
 
 // функция создает чат
-function createChat(selector, arr_message, userId) {
+function createChat(selector, arr_message, userId, chatType) {
     let lastUser = 0
     let chat_message = document.createElement('div')
     chat_message.classList.add('chat_msg_item')
-    if (arr_message[0]['chat'] == BASE.CLIENT) {
+    if (chatType == BASE.CLIENT) {
         chat_message.setAttribute('id', idOfChat.clientChat)
     } else {
         chat_message.setAttribute('id', idOfChat.curatorChat)
@@ -135,7 +135,8 @@ function initOrderSocket(roomName, userId) {
         chatSocket.send(JSON.stringify({
             'message': message,
             'tab': window.selectedTab,
-            'order_id': window.orderId
+            'order_id': window.orderId,
+            'user_id': window.userId
         }));
         messageInputDom.value = '';
     };
@@ -160,4 +161,50 @@ function initOrderSocket(roomName, userId) {
     };
 }
 
-// 
+// для скачивания файлов (приложены к заявкам)
+function btnLdFile(selector, arr) {
+    for (let i = 0; i < arr.length; i++) {
+        let ldFileLink = document.createElement('a')
+        ldFileLink.setAttribute('href', arr[i]['url'])
+        ldFileLink.setAttribute('download', arr[i]['name']);
+        document.querySelector(selector).appendChild(ldFileLink)
+
+        let ldFileLinkItem = document.createElement('div')
+        ldFileLinkItem.classList.add('update_file_item')
+        ldFileLink.appendChild(ldFileLinkItem)
+
+        // картинка слева
+        let ldFileLeft = document.createElement('div')
+        ldFileLeft.classList.add('update_file_img')
+        ldFileLinkItem.appendChild(ldFileLeft)
+
+        let ldFileImg = document.createElement('img')
+        // добавить переменную
+        ldFileImg.setAttribute('src', arr[i]['icon'])
+        ldFileLeft.appendChild(ldFileImg)
+
+        // центр - название файла, размер
+        let ldFileCenter = document.createElement('div')
+        ldFileCenter.classList.add('update_file_center')
+        ldFileLinkItem.appendChild(ldFileCenter)
+
+        let ldFileName = document.createElement('p')
+        ldFileName.classList.add('update_file_name')
+        ldFileName.innerHTML = arr[i]['name']
+        ldFileCenter.appendChild(ldFileName)
+
+        let ldFileSize = document.createElement('p')
+        ldFileSize.classList.add('update_file_size')
+        ldFileSize.innerHTML = arr[i]['size']
+        ldFileCenter.appendChild(ldFileSize)
+
+        // картинка справа
+        let ldFileRight = document.createElement('div')
+        ldFileRight.classList.add('update_file_dnl')
+        ldFileLinkItem.appendChild(ldFileRight)
+
+        let ldFileDnl = document.createElement('img')
+        ldFileDnl.setAttribute('src', fileDnl)
+        ldFileRight.appendChild(ldFileDnl)
+    }
+}
