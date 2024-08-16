@@ -60,5 +60,4 @@ def get_main_curator_front_data(request: HttpRequest) -> str:
 def get_orders_curator(request: HttpRequest, for_user: bool = False):
     orders = Order.objects.select_related('soft', 'topic', 'from_user', 'customer').order_by('-created_at')
 
-
     return json.dumps(OrderSerializer(orders.all(), many=True).data)

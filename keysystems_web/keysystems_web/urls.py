@@ -15,7 +15,8 @@ urlpatterns = [
     path('logout', reg.logout_view, name='logout'),
     path('in_dev', reg.indev_view, name='in_dev'),
 
-    # path("index", com.index, name="index"),
+    path("edit-order", com.edit_order_view),
+    path("tab-action", com.viewed_msg_view),
     # path("room/<str:room_name>/", com.room, name="room"),
     # path("room/", com.room, name="room"),
 

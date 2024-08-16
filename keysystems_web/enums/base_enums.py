@@ -65,3 +65,10 @@ notices_dict = {
 }
 
 notices_tuple = ((k, v) for k, v in notices_dict.items())
+
+
+# изменения заказа
+class EditOrderAction(str, Enum):
+    EDIT_SOFT = 'edit_soft'
+    ADD_CURATOR = 'add_curator'
+    DEL_CURATOR = 'del_curator'

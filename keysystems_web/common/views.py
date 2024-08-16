@@ -5,10 +5,10 @@ from django.shortcuts import render
 import json
 import logging
 
-from .models import Order, Message
+from .models import Order, Message, OrderCurator, ViewMessage
 from .serializers import OrderSerializer, MessageSerializer
 from .logs import log_error
-from enums import ChatType
+from enums import ChatType, RequestMethod, EditOrderAction
 
 
 def get_order_data(request: HttpRequest, order_id):
@@ -53,34 +53,53 @@ def get_order_data(request: HttpRequest, order_id):
         return JsonResponse({'error': 'not found'}, status=404)
 
 
-# def index(request: HttpRequest):
-#     return render(request, "chat/index.html")
-#
-#
-# def room(request: HttpRequest, room_name: str = None):
-#     log_error(f'room_name: {room_name}\n', wt=False)
-#     messages = Message.objects.order_by('created_at')
-#
-#     client_messages = messages.filter(chat=ChatType.CLIENT.value)
-#     curator_messages = messages.filter(chat=ChatType.CURATOR.value)
-#
-#     if not room_name:
-#         room_name = 'test'
-#
-#     context = {
-#         "room_name": room_name,
-#         'client_chat': json.dumps(MessageSerializer(client_messages.all(), many=True).data),
-#         'curator_chat': json.dumps(MessageSerializer(curator_messages.all(), many=True).data),
-#         'chat': json.dumps(MessageSerializer(messages.all(), many=True).data),
-#         'user_id': 4
-#     }
-#     return render(request, "chat/room.html", context)
+# изменяет заказ
+def edit_order_view(request: HttpRequest):
+    if request.method != RequestMethod.POST:
+        return JsonResponse({'error': 'request method must be POST'}, status=404)
+
+    data = request.POST
+
+    try:
+        if data['type'] == EditOrderAction.EDIT_SOFT:
+            order = Order.objects.filter(id=data['order_id'])
+            order(soft_id=data['soft_id'])
+            order.save()
+
+        elif data['type'] == EditOrderAction.ADD_CURATOR:
+            OrderCurator.objects.create(user_id=data['user_id'], order_id=data['order_id'])
+
+        elif data['type'] == EditOrderAction.EDIT_SOFT:
+            OrderCurator.objects.filter(user_id=data['user_id'], order_id=data['order_id']).delete()
+
+        else:
+            return JsonResponse({'error': 'type action not found'}, status=401)
+
+        return JsonResponse({'message': 'successful'}, status=200)
+
+    except Exception as ex:
+        return JsonResponse({'error': ex}, status=401)
 
 
-# def chat_view(request, room_name):
-#     return render(request, f'chat/{room_name}.html', {
-#         'room_name': room_name,
-#         's_data': random.randint(1000, 9999)
-#     })
+# отмечает сообщения просмотренными
+def viewed_msg_view(request: HttpRequest):
+    if request.method != RequestMethod.POST:
+        return JsonResponse({'error': 'request method must be POST'}, status=404)
 
+    data = request.POST
 
+    try:
+        unviewed_messages = Message.objects.filter(
+            user_id=data['user_id'],
+            order_id=data['order_id'],
+            chat=data['chat'],
+            view_message__user_ks__isnull=True
+        ).distinct().all()
+
+        for msg in unviewed_messages:
+            ViewMessage.objects.create(message=msg, user_ks_id=data['user_id'])
+
+        return JsonResponse({'message': 'successful'}, status=200)
+
+    except Exception as ex:
+        return JsonResponse({'error': ex}, status=401)
