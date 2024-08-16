@@ -7,7 +7,9 @@ import random
 
 from . import utils as ut
 from .logs import log_error
-from enums import ChatType
+from .models import Message, UserKS, Order, OrderCurator, Notice
+from .serializers import MessageSerializer
+from enums import ChatType, NoticeType, MsgType, notices_dict
 
 
 class ChatConsumer(WebsocketConsumer):
@@ -15,10 +17,9 @@ class ChatConsumer(WebsocketConsumer):
         self.room_name = self.scope["url_route"]["kwargs"]["room_name"]
         self.room_group_name = f"chat_{self.room_name}"
 
-        log_error(wt=False, message=f'connect\n\n'
-                                    f'{self.scope["url_route"]["kwargs"]["room_name"]}\n'
-                                    f'{self.scope["url_route"]["kwargs"]}\n'
-                                    f'{self.scope["url_route"]}\n')
+        log_error(wt=False, message=f'connect\n'
+                                    f'{self.scope["url_route"]}\n'
+                                    f'self.channel_name: {self.channel_name}')
 
         # Join room group
         async_to_sync(self.channel_layer.group_add)(
@@ -35,38 +36,70 @@ class ChatConsumer(WebsocketConsumer):
 
     # Receive message from WebSocket
     def receive(self, text_data):
-        text_data_json = json.loads(text_data)
-        message = text_data_json["message"]
+        data_json = json.loads(text_data)
 
-        log_error(wt=False, message=f'receive\n\n'
-                                    f'{text_data_json["message"]}\n'
-                                    f'{text_data_json}\n'
-                                    f'')
+        log_error(wt=False, message=f'receive\n{data_json}\n')
 
-        # Send message to room group
-        async_to_sync(self.channel_layer.group_send)(
-            self.room_group_name, {"type": "chat.message", "message": message}
-        )
+        user = UserKS.objects.filter(id=data_json['user_id']).first()
+        if user:
+            order = Order.objects.select_related('from_user').filter(id=int(data_json['order_id'])).first()
+            curators = OrderCurator.objects.select_related('user').filter(order=order).all()
+
+            log_error(wt=False, message=f'curators\n{curators}\n')
+
+            # сохраняем сообщение
+            new_message = Message(
+                type_msg=MsgType.MSG.value,
+                from_user=user,
+                chat=ChatType.CLIENT.value if data_json['tab'] == '#tab2' else ChatType.CURATOR.value,
+                order_id=int(data_json['order_id']),
+                text=data_json['message']
+            )
+            new_message.save()
+
+            # рассылаем уведомления
+            notice_list = [curator.user.id for curator in curators] + [order.from_user.id]
+            notice_list.remove(data_json['user_id'])
+
+            notice: str = notices_dict.get(NoticeType.NEW_MSG.value)
+            notice_text = notice.format(pk=order.id)
+
+            for user_id in notice_list:
+                new_notice = Notice(
+                    order=order,
+                    user_ks_id=user_id,
+                    type_notice=notice_text
+                )
+                new_notice.save()
+
+            async_to_sync(self.channel_layer.group_send)(
+                self.room_group_name, {
+                    "type": "chat.message",
+                    'data': MessageSerializer(new_message).data,
+                }
+            )
+
+        else:
+            async_to_sync(self.channel_layer.group_send)(
+                self.room_group_name, {"type": "chat.message", **data_json}
+            )
 
     # Receive message from room group
     def chat_message(self, event):
-        # message = event["message"]
-        # fields = ['created_at', 'from_user', 'text', 'time']
+        # {'type': 'chat.message', 'message': 'рррр', 'tab': '#tab2', 'order_id': '18'}
 
-        now = datetime.now()
-        chat = random.choice([ChatType.CLIENT.value, ChatType.CURATOR.value])
-        message = {
+        log_error(wt=False, message=f'chat_message\n{event}\n')
 
-            'from_user': {'id': 2, 'full_name': 'Тест'},
-            'text': event["message"],
-            'time': ut.get_time_string(now),
-            'chat': chat
-        }
-        log_error(wt=False, message=f'chat_message\n\n'
-                                    f'{event["message"]}\n'
-                                    f'{event}\n'
-                                    f'')
+        if event.get('tab'):
+            now = datetime.now()
+            chat = random.choice([ChatType.CLIENT.value, ChatType.CURATOR.value])
+            message = {
+                'from_user': {'id': 2, 'full_name': 'Тест'},
+                'text': event["message"],
+                'time': ut.get_time_string(now),
+                'chat': chat
+            }
+            self.send(text_data=json.dumps({"message": message}))
 
-        # Send message to WebSocket
-        # self.send(text_data=json.dumps({message}))
-        self.send(text_data=json.dumps({"message": message}))
+        else:
+            self.send(text_data=json.dumps({"message": event['data']}))

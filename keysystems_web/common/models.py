@@ -134,7 +134,7 @@ class Order(models.Model):
     objects = models.Manager()
 
     def __str__(self):
-        return f"{self.id}"
+        return f"Order {self.id}"
 
     class Meta:
         verbose_name = 'Заявка'
@@ -166,13 +166,13 @@ class Notice(models.Model):
     updated_at = models.DateTimeField('Обновлена', auto_now=True)
     order = models.ForeignKey(Order, on_delete=models.CASCADE, related_name='notice')
     user_ks = models.ForeignKey(UserKS, on_delete=models.CASCADE, related_name='notice')
-    type_notice = models.CharField('Текст', max_length=255, choices=notices_tuple)
+    type_notice = models.CharField('Текст', max_length=255)
     viewed = models.BooleanField(default=False)
 
     objects: models.Manager = models.Manager()
 
     def __str__(self):
-        return f"{self.type_notice}"
+        return f"Notice {self.type_notice}"
 
     class Meta:
         verbose_name = 'Уведомление'

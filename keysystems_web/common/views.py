@@ -5,25 +5,36 @@ from django.shortcuts import render
 import json
 import logging
 
-from .models import Order, Message
+from .models import Order, Message, OrderCurator, ViewMessage
 from .serializers import OrderSerializer, MessageSerializer
 from .logs import log_error
-from enums import ChatType
+from enums import ChatType, RequestMethod, EditOrderAction
 
 
 def get_order_data(request: HttpRequest, order_id):
     log_error('>>>>>>>>>>>>', wt=False)
     try:
-        log_error(f'{type(order_id)} {order_id}', wt=False)
-        order = Order.objects.filter(id=order_id).first()
-        # messages = Message.objects.filter(order=order).order_by('created_at')
-        messages = Message.objects.order_by('created_at')
+        log_error(f'{order_id}', wt=False)
 
+        order = Order.objects.filter(id=order_id).first()
+        messages = Message.objects.filter(order=order).order_by('created_at')
+        # messages = Message.objects.order_by('created_at')
+
+        # разделяем чаты на клиентский и кураторский
         client_messages = messages.filter(chat=ChatType.CLIENT.value)
         curator_messages = messages.filter(chat=ChatType.CURATOR.value)
 
-        # client_unviewed_message = client_messages.filter(~Q(view_message__user_ks=request.user)).distinct().count()
-        # curator_unviewed_message = curator_messages.filter(~Q(view_message__user_ks=request.user)).distinct().count()
+        room_name = f'order{order_id}'
+
+        # для отладки
+        if request.user.is_authenticated:
+            client_unviewed_message = client_messages.filter(~Q(view_message__user_ks=request.user)).distinct().count()
+            curator_unviewed_message = curator_messages.filter(~Q(view_message__user_ks=request.user)).distinct().count()
+
+        else:
+            client_unviewed_message = 1
+            curator_unviewed_message = 2
+
         return JsonResponse(
             {
                 'order': OrderSerializer(order).data,
@@ -31,11 +42,9 @@ def get_order_data(request: HttpRequest, order_id):
                 'curator_chat': MessageSerializer(curator_messages.all(), many=True).data,
                 'chat': MessageSerializer(messages.all(), many=True).data,
                 'user_id': 4,
-                # 'unv_msg_client': client_unviewed_message,
-                # 'unv_msg_curator': curator_unviewed_message
-                'unv_msg_client': 3,
-                'unv_msg_curator': 4,
-                'room': 'test'
+                'unv_msg_client': client_unviewed_message,
+                'unv_msg_curator': curator_unviewed_message,
+                'room': room_name
             },
             safe=False
         )
@@ -44,34 +53,53 @@ def get_order_data(request: HttpRequest, order_id):
         return JsonResponse({'error': 'not found'}, status=404)
 
 
-def index(request: HttpRequest):
-    return render(request, "chat/index.html")
+# изменяет заказ
+def edit_order_view(request: HttpRequest):
+    if request.method != RequestMethod.POST:
+        return JsonResponse({'error': 'request method must be POST'}, status=404)
+
+    data = request.POST
+
+    try:
+        if data['type'] == EditOrderAction.EDIT_SOFT:
+            order = Order.objects.filter(id=data['order_id'])
+            order(soft_id=data['soft_id'])
+            order.save()
+
+        elif data['type'] == EditOrderAction.ADD_CURATOR:
+            OrderCurator.objects.create(user_id=data['user_id'], order_id=data['order_id'])
+
+        elif data['type'] == EditOrderAction.EDIT_SOFT:
+            OrderCurator.objects.filter(user_id=data['user_id'], order_id=data['order_id']).delete()
+
+        else:
+            return JsonResponse({'error': 'type action not found'}, status=401)
+
+        return JsonResponse({'message': 'successful'}, status=200)
+
+    except Exception as ex:
+        return JsonResponse({'error': ex}, status=401)
 
 
-def room(request: HttpRequest, room_name: str = None):
-    log_error(f'room_name: {room_name}\n', wt=False)
-    messages = Message.objects.order_by('created_at')
+# отмечает сообщения просмотренными
+def viewed_msg_view(request: HttpRequest):
+    if request.method != RequestMethod.POST:
+        return JsonResponse({'error': 'request method must be POST'}, status=404)
 
-    client_messages = messages.filter(chat=ChatType.CLIENT.value)
-    curator_messages = messages.filter(chat=ChatType.CURATOR.value)
+    data = request.POST
 
-    if not room_name:
-        room_name = 'test'
+    try:
+        unviewed_messages = Message.objects.filter(
+            user_id=data['user_id'],
+            order_id=data['order_id'],
+            chat=data['chat'],
+            view_message__user_ks__isnull=True
+        ).distinct().all()
 
-    context = {
-        "room_name": room_name,
-        'client_chat': json.dumps(MessageSerializer(client_messages.all(), many=True).data),
-        'curator_chat': json.dumps(MessageSerializer(curator_messages.all(), many=True).data),
-        'chat': json.dumps(MessageSerializer(messages.all(), many=True).data),
-        'user_id': 4
-    }
-    return render(request, "chat/room.html", context)
+        for msg in unviewed_messages:
+            ViewMessage.objects.create(message=msg, user_ks_id=data['user_id'])
 
+        return JsonResponse({'message': 'successful'}, status=200)
 
-# def chat_view(request, room_name):
-#     return render(request, f'chat/{room_name}.html', {
-#         'room_name': room_name,
-#         's_data': random.randint(1000, 9999)
-#     })
-
-
+    except Exception as ex:
+        return JsonResponse({'error': ex}, status=401)

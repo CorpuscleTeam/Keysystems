@@ -125,6 +125,7 @@ document.querySelectorAll('.modal_cr_order').forEach(link => {
 
                 window.selectedTab = '#tab1'
                 window.orderId = orderId
+                window.userId = data.user_id
 
                 // Заполняем модальное окно данными из `data`
                 modalApplicationStatusContent.innerHTML = `
@@ -225,9 +226,9 @@ document.querySelectorAll('.modal_cr_order').forEach(link => {
 
 
 
-                let client_chat = createChat('#client_chat', data.client_chat, data.user_id)
+                let client_chat = createChat('#client_chat', data.client_chat, data.user_id, BASE.CLIENT)
 
-                let curator_chat = createChat('#curator_chat', data.curator_chat, data.user_id)
+                let curator_chat = createChat('#curator_chat', data.curator_chat, data.user_id, BASE.CURATOR)
 
                 // вкладки
                 document.querySelectorAll('.tabs .tab a').forEach(tabLink => {

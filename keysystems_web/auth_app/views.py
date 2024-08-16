@@ -86,8 +86,7 @@ def index_2_1(request: HttpRequest):
                 username=auth_form.cleaned_data['email']
             ).first()
             if user:
-                login(request, user)
-                return redirect('redirect')
+                return redirect('index_2_2')
             else:
                 return redirect('index_3_1')
 

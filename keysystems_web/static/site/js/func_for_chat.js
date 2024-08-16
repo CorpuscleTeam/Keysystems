@@ -33,11 +33,11 @@ function createMsg(ObjMsg, userId, withHeader = true) {
 }
 
 // функция создает чат
-function createChat(selector, arr_message, userId) {
+function createChat(selector, arr_message, userId, chatType) {
     let lastUser = 0
     let chat_message = document.createElement('div')
     chat_message.classList.add('chat_msg_item')
-    if (arr_message[0]['chat'] == BASE.CLIENT) {
+    if (chatType == BASE.CLIENT) {
         chat_message.setAttribute('id', idOfChat.clientChat)
     } else {
         chat_message.setAttribute('id', idOfChat.curatorChat)
@@ -135,7 +135,8 @@ function initOrderSocket(roomName, userId) {
         chatSocket.send(JSON.stringify({
             'message': message,
             'tab': window.selectedTab,
-            'order_id': window.orderId
+            'order_id': window.orderId,
+            'user_id': window.userId
         }));
         messageInputDom.value = '';
     };
@@ -154,7 +155,8 @@ function initOrderSocket(roomName, userId) {
         chatSocket.send(JSON.stringify({
             'message': message,
             'tab': window.selectedTab,
-            'order_id': window.orderId
+            'order_id': window.orderId,
+            'user_id': window.userId
         }));
         messageInputDom.value = '';
     };
