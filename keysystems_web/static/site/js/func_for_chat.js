@@ -162,4 +162,50 @@ function initOrderSocket(roomName, userId) {
     };
 }
 
-// 
+// для скачивания файлов (приложены к заявкам)
+function btnLdFile(selector, arr) {
+    for (let i = 0; i < arr.length; i++) {
+        let ldFileLink = document.createElement('a')
+        ldFileLink.setAttribute('href', arr[i]['url'])
+        ldFileLink.setAttribute('download', arr[i]['name']);
+        document.querySelector(selector).appendChild(ldFileLink)
+
+        let ldFileLinkItem = document.createElement('div')
+        ldFileLinkItem.classList.add('update_file_item')
+        ldFileLink.appendChild(ldFileLinkItem)
+
+        // картинка слева
+        let ldFileLeft = document.createElement('div')
+        ldFileLeft.classList.add('update_file_img')
+        ldFileLinkItem.appendChild(ldFileLeft)
+
+        let ldFileImg = document.createElement('img')
+        // добавить переменную
+        ldFileImg.setAttribute('src', arr[i]['icon'])
+        ldFileLeft.appendChild(ldFileImg)
+
+        // центр - название файла, размер
+        let ldFileCenter = document.createElement('div')
+        ldFileCenter.classList.add('update_file_center')
+        ldFileLinkItem.appendChild(ldFileCenter)
+
+        let ldFileName = document.createElement('p')
+        ldFileName.classList.add('update_file_name')
+        ldFileName.innerHTML = arr[i]['name']
+        ldFileCenter.appendChild(ldFileName)
+
+        let ldFileSize = document.createElement('p')
+        ldFileSize.classList.add('update_file_size')
+        ldFileSize.innerHTML = arr[i]['size']
+        ldFileCenter.appendChild(ldFileSize)
+
+        // картинка справа
+        let ldFileRight = document.createElement('div')
+        ldFileRight.classList.add('update_file_dnl')
+        ldFileLinkItem.appendChild(ldFileRight)
+
+        let ldFileDnl = document.createElement('img')
+        ldFileDnl.setAttribute('src', fileDnl)
+        ldFileRight.appendChild(ldFileDnl)
+    }
+}

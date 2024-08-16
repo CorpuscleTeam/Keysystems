@@ -139,13 +139,13 @@ document.querySelectorAll('.modal_cr_order').forEach(link => {
                         <li class="tab"><a href="#tab1">Описание</a></li>
                         <li class="tab">
                             <a href="#tab2">
-                                <p class="order_tab">Комментарии</p>
+                                <div class="order_tab">Комментарии</div>
 
                             </a>
                         </li>
                         <li class="tab">
                             <a href="#tab3">
-                                <p class="order_tab">Чат кураторов</p>
+                                <div class="order_tab">Чат кураторов</div>
 
                             </a>
                         </li>
@@ -153,16 +153,16 @@ document.querySelectorAll('.modal_cr_order').forEach(link => {
 
                     <div id="tab1" class="tab-content active">
                         <h6 class="title_in_modal">Тема</h6>
-                        <p class="text_in_modal">${data.order.topic.topic}</p>
+                        <div class="text_in_modal">${data.order.topic.topic}</div>
                         <form action="" method="post">
-                            <p>
-                                <label for="soft_in_chat">Програмное обеспечение</label>
+                            <div class="select_PO">
+                                <label class="title_in_modal" for="soft_in_chat">Програмное обеспечение</label>
                                 <select name="soft_in_chat" id="soft_in_chat">
                                 </select>
-                            </p>
+                            </div>
                         </form>
                         <h6 class="title_in_modal">Описание</h6>
-                        <p class="text_in_modal">${data.order.text}</p>
+                        <div class="text_in_modal">${data.order.text}</div>
                         <div class="files_in_modal"></div>
                         <h6 class="title_in_modal">Исполнители</h6>
                         <div class="curators_of_request"></div>
