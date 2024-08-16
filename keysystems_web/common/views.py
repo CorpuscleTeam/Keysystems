@@ -14,16 +14,27 @@ from enums import ChatType
 def get_order_data(request: HttpRequest, order_id):
     log_error('>>>>>>>>>>>>', wt=False)
     try:
-        log_error(f'{type(order_id)} {order_id}', wt=False)
-        order = Order.objects.filter(id=order_id).first()
-        # messages = Message.objects.filter(order=order).order_by('created_at')
-        messages = Message.objects.order_by('created_at')
+        log_error(f'{order_id}', wt=False)
 
+        order = Order.objects.filter(id=order_id).first()
+        messages = Message.objects.filter(order=order).order_by('created_at')
+        # messages = Message.objects.order_by('created_at')
+
+        # разделяем чаты на клиентский и кураторский
         client_messages = messages.filter(chat=ChatType.CLIENT.value)
         curator_messages = messages.filter(chat=ChatType.CURATOR.value)
 
-        # client_unviewed_message = client_messages.filter(~Q(view_message__user_ks=request.user)).distinct().count()
-        # curator_unviewed_message = curator_messages.filter(~Q(view_message__user_ks=request.user)).distinct().count()
+        room_name = f'order{order_id}'
+
+        # для отладки
+        if request.user.is_authenticated:
+            client_unviewed_message = client_messages.filter(~Q(view_message__user_ks=request.user)).distinct().count()
+            curator_unviewed_message = curator_messages.filter(~Q(view_message__user_ks=request.user)).distinct().count()
+
+        else:
+            client_unviewed_message = 1
+            curator_unviewed_message = 2
+
         return JsonResponse(
             {
                 'order': OrderSerializer(order).data,
@@ -31,11 +42,9 @@ def get_order_data(request: HttpRequest, order_id):
                 'curator_chat': MessageSerializer(curator_messages.all(), many=True).data,
                 'chat': MessageSerializer(messages.all(), many=True).data,
                 'user_id': 4,
-                # 'unv_msg_client': client_unviewed_message,
-                # 'unv_msg_curator': curator_unviewed_message
-                'unv_msg_client': 3,
-                'unv_msg_curator': 4,
-                'room': 'test'
+                'unv_msg_client': client_unviewed_message,
+                'unv_msg_curator': curator_unviewed_message,
+                'room': room_name
             },
             safe=False
         )
@@ -44,28 +53,28 @@ def get_order_data(request: HttpRequest, order_id):
         return JsonResponse({'error': 'not found'}, status=404)
 
 
-def index(request: HttpRequest):
-    return render(request, "chat/index.html")
-
-
-def room(request: HttpRequest, room_name: str = None):
-    log_error(f'room_name: {room_name}\n', wt=False)
-    messages = Message.objects.order_by('created_at')
-
-    client_messages = messages.filter(chat=ChatType.CLIENT.value)
-    curator_messages = messages.filter(chat=ChatType.CURATOR.value)
-
-    if not room_name:
-        room_name = 'test'
-
-    context = {
-        "room_name": room_name,
-        'client_chat': json.dumps(MessageSerializer(client_messages.all(), many=True).data),
-        'curator_chat': json.dumps(MessageSerializer(curator_messages.all(), many=True).data),
-        'chat': json.dumps(MessageSerializer(messages.all(), many=True).data),
-        'user_id': 4
-    }
-    return render(request, "chat/room.html", context)
+# def index(request: HttpRequest):
+#     return render(request, "chat/index.html")
+#
+#
+# def room(request: HttpRequest, room_name: str = None):
+#     log_error(f'room_name: {room_name}\n', wt=False)
+#     messages = Message.objects.order_by('created_at')
+#
+#     client_messages = messages.filter(chat=ChatType.CLIENT.value)
+#     curator_messages = messages.filter(chat=ChatType.CURATOR.value)
+#
+#     if not room_name:
+#         room_name = 'test'
+#
+#     context = {
+#         "room_name": room_name,
+#         'client_chat': json.dumps(MessageSerializer(client_messages.all(), many=True).data),
+#         'curator_chat': json.dumps(MessageSerializer(curator_messages.all(), many=True).data),
+#         'chat': json.dumps(MessageSerializer(messages.all(), many=True).data),
+#         'user_id': 4
+#     }
+#     return render(request, "chat/room.html", context)
 
 
 # def chat_view(request, room_name):

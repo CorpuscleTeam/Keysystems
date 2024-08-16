@@ -52,16 +52,16 @@ MSG_TYPE_CHOICES = (
 
 
 # уведомления
-class Notice(str, Enum):
+class NoticeType(str, Enum):
     ORDER_ACTIVE = 'order_active'
     ORDER_DONE = 'order_done'
     NEW_MSG = 'NEW_MSG'
 
 
 notices_dict = {
-    Notice.ORDER_ACTIVE.value: 'Ваша задача #{pk:05d} переведена в статус «В РАБОТЕ».',
-    Notice.ORDER_DONE.value: 'Ваша задача #{pk:05d} переведена в статус «ВЫПОЛНЕНО». Оцените качество выполненной работы.',
-    Notice.NEW_MSG.value: 'В заявке #{pk:05d} куратор оставил новое сообщение.',
+    NoticeType.ORDER_ACTIVE.value: 'Ваша задача #{pk:05d} переведена в статус «В РАБОТЕ».',
+    NoticeType.ORDER_DONE.value: 'Ваша задача #{pk:05d} переведена в статус «ВЫПОЛНЕНО».',
+    NoticeType.NEW_MSG.value: 'В заявке #{pk:05d} куратор оставил новое сообщение.',
 }
 
 notices_tuple = ((k, v) for k, v in notices_dict.items())

@@ -83,7 +83,7 @@ class OrderCuratorInline(admin.TabularInline):
 @admin.register(Order)
 class ViewAdminOrder(admin.ModelAdmin):
     inlines = [OrderCuratorInline]
-    list_display = ['from_user', 'soft', 'topic', 'status']
+    list_display = ['id', 'from_user', 'soft', 'topic', 'status']
     readonly_fields = ['created_at', 'updated_at']
 
 
