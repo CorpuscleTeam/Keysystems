@@ -57,7 +57,7 @@ def index_2(request: HttpRequest):
                     error_msg = 'ИНН не зарегистрирован'
 
             elif len(users_inn) == 1:
-                return redirect(reverse('index_2_2') + f'?inn={input_inn}')
+                return redirect(reverse('index_2_2') + f'?user={users_inn[0].pk}')
 
             elif len(users_inn) > 1:
                 return redirect(reverse('index_2_1') + f'?inn={input_inn}')
@@ -86,7 +86,8 @@ def index_2_1(request: HttpRequest):
                 username=auth_form.cleaned_data['email']
             ).first()
             if user:
-                return redirect('index_2_2')
+                return redirect(reverse('index_2_2') + f'?user={user.pk}')
+
             else:
                 return redirect('index_3_1')
 
@@ -99,7 +100,7 @@ def index_2_1(request: HttpRequest):
 
 
 # принимает пароль и регистрирует пользователя
-# kP4f2PwD
+# Bz315sk3 | id 7
 def index_2_2(request: HttpRequest):
     if request.user.is_authenticated and not DEBUG:
         return redirect('redirect')
@@ -107,11 +108,14 @@ def index_2_2(request: HttpRequest):
     error_msg = None
     if request.method == RequestMethod.POST:
         pass_form = PasswordForm(request.POST)
-        # log_error(f'>>>>>> {pass_form.is_valid()}', wt=False)
+        log_error(f'>>>>>> {pass_form.is_valid()}', wt=False)
         if pass_form.is_valid():
             user_id = request.POST.get('user_id', 0)
-            # user = CustomUser.objects.filter(id=user_id).first()
+            log_error(f'>>>>>> {request.POST}\n{user_id}', wt=False)
             user = UserKS.objects.filter(id=user_id).first()
+
+            log_error(f'{user}  {check_password(pass_form.cleaned_data["password"], user.password)}', wt=False)
+
             if user and check_password(pass_form.cleaned_data['password'], user.password):
                 login(request, user)
                 return redirect('redirect')
