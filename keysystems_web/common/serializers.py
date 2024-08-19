@@ -86,14 +86,32 @@ class OrderCuratorSerializer(serializers.ModelSerializer):
         fields = ['id', 'user']
 
 
+# заказы минимальная версия
+class SimpleOrderSerializer(serializers.ModelSerializer):
+    soft = SoftSerializer()
+    topic = OrderTopicSerializer()
+    files = DownloadedFileSerializer(many=True, source='downloaded_file')
+    # from_user = UserKSSerializer()
+    # customer = CustomerSerializer()
+
+    id_str = serializers.SerializerMethodField()
+
+    class Meta:
+        model = cm.Order
+        # fields = ['id', 'from_user', 'customer', 'text', 'soft', 'topic', 'status', 'id_str']
+        fields = ['id', 'text', 'soft', 'topic', 'status', 'id_str', 'files']
+
+    def get_id_str(self, obj):
+        return f'#{str(obj.id).zfill(5)}'
+
+
 # заказы полные данные
-class OrderSerializer(serializers.ModelSerializer):
+class FullOrderSerializer(serializers.ModelSerializer):
     soft = SoftSerializer()
     topic = OrderTopicSerializer()
     from_user = UserKSSerializer()
     customer = CustomerSerializer()
     files = DownloadedFileSerializer(many=True, source='downloaded_file')
-    order_curators = OrderCuratorSerializer(many=True, source='order_curator')
 
     id_str = serializers.SerializerMethodField()
     curators = serializers.SerializerMethodField()
@@ -101,18 +119,15 @@ class OrderSerializer(serializers.ModelSerializer):
     class Meta:
         model = cm.Order
         fields = [
-            'id', 'from_user', 'customer', 'text', 'soft', 'topic', 'status', 'id_str', 'order_curators', 'curators', 'files'
+            'id', 'from_user', 'customer', 'text', 'soft', 'topic', 'status', 'id_str', 'curators', 'files'
         ]
 
     def get_id_str(self, obj):
         return f'#{str(obj.id).zfill(5)}'
 
     def get_curators(self, obj):
-        curators = [curator.user.full_name for curator in obj.order_curator.all()]
-        if curators:
-            return ', '.join(curators)
-        else:
-            return 'Нет куратора'
+        curators = obj.order_curator.all()
+        return UserKSSerializer([curator.user for curator in curators], many=True).data
 
 
 # сообщения

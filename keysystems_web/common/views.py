@@ -5,8 +5,8 @@ from django.shortcuts import render
 import json
 import logging
 
-from .models import Order, Message, OrderCurator, ViewMessage
-from .serializers import OrderSerializer, MessageSerializer
+from .models import Order, Message, OrderCurator, ViewMessage, UserKS
+from .serializers import FullOrderSerializer, MessageSerializer, UserKSSerializer
 from .logs import log_error
 from enums import ChatType, RequestMethod, EditOrderAction
 
@@ -37,7 +37,7 @@ def get_order_data(request: HttpRequest, order_id):
 
         return JsonResponse(
             {
-                'order': OrderSerializer(order).data,
+                'order': FullOrderSerializer(order).data,
                 'client_chat': MessageSerializer(client_messages.all(), many=True).data,
                 'curator_chat': MessageSerializer(curator_messages.all(), many=True).data,
                 'chat': MessageSerializer(messages.all(), many=True).data,
@@ -100,6 +100,23 @@ def viewed_msg_view(request: HttpRequest):
             ViewMessage.objects.create(message=msg, user_ks_id=data['user_id'])
 
         return JsonResponse({'message': 'successful'}, status=200)
+
+    except Exception as ex:
+        return JsonResponse({'error': ex}, status=401)
+
+
+# отправляет список кураторов
+def get_curator_view(request: HttpRequest):
+    if request.method != RequestMethod.POST:
+        return JsonResponse({'error': 'request method must be POST'}, status=404)
+
+    data = request.POST
+    try:
+        curators = UserKS.objects.filter(is_staff=True).all()
+
+        return JsonResponse({
+            'curators': UserKSSerializer(curators, many=True).data
+        }, status=200)
 
     except Exception as ex:
         return JsonResponse({'error': ex}, status=401)
