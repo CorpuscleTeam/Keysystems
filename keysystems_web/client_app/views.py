@@ -14,7 +14,7 @@ from .forms import OrderForm
 from .models import News, FAQ, UpdateSoft, UpdateSoftFiles, ViewUpdate
 from . import client_utils as utils
 from common.models import OrderTopic, Notice, Order, Soft, OrderCurator
-from common.serializers import OrderSerializer, NoticeSerializer
+from common.serializers import SimpleOrderSerializer, NoticeSerializer
 import common as ut
 from enums import RequestMethod, OrderStatus, notices_dict
 
@@ -108,9 +108,9 @@ def index_5_1(request: HttpRequest):
     active_orders = orders.filter(status=OrderStatus.ACTIVE).all()
     done_orders = orders.filter(status=OrderStatus.DONE).all()
 
-    new_orders_ser = OrderSerializer(new_orders, many=True)
-    active_orders_ser = OrderSerializer(active_orders, many=True)
-    done_orders_ser = OrderSerializer(done_orders, many=True)
+    new_orders_ser = SimpleOrderSerializer(new_orders, many=True)
+    active_orders_ser = SimpleOrderSerializer(active_orders, many=True)
+    done_orders_ser = SimpleOrderSerializer(done_orders, many=True)
 
     orders = Order.objects.select_related(
         'soft', 'topic', 'from_user', 'customer'
@@ -124,7 +124,7 @@ def index_5_1(request: HttpRequest):
         'new_orders': json.dumps(new_orders_ser.data),
         'active_orders': json.dumps(active_orders_ser.data),
         'done_orders': json.dumps(done_orders_ser.data),
-        'orders': json.dumps(OrderSerializer(orders, many=True).data)
+        'orders': json.dumps(SimpleOrderSerializer(orders, many=True).data)
     }
     return render(request, 'client/index_5_1.html', context)
 

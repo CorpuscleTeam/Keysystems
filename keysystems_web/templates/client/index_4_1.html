@@ -223,6 +223,45 @@
         </div>
     </footer>
 
+<!--    тестил пуши удалить-->
+    <script>
+
+<!--        fetch('../static/site/js/sw.js')-->
+<!--    .then(function(response) {-->
+<!--        if (response.ok) {-->
+<!--            console.log('sw.js найден и доступен.');-->
+<!--            // Теперь можно регистрировать Service Worker-->
+<!--            navigator.serviceWorker.register('../../static/site/js/sw.js').then(function(reg) {-->
+<!--                console.log('Service Worker зарегистрирован');-->
+<!--                // Дальнейшая логика регистрации подписки на пуш-уведомления-->
+<!--            }).catch(function(error) {-->
+<!--                console.error('Ошибка при регистрации Service Worker:', error);-->
+<!--            });-->
+<!--        } else {-->
+<!--            console.error('sw.js не найден или недоступен.');-->
+<!--        }-->
+<!--    })-->
+<!--    .catch(function(error) {-->
+<!--        console.error('Ошибка при попытке загрузить sw.js:', error);-->
+<!--    });-->
+
+
+<!--        if ('serviceWorker' in navigator && 'PushManager' in window) {-->
+<!--            navigator.serviceWorker.register('../../static/site/js/sw.js').then(function(reg) {-->
+<!--        return reg.pushManager.getSubscription().then(function(sub) {-->
+<!--            if (sub === null) {-->
+<!--                return reg.pushManager.subscribe({userVisibleOnly: true});-->
+<!--            }-->
+
+<!--            return sub;-->
+<!--        });-->
+<!--    }).then(function(sub) {-->
+<!--        // Отправьте sub.endpoint на сервер для сохранения-->
+<!--        console.log('done')-->
+<!--    });-->
+<!--}-->
+    </script>
+
     <script>
         // токен в форму
         let tokenForForm = '{% csrf_token %}'

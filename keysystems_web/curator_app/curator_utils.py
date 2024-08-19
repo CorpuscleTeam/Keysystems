@@ -14,7 +14,7 @@ from keysystems_web.settings import FILE_STORAGE, DEBUG
 # from .forms import OrderForm, UserSettingForm
 # from .models import News, ViewNews, UpdateSoft
 from common.models import OrderTopic, Soft, Order, DownloadedFile, Notice, UsedSoft
-from common.serializers import OrderSerializer
+from common.serializers import FullOrderSerializer, SimpleOrderSerializer
 from common import log_error, months_str_ru
 from enums import OrderStatus, FormType
 
@@ -31,6 +31,7 @@ def is_access_denied(request: HttpRequest) -> bool:
 
 # Собирает данные для стандартного окружения кураторской части
 def get_main_curator_front_data(request: HttpRequest) -> str:
+    log_error(f'request.user.is_authenticated: {request.user.is_authenticated}', wt=False)
     if request.user.is_authenticated:
         # количество заявок
         user_orders_count = Order.objects.filter().exclude(status=OrderStatus.DONE).count()
@@ -58,6 +59,6 @@ def get_main_curator_front_data(request: HttpRequest) -> str:
 
 # возвращае заказы по фильтрам
 def get_orders_curator(request: HttpRequest, for_user: bool = False):
-    orders = Order.objects.select_related('soft', 'topic', 'from_user', 'customer').order_by('-created_at')
+    orders = Order.objects.order_by('-created_at')
 
-    return json.dumps(OrderSerializer(orders.all(), many=True).data)
+    return json.dumps(SimpleOrderSerializer(orders.all(), many=True).data)
