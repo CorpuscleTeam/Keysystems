@@ -111,6 +111,7 @@ def get_curator_view(request: HttpRequest):
         return JsonResponse({'error': 'request method must be POST'}, status=404)
 
     data = request.POST
+    log_error(f'fdata: {data}', wt=False)
     try:
         curators = UserKS.objects.filter(is_staff=True).all()
 
