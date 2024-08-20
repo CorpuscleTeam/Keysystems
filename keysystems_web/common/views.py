@@ -115,9 +115,7 @@ def get_curator_view(request: HttpRequest):
     try:
         curators = UserKS.objects.filter(is_staff=True).all()
 
-        return JsonResponse({
-            'curators': UserKSSerializer(curators, many=True).data
-        }, status=200)
+        return JsonResponse(UserKSSerializer(curators, many=True).data, status=200, safe=False)
 
     except Exception as ex:
         return JsonResponse({'error': ex}, status=401)
