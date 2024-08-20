@@ -300,3 +300,108 @@ function getCSFRT() {
     return cookieValue;
 }
 
+// изменяет список кураторов
+function clickAddCurator() {
+    document.getElementById('btnAddCurator').addEventListener('click', function() {
+        // Получаем выбранный элемент
+        const selectedOption = document.getElementById('add_curator');
+        // const selectedOption = document.getElementById('add_curator').value;
+        console.log(this)
+        // Выполняем нужную функцию
+        console.log(selectedOption);
+    });
+}
+
+// создает модальное окно с выбором исполнителей
+function modalAddCurators() {
+    // обработчик событий для открытия второго окна
+    document.querySelector('#statusOrder .btn_add_curator').addEventListener('click', function () {
+        // Открываем второе модальное окно
+        let modalInstance = M.Modal.getInstance(document.querySelector('#modal_add_curator'));
+        modalInstance.open();
+
+        // Выполняем запрос к бэку
+        fetch("get-curators", {
+            method: "POST", // Указываем метод POST
+            headers: {
+                "Content-Type": "application/json", // Указываем, что отправляем JSON данные
+                "X-CSRFToken": getCSFRT() // Добавляем CSRF токен, если используете Django
+            },
+            body: JSON.stringify({
+                order_id: window.orderId,
+            })
+        })
+            .then(response => response.json())
+            .then(data => {
+                console.log(data)
+                // МО добавить исполнителя
+                // let modalAddCurator = document.createElement('div')
+                // modalAddCurator.setAttribute('id', 'modal_add_curator')
+                // modalAddCurator.classList.add('modal')
+
+                // document.body.append(modalAddCurator)
+
+                let modalAddCuratorContent = document.createElement('div')
+                modalAddCuratorContent.classList.add('modal-content')
+                modalAddCurator.appendChild(modalAddCuratorContent)
+
+                let modalAddCuratorClose = btnClose()
+                modalAddCuratorContent.appendChild(modalAddCuratorClose)
+
+                let modalAddCuratorTitle = modalTitle('Добавить исполнителя')
+                modalAddCuratorContent.appendChild(modalAddCuratorTitle)
+
+                // Форма
+                let formAddCurator = document.createElement('form')
+                formAddCurator.classList.add('mod_request_form')
+                formAddCurator.classList.add('enter_form')
+                formAddCurator.setAttribute('id', 'add_curator')
+                formAddCurator.setAttribute('method', 'post')
+                formAddCurator.innerHTML = getCSFRT()
+                modalAddCuratorContent.appendChild(formAddCurator)
+
+                // Выбрать исполнителя
+                let addCurator = document.createElement('p')
+                formAddCurator.appendChild(addCurator)
+
+                let labelAddCurator = document.createElement('label')
+                labelAddCurator.setAttribute('for', 'add_curator')
+                labelAddCurator.classList.add('required')
+                labelAddCurator.innerHTML = `Выберите исполнителя`
+                addCurator.appendChild(labelAddCurator)
+
+                let selectAddCurator = document.createElement('select')
+                selectAddCurator.setAttribute('name', 'add_curator')
+                selectAddCurator.setAttribute('id', 'add_curator')
+                addCurator.appendChild(selectAddCurator)
+
+                // добавить цикл с вариантами выбора
+                for (let i = 0; i < data.length; i++) {
+                    let optionAddCurator = document.createElement('option')
+                    optionAddCurator.setAttribute('value', data[i]['id'])
+                    optionAddCurator.innerHTML = data[i]['full_name']
+                    selectAddCurator.appendChild(optionAddCurator)
+                }
+
+                // футер-кнопки
+                let footerAddCurator = document.createElement('div')
+                footerAddCurator.classList.add('mod_support_flex')
+                modalAddCuratorContent.appendChild(footerAddCurator)
+
+                let btnAddCuratorCancel = document.createElement('a')
+                btnAddCuratorCancel.classList.add('btn_support_cancel')
+                btnAddCuratorCancel.innerHTML = `Отмена`
+                footerAddCurator.appendChild(btnAddCuratorCancel)
+
+                let btnAddCuratorSubmit = document.createElement('button')
+                btnAddCuratorSubmit.setAttribute('id', 'btnAddCurator')
+                btnAddCuratorSubmit.classList.add('btn_support_submit')
+                btnAddCuratorSubmit.innerHTML = `Добавить`
+                footerAddCurator.appendChild(btnAddCuratorSubmit)
+
+                clickAddCurator()
+            })
+            .catch(error => console.error('Error:', error));
+    });
+}
+
