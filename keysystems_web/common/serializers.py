@@ -113,6 +113,7 @@ class FullOrderSerializer(serializers.ModelSerializer):
     customer = CustomerSerializer()
     files = DownloadedFileSerializer(many=True, source='downloaded_file')
 
+
     id_str = serializers.SerializerMethodField()
     curators = serializers.SerializerMethodField()
 
@@ -126,8 +127,10 @@ class FullOrderSerializer(serializers.ModelSerializer):
         return f'#{str(obj.id).zfill(5)}'
 
     def get_curators(self, obj):
+
         curators = obj.order_curator.all()
         return UserKSSerializer([curator.user for curator in curators], many=True).data
+
 
 
 # сообщения
