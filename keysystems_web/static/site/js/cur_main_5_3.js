@@ -249,21 +249,31 @@ document.querySelectorAll('.modal_cr_order').forEach(link => {
                     modalInstance.open();
 
                     // Выполняем запрос к бэку
-                    fetch(`/your-endpoint/?param=value`)
+                    fetch("get-curators", {
+                        method: "POST", // Указываем метод POST
+                        headers: {
+                            "Content-Type": "application/json", // Указываем, что отправляем JSON данные
+                            "X-CSRFToken": getCSFRT() // Добавляем CSRF токен, если используете Django
+                        },
+                        body: JSON.stringify({
+                            order_id: window.orderId,
+                        })
+                    })
                         .then(response => response.json())
                         .then(data => {
+                            console.log(data)
                             // Обрабатываем полученные данные и заполняем содержимое второго модального окна
                             // Например:
-                            let select = document.querySelector('#add_curator select');
-                            data.curators.forEach(curator => {
-                                let option = document.createElement('option');
-                                option.value = curator.id;
-                                option.text = curator.name;
-                                select.appendChild(option);
-                            });
+                            // let select = document.querySelector('#add_curator select');
+                            // data.curators.forEach(curator => {
+                            //     let option = document.createElement('option');
+                            //     option.value = curator.id;
+                            //     option.text = curator.name;
+                            //     select.appendChild(option);
+                            // });
 
-                            // Обновляем select с помощью Materialize
-                            M.FormSelect.init(select);
+                            // // Обновляем select с помощью Materialize
+                            // M.FormSelect.init(select);
                         })
                         .catch(error => console.error('Error:', error));
                 });
