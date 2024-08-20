@@ -17,6 +17,7 @@ urlpatterns = [
 
     path("edit-order", com.edit_order_view),
     path("tab-action", com.viewed_msg_view),
+    path("get-curators", com.get_curator_view),
     # path("room/<str:room_name>/", com.room, name="room"),
     # path("room/", com.room, name="room"),
 
