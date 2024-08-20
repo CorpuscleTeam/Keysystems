@@ -93,7 +93,7 @@ class OrderSerializer(serializers.ModelSerializer):
     from_user = UserKSSerializer()
     customer = CustomerSerializer()
     files = DownloadedFileSerializer(many=True, source='downloaded_file')
-    order_curators = OrderCuratorSerializer(many=True, source='order_curator')
+    # order_curators = OrderCuratorSerializer(many=True, source='order_curator')
 
     id_str = serializers.SerializerMethodField()
     curators = serializers.SerializerMethodField()
@@ -101,18 +101,17 @@ class OrderSerializer(serializers.ModelSerializer):
     class Meta:
         model = cm.Order
         fields = [
-            'id', 'from_user', 'customer', 'text', 'soft', 'topic', 'status', 'id_str', 'order_curators', 'curators', 'files'
+            'id', 'from_user', 'customer', 'text', 'soft', 'topic', 'status', 'id_str', 'curators', 'files'
         ]
 
     def get_id_str(self, obj):
         return f'#{str(obj.id).zfill(5)}'
 
     def get_curators(self, obj):
-        curators = [curator.user.full_name for curator in obj.order_curator.all()]
-        if curators:
-            return ', '.join(curators)
-        else:
-            return 'Нет куратора'
+        # Получаем всех куратора для данного заказа
+            curators = obj.order_curator.all()
+        # Возвращаем сериализованные объекты User для каждого куратора
+            return UserKSSerializer([curator.user for curator in curators], many=True).data
 
 
 # сообщения

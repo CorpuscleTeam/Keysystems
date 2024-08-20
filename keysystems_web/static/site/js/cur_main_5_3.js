@@ -73,17 +73,9 @@ console.log('cur_main_5_3.js')
 document.addEventListener('DOMContentLoaded', function () {
     var elems = document.querySelectorAll('.modal');
     var instances = M.Modal.init(elems);
-
-    // document.querySelectorAll('.modal_link_cards').forEach(link => {
-    //     link.addEventListener('click', function(event) {
-    //         const orderId = this.getAttribute('data-order-id');
-    //         const modalContent = document.querySelector('#statusOrder .modal-content');
-    //     });
-    // });
 });
 
 let modalApplicationStatus = document.createElement('div')
-// modalApplicationStatus.setAttribute('id', new_orders[i]['id'])
 modalApplicationStatus.setAttribute('id', 'statusOrder')
 modalApplicationStatus.classList.add('modal')
 
@@ -91,15 +83,10 @@ let modalApplicationStatusContent = document.createElement('div')
 modalApplicationStatusContent.classList.add('modal-content')
 modalApplicationStatus.appendChild(modalApplicationStatusContent)
 
-// let modASClose = btnClose()
-// modalApplicationStatusContent.appendChild(modASClose)
-
 document.body.append(modalApplicationStatus)
 console.log('должно создатьс модальное окно')
 
-{/* <img src="/static/site/img/close-large.svg" alt=""> */ }
 // обработчик событий данные с бэка
-
 
 document.querySelectorAll('.modal_cr_order').forEach(link => {
 
@@ -111,16 +98,18 @@ document.querySelectorAll('.modal_cr_order').forEach(link => {
             .then(response => response.json())
             .then(data => {
 
+                console.log(data)
+
                 if (data.client_chat.length > 0) {
                     window.lastMsgForClientChat = data.client_chat[data.client_chat.length - 1].from_user.id;
                 } else {
-                    window.lastMsgForClientChat = null; 
+                    window.lastMsgForClientChat = null;
                 }
 
                 if (data.curator_chat.length > 0) {
                     window.lastMsgForClientChat = data.curator_chat[data.curator_chat.length - 1].from_user.id;
                 } else {
-                    window.lastMsgForClientChat = null; 
+                    window.lastMsgForClientChat = null;
                 }
 
                 window.selectedTab = '#tab1'
@@ -215,7 +204,6 @@ document.querySelectorAll('.modal_cr_order').forEach(link => {
                             </div>
                         </div>    
                 `;
-                console.log(data)
 
                 // Инициализация вкладок Materialize
                 let tabs = document.querySelectorAll('.tabs');
@@ -224,7 +212,11 @@ document.querySelectorAll('.modal_cr_order').forEach(link => {
                 // Открываем модальное окно
                 M.Modal.getInstance(modalApplicationStatus).open();
 
+                // кнопка скачать файл
+                btnLdFile('.files_in_modal', data['order']['files'])
 
+                // исполнители
+                createCuratorsList('.curators_of_request', data['order']['curators'])
 
                 let client_chat = createChat('#client_chat', data.client_chat, data.user_id, BASE.CLIENT)
 
@@ -250,10 +242,87 @@ document.querySelectorAll('.modal_cr_order').forEach(link => {
                     });
                 });
 
+                // обработчик событий для открытия второго окна
+                document.querySelector('#statusOrder .btn_add_curator').addEventListener('click', function () {
+                    // Открываем второе модальное окно
+                    let modalInstance = M.Modal.getInstance(document.querySelector('#modal_add_curator'));
+                    modalInstance.open();
+
+                    // Выполняем запрос к бэку
+                    fetch(`/your-endpoint/?param=value`)
+                        .then(response => response.json())
+                        .then(data => {
+                            // Обрабатываем полученные данные и заполняем содержимое второго модального окна
+                            // Например:
+                            let select = document.querySelector('#add_curator select');
+                            data.curators.forEach(curator => {
+                                let option = document.createElement('option');
+                                option.value = curator.id;
+                                option.text = curator.name;
+                                select.appendChild(option);
+                            });
+
+                            // Обновляем select с помощью Materialize
+                            M.FormSelect.init(select);
+                        })
+                        .catch(error => console.error('Error:', error));
+                });
+
                 // сокет. оставляем последним
                 initOrderSocket(data.room, data.user_id)
             })
             .catch(error => console.error('Error:', error));
     });
 });
+
+// МО добавить исполнителя
+let modalAddCurator = document.createElement('div')
+modalAddCurator.setAttribute('id', 'modal_add_curator')
+modalAddCurator.classList.add('modal')
+
+document.body.append(modalAddCurator)
+
+let modalAddCuratorContent = document.createElement('div')
+modalAddCuratorContent.classList.add('modal-content')
+modalAddCurator.appendChild(modalAddCuratorContent)
+
+let modalAddCuratorClose = btnClose()
+modalAddCuratorContent.appendChild(modalAddCuratorClose)
+
+let modalAddCuratorTitle = modalTitle('Добавить исполнителя')
+modalAddCuratorContent.appendChild(modalAddCuratorTitle)
+
+// Форма
+let formAddCurator = document.createElement('form')
+formAddCurator.classList.add('mod_request_form')
+formAddCurator.classList.add('enter_form')
+formAddCurator.setAttribute('id', 'add_curator')
+formAddCurator.setAttribute('method', 'post')
+formAddCurator.innerHTML = getCSFRT()
+modalAddCuratorContent.appendChild(formAddCurator)
+
+// Выбрать исполнителя
+let addCurator = document.createElement('p')
+formAddCurator.appendChild(addCurator)
+
+let labelAddCurator = document.createElement('label')
+labelAddCurator.setAttribute('for', 'add_curator')
+labelAddCurator.classList.add('required')
+labelAddCurator.innerHTML = `Выберите исполнителя`
+addCurator.appendChild(labelAddCurator)
+
+let selectAddCurator = document.createElement('select')
+selectAddCurator.setAttribute('name', 'add_curator')
+selectAddCurator.setAttribute('id', 'add_curator')
+addCurator.appendChild(selectAddCurator)
+
+// добавить цикл с вариантами выбора
+// for (let i = 0; i < ??.length; i++) {
+//     let optionAddCurator = document.createElement('option')
+//     optionAddCurator.setAttribute('value', ??.pk)
+//     optionAddCurator.innerHTML = ??.fields.topic
+//     selectAddCurator.appendChild(optionAddCurator)
+// }
+
+
 

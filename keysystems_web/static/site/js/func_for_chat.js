@@ -1,3 +1,23 @@
+// Кнопка закрыть
+function btnClose() {
+    let ModalRequestClose = document.createElement('div')
+    ModalRequestClose.classList.add('modal1_img')
+    ModalRequestClose.classList.add('modal-close')
+
+    let modalCloseImg = document.createElement('img')
+    modalCloseImg.setAttribute('src', link)
+    ModalRequestClose.appendChild(modalCloseImg)
+
+    return ModalRequestClose
+}
+
+// Заголовок
+function modalTitle(title) {
+    let ModalRequestH = document.createElement('h4')
+    ModalRequestH.innerHTML = title
+    return ModalRequestH
+}
+
 // функция создает сообщения
 function createMsg(ObjMsg, userId, withHeader = true) {
     let newMsg = document.createElement('div')
@@ -165,10 +185,14 @@ function initOrderSocket(roomName, userId) {
 // для скачивания файлов (приложены к заявкам)
 function btnLdFile(selector, arr) {
     for (let i = 0; i < arr.length; i++) {
+        let btnFile = document.createElement('button')
+        btnFile.classList.add('update_file_btn')
+        document.querySelector(selector).appendChild(btnFile)
+
         let ldFileLink = document.createElement('a')
         ldFileLink.setAttribute('href', arr[i]['url'])
-        ldFileLink.setAttribute('download', arr[i]['name']);
-        document.querySelector(selector).appendChild(ldFileLink)
+        ldFileLink.setAttribute('download', arr[i]['filename']);
+        btnFile.appendChild(ldFileLink)
 
         let ldFileLinkItem = document.createElement('div')
         ldFileLinkItem.classList.add('update_file_item')
@@ -191,12 +215,12 @@ function btnLdFile(selector, arr) {
 
         let ldFileName = document.createElement('p')
         ldFileName.classList.add('update_file_name')
-        ldFileName.innerHTML = arr[i]['name']
+        ldFileName.innerHTML = arr[i]['filename']
         ldFileCenter.appendChild(ldFileName)
 
         let ldFileSize = document.createElement('p')
         ldFileSize.classList.add('update_file_size')
-        ldFileSize.innerHTML = arr[i]['size']
+        ldFileSize.innerHTML = arr[i]['file_size']
         ldFileCenter.appendChild(ldFileSize)
 
         // картинка справа
@@ -209,3 +233,70 @@ function btnLdFile(selector, arr) {
         ldFileRight.appendChild(ldFileDnl)
     }
 }
+
+// функция для списка кураторов
+function createCuratorsList(selector, arr) {
+    for (let i = 0; i < arr.length; i++) {
+        let curatorForRequest = document.createElement('div')
+        curatorForRequest.classList.add('curator_item')
+        document.querySelector(selector).appendChild(curatorForRequest)
+
+        let curatorItemLeft = document.createElement('div')
+        curatorItemLeft.classList.add('curator_item_left')
+        curatorForRequest.appendChild(curatorItemLeft)
+
+        let curItemImg = document.createElement('img')
+        curItemImg.setAttribute('src', curatorItemImg)
+        curatorItemLeft.appendChild(curItemImg)
+
+        let curatorUser = document.createElement('div')
+        curatorUser.classList.add('curator_item_center')
+        curatorUser.innerHTML = arr[i]['full_name']
+        curatorForRequest.appendChild(curatorUser)
+
+        if (arr[i]['id'] == window.userId) {
+            let userMe = document.createElement('span')
+            userMe.innerHTML = ` (Я)`
+            curatorUser.append(userMe)
+
+            let curatorItemRight = document.createElement('a')
+            curatorItemRight.setAttribute('href', '#modal_closeFromMe')
+            curatorItemRight.classList.add('curator_item_right')
+            curatorForRequest.appendChild(curatorItemRight)
+
+            let curItemImgClose = document.createElement('img')
+            curItemImgClose.setAttribute('src', link)
+            curatorItemRight.appendChild(curItemImgClose)
+        }
+    }
+
+    // кнопка добавить испольнителей
+    let addCurator = document.createElement('a')
+    addCurator.setAttribute('href', '#modal_add_curator')
+    addCurator.classList.add('btn_add_curator')
+    document.querySelector(selector).appendChild(addCurator)
+
+    let addCuratorImg = document.createElement('img')
+    addCuratorImg.setAttribute('src', imgPlus)
+    addCurator.appendChild(addCuratorImg)
+}
+
+
+// вызывает токен безопасности
+function getCSFRT() {
+    let name = 'csrftoken'
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+            const cookie = cookies[i].trim();
+            // Если это cookie с именем 'csrftoken', верните его значение
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
+
