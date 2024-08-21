@@ -82,22 +82,71 @@ function createChat(selector, arr_message, userId, chatType) {
 }
 
 
+// функция для списка кураторов
+function createCuratorsList(selector, arr) {
+    for (let i = 0; i < arr.length; i++) {
+        let curatorForRequest = document.createElement('div')
+        curatorForRequest.classList.add('curator_item')
+        document.querySelector(selector).appendChild(curatorForRequest)
+
+        let curatorItemLeft = document.createElement('div')
+        curatorItemLeft.classList.add('curator_item_left')
+        curatorForRequest.appendChild(curatorItemLeft)
+
+        let curItemImg = document.createElement('img')
+        curItemImg.setAttribute('src', curatorItemImg)
+        curatorItemLeft.appendChild(curItemImg)
+
+        let curatorUser = document.createElement('div')
+        curatorUser.classList.add('curator_item_center')
+        curatorUser.innerHTML = arr[i]['full_name']
+        curatorForRequest.appendChild(curatorUser)
+
+        if (arr[i]['id'] == window.userId) {
+            let userMe = document.createElement('span')
+            userMe.innerHTML = ` (Я)`
+            curatorUser.append(userMe)
+
+            let curatorItemRight = document.createElement('a')
+            curatorItemRight.setAttribute('href', '#modal_closeFromMe')
+            curatorItemRight.classList.add('curator_item_right')
+            curatorForRequest.appendChild(curatorItemRight)
+
+            let curItemImgClose = document.createElement('img')
+            curItemImgClose.setAttribute('src', link)
+            curatorItemRight.appendChild(curItemImgClose)
+        }
+    }
+
+    // кнопка добавить испольнителей
+    let addCurator = document.createElement('a')
+    addCurator.setAttribute('href', '#modal_add_curator')
+    addCurator.classList.add('btn_add_curator')
+    document.querySelector(selector).appendChild(addCurator)
+
+    let addCuratorImg = document.createElement('img')
+    addCuratorImg.setAttribute('src', imgPlus)
+    addCurator.appendChild(addCuratorImg)
+}
+
 
 function initOrderSocket(roomName, userId) {
     // const roomName = JSON.parse(document.getElementById('room-name').textContent);
 
-    const chatSocket = new WebSocket(
+    window.chatSocket = new WebSocket(
         'ws://'
         + window.location.host
         + '/ws/chat/'
         + roomName
         + '/'
     );
-
+//    window.chatSocket = chatSocket
     // получение сообщений
-    chatSocket.onmessage = function (e) {
+    window.chatSocket.onmessage = function (e) {
         const data = JSON.parse(e.data);
 
+        console.log('window.chatSocket.onmessage')
+        console.log(data)
         let withHeader = true
         // if (lastUser == data.message.from_user.id) {
         //     withHeader = false
@@ -106,38 +155,43 @@ function initOrderSocket(roomName, userId) {
         // let chat_message = document.querySelector('.chat_msg_item')
         // chat_message.appendChild(newMsg)
 
-        if (data.message.chat == BASE.CLIENT) {
-            if (data.message.from_user.id == window.lastMsgForClientChat) {
-                withHeader = false
+        if (data.type == 'msg') {
+
+            if (data.message.chat == BASE.CLIENT) {
+                if (data.message.from_user.id == window.lastMsgForClientChat) {
+                    withHeader = false
+                }
+                let newMsg = createMsg(data.message, userId, withHeader)
+                let chat_message = document.querySelector('#client_chat_item')
+                chat_message.appendChild(newMsg)
+
+                // Прокрутка вниз при получении нового сообщения
+                chat_message.scrollTop = chat_message.scrollHeight;
+
+                window.lastMsgForClientChat = data.message.from_user.id
+            } else {
+                if (data.message.from_user.id == window.lastMsgForCuratorChat) {
+                    withHeader = false
+                }
+                let newMsg = createMsg(data.message, userId, withHeader)
+                let chat_message = document.querySelector('#curator_chat_item')
+                chat_message.appendChild(newMsg)
+
+                // Прокрутка вниз при получении нового сообщения
+                chat_message.scrollTop = chat_message.scrollHeight;
+
+                window.lastMsgForCuratorChat = data.message.from_user.id
             }
-            let newMsg = createMsg(data.message, userId, withHeader)
-            let chat_message = document.querySelector('#client_chat_item')
-            chat_message.appendChild(newMsg)
-
-            // Прокрутка вниз при получении нового сообщения
-            chat_message.scrollTop = chat_message.scrollHeight;
-
-            window.lastMsgForClientChat = data.message.from_user.id
-        } else {
-            if (data.message.from_user.id == window.lastMsgForCuratorChat) {
-                withHeader = false
-            }
-            let newMsg = createMsg(data.message, userId, withHeader)
-            let chat_message = document.querySelector('#curator_chat_item')
-            chat_message.appendChild(newMsg)
-
-            // Прокрутка вниз при получении нового сообщения
-            chat_message.scrollTop = chat_message.scrollHeight;
-
-            window.lastMsgForCuratorChat = data.message.from_user.id
         }
 
-
+        else if (data.type == 'edit_curator') {
+            createCuratorsList('.curators_of_request', data.curators)
+        }
 
         // lastUser = data.message.from_user.id
     };
 
-    chatSocket.onclose = function (e) {
+    window.chatSocket.onclose = function (e) {
         console.error('Chat socket closed unexpectedly');
     };
 
@@ -152,7 +206,8 @@ function initOrderSocket(roomName, userId) {
     document.querySelector('#client-msg-submit').onclick = function (e) {
         const messageInputDom = document.querySelector('#client-msg-input');
         const message = messageInputDom.value;
-        chatSocket.send(JSON.stringify({
+        window.chatSocket.send(JSON.stringify({
+            'event': 'msg',
             'message': message,
             'tab': window.selectedTab,
             'order_id': window.orderId,
@@ -172,7 +227,7 @@ function initOrderSocket(roomName, userId) {
     document.querySelector('#curator-msg-submit').onclick = function (e) {
         const messageInputDom = document.querySelector('#curator-msg-input');
         const message = messageInputDom.value;
-        chatSocket.send(JSON.stringify({
+        window.chatSocket.send(JSON.stringify({
             'message': message,
             'tab': window.selectedTab,
             'order_id': window.orderId,
@@ -234,52 +289,52 @@ function btnLdFile(selector, arr) {
     }
 }
 
-// функция для списка кураторов
-function createCuratorsList(selector, arr) {
-    for (let i = 0; i < arr.length; i++) {
-        let curatorForRequest = document.createElement('div')
-        curatorForRequest.classList.add('curator_item')
-        document.querySelector(selector).appendChild(curatorForRequest)
-
-        let curatorItemLeft = document.createElement('div')
-        curatorItemLeft.classList.add('curator_item_left')
-        curatorForRequest.appendChild(curatorItemLeft)
-
-        let curItemImg = document.createElement('img')
-        curItemImg.setAttribute('src', curatorItemImg)
-        curatorItemLeft.appendChild(curItemImg)
-
-        let curatorUser = document.createElement('div')
-        curatorUser.classList.add('curator_item_center')
-        curatorUser.innerHTML = arr[i]['full_name']
-        curatorForRequest.appendChild(curatorUser)
-
-        if (arr[i]['id'] == window.userId) {
-            let userMe = document.createElement('span')
-            userMe.innerHTML = ` (Я)`
-            curatorUser.append(userMe)
-
-            let curatorItemRight = document.createElement('a')
-            curatorItemRight.setAttribute('href', '#modal_closeFromMe')
-            curatorItemRight.classList.add('curator_item_right')
-            curatorForRequest.appendChild(curatorItemRight)
-
-            let curItemImgClose = document.createElement('img')
-            curItemImgClose.setAttribute('src', link)
-            curatorItemRight.appendChild(curItemImgClose)
-        }
-    }
-
-    // кнопка добавить испольнителей
-    let addCurator = document.createElement('a')
-    addCurator.setAttribute('href', '#modal_add_curator')
-    addCurator.classList.add('btn_add_curator')
-    document.querySelector(selector).appendChild(addCurator)
-
-    let addCuratorImg = document.createElement('img')
-    addCuratorImg.setAttribute('src', imgPlus)
-    addCurator.appendChild(addCuratorImg)
-}
+//// функция для списка кураторов
+//function createCuratorsList(selector, arr) {
+//    for (let i = 0; i < arr.length; i++) {
+//        let curatorForRequest = document.createElement('div')
+//        curatorForRequest.classList.add('curator_item')
+//        document.querySelector(selector).appendChild(curatorForRequest)
+//
+//        let curatorItemLeft = document.createElement('div')
+//        curatorItemLeft.classList.add('curator_item_left')
+//        curatorForRequest.appendChild(curatorItemLeft)
+//
+//        let curItemImg = document.createElement('img')
+//        curItemImg.setAttribute('src', curatorItemImg)
+//        curatorItemLeft.appendChild(curItemImg)
+//
+//        let curatorUser = document.createElement('div')
+//        curatorUser.classList.add('curator_item_center')
+//        curatorUser.innerHTML = arr[i]['full_name']
+//        curatorForRequest.appendChild(curatorUser)
+//
+//        if (arr[i]['id'] == window.userId) {
+//            let userMe = document.createElement('span')
+//            userMe.innerHTML = ` (Я)`
+//            curatorUser.append(userMe)
+//
+//            let curatorItemRight = document.createElement('a')
+//            curatorItemRight.setAttribute('href', '#modal_closeFromMe')
+//            curatorItemRight.classList.add('curator_item_right')
+//            curatorForRequest.appendChild(curatorItemRight)
+//
+//            let curItemImgClose = document.createElement('img')
+//            curItemImgClose.setAttribute('src', link)
+//            curatorItemRight.appendChild(curItemImgClose)
+//        }
+//    }
+//
+//    // кнопка добавить испольнителей
+//    let addCurator = document.createElement('a')
+//    addCurator.setAttribute('href', '#modal_add_curator')
+//    addCurator.classList.add('btn_add_curator')
+//    document.querySelector(selector).appendChild(addCurator)
+//
+//    let addCuratorImg = document.createElement('img')
+//    addCuratorImg.setAttribute('src', imgPlus)
+//    addCurator.appendChild(addCuratorImg)
+//}
 
 
 // вызывает токен безопасности
@@ -300,17 +355,27 @@ function getCSFRT() {
     return cookieValue;
 }
 
+
 // изменяет список кураторов
 function clickAddCurator() {
     document.getElementById('btnAddCurator').addEventListener('click', function() {
+        console.log('click')
         // Получаем выбранный элемент
-        const selectedOption = document.getElementById('add_curator');
-        // const selectedOption = document.getElementById('add_curator').value;
-        console.log(this)
+         const selectedOption = document.getElementById('add_curator_1').value;
+
         // Выполняем нужную функцию
         console.log(selectedOption);
+        console.log(window.chatSocket);
+         // Отправляем данные на бэкэнд через WebSocket
+        window.chatSocket.send(JSON.stringify({
+            'event': 'edit_curator',
+            'add': selectedOption,
+            'order_id': window.orderId,
+            'room_name': window.roomName
+        }));
     });
 }
+//<form class="mod_request_form enter_form" id="add_curator" method="post"><p><label for="add_curator" class="required">Выберите исполнителя</label><select name="add_curator" id="add_curator"><option value="4">Меркул Иванович</option><option value="3">Пётр</option></select></p></form><form class="mod_request_form enter_form" id="add_curator" method="post"><p><label for="add_curator" class="required">Выберите исполнителя</label><select name="add_curator" id="add_curator"><option value="4">Меркул Иванович</option><option value="3">Пётр</option></select></p></form>
 
 // создает модальное окно с выбором исполнителей
 function modalAddCurators() {
@@ -333,6 +398,7 @@ function modalAddCurators() {
         })
             .then(response => response.json())
             .then(data => {
+                console.log('data')
                 console.log(data)
                 // МО добавить исполнителя
                 // let modalAddCurator = document.createElement('div')
@@ -362,6 +428,7 @@ function modalAddCurators() {
 
                 // Выбрать исполнителя
                 let addCurator = document.createElement('p')
+//                addCurator.id = 'test-id-addCurator'
                 formAddCurator.appendChild(addCurator)
 
                 let labelAddCurator = document.createElement('label')
@@ -372,11 +439,14 @@ function modalAddCurators() {
 
                 let selectAddCurator = document.createElement('select')
                 selectAddCurator.setAttribute('name', 'add_curator')
-                selectAddCurator.setAttribute('id', 'add_curator')
+                selectAddCurator.setAttribute('id', 'add_curator_1')
                 addCurator.appendChild(selectAddCurator)
 
                 // добавить цикл с вариантами выбора
+                console.log('data.length')
+                console.log(data.length)
                 for (let i = 0; i < data.length; i++) {
+                    console.log(data[i])
                     let optionAddCurator = document.createElement('option')
                     optionAddCurator.setAttribute('value', data[i]['id'])
                     optionAddCurator.innerHTML = data[i]['full_name']
