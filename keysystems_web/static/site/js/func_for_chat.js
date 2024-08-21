@@ -74,8 +74,8 @@ function createChat(selector, arr_message, userId, chatType) {
         lastUser = arr_message[i]['from_user']['id']
     }
 
-    let fdf = document.querySelector(selector);
-    fdf.appendChild(chat_message);
+    // let fdf = document.querySelector(selector);
+    // fdf.appendChild(chat_message);
 
     return chat_message
     // chat_message.scrollTop = chat_message.scrollHeight;
@@ -215,6 +215,7 @@ function btnLdFile(selector, arr) {
 
         let ldFileName = document.createElement('p')
         ldFileName.classList.add('update_file_name')
+        ldFileName.classList.add('file_name_width')
         ldFileName.innerHTML = arr[i]['filename']
         ldFileCenter.appendChild(ldFileName)
 
@@ -302,7 +303,7 @@ function getCSFRT() {
 
 // изменяет список кураторов
 function clickAddCurator() {
-    document.getElementById('btnAddCurator').addEventListener('click', function() {
+    document.getElementById('btnAddCurator').addEventListener('click', function () {
         // Получаем выбранный элемент
         const selectedOption = document.getElementById('add_curator');
         // const selectedOption = document.getElementById('add_curator').value;
@@ -355,7 +356,7 @@ function modalAddCurators() {
                 let formAddCurator = document.createElement('form')
                 formAddCurator.classList.add('mod_request_form')
                 formAddCurator.classList.add('enter_form')
-                formAddCurator.setAttribute('id', 'add_curator')
+                formAddCurator.setAttribute('id', 'form_add_curator')
                 formAddCurator.setAttribute('method', 'post')
                 formAddCurator.innerHTML = getCSFRT()
                 modalAddCuratorContent.appendChild(formAddCurator)
@@ -404,4 +405,36 @@ function modalAddCurators() {
             .catch(error => console.error('Error:', error));
     });
 }
+
+
+// функция для кнопки "завершить работу" и изменение статуса
+function changeStatusWorkToEnd(btnElem, statusElem) {
+    statusElem.classList.replace('status_work_req', 'status_end_req')
+    statusElem.textContent = 'выполнено'
+
+    btnElem.classList.replace('btn_work_req', 'btn_end_req')
+    btnElem.textContent = 'завершено'
+
+    let btnAddCurator = document.querySelector('.btn_add_curator')
+    btnAddCurator.classList.replace('btn_add_curator', 'btn_end_curator')
+}
+// функция для кнопки "взять в работу" и изменение статуса
+function changeStatusNewToWork() {
+    document.querySelector('.btn_new_req').addEventListener('click', function () {
+        let statusElem = document.querySelector('.status_new_req')
+        let btnElem = this
+
+        statusElem.classList.replace('status_new_req', 'status_work_req')
+        statusElem.textContent = 'в работе'
+
+        btnElem.classList.replace('btn_new_req', 'btn_work_req')
+        btnElem.textContent = 'Завершить работу'
+
+        btnElem.removeEventListener('click', changeStatusNewToWork)
+        btnElem.addEventListener('click', function () {
+            changeStatusWorkToEnd(btnElem, statusElem)
+        })
+    })
+}
+
 
