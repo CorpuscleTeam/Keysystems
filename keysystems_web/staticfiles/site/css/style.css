@@ -996,7 +996,7 @@ textarea {
 .title_in_modal {
     color: rgba(153, 153, 153, 1);
     font-size: 16px;
-    padding-top: 20px;
+    font-weight: 400;
     margin-bottom: 4px;
 }
 .text_in_modal {
@@ -1005,11 +1005,23 @@ textarea {
     line-height: 21px;
     margin-bottom: 22px;
 }
+.select_PO {
+    display: flex;
+    flex-direction: column;
+}
+.select_PO select {
+    height: 37px;
+    border: 1px solid rgba(204, 204, 204, 1);
+    padding: 10px;
+    margin-bottom: 20px;
+}
+
 /* стили вкладок */
 .tabs {
     display: flex;
     align-items: center;
     justify-content: flex-start;
+    margin-bottom: 20px;
 }
 .tabs li {
     list-style: none;
@@ -1019,13 +1031,16 @@ textarea {
     font-size: 16px;
 }
 
-.tabs .tab a {
+/* .tabs .tab a {
     color: rgba(153, 153, 153, 1);
-}
+} */
 /* Стили для активной вкладки */
-.tabs .tab.active a {
+/* .tabs .tab.active a {
     color: var(--color_dark);
 }
+.order_tab {
+    margin-bottom: 0 !important;
+} */
 
 /* стили для оокна чата */
 .area_flex {
@@ -1154,4 +1169,11 @@ textarea {
 ::-webkit-scrollbar-thumb {
     background-color: rgba(200, 200, 200, 1); /* Цвет ползунка */
     border-radius: 0;
+}
+
+/* кнопка добавить куратора */
+.btn_add_curator {
+    background-color: var(--color_green);
+    width: 37px;
+    height: 37px;
 }

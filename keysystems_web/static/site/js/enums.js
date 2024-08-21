@@ -7,3 +7,4 @@ const BASE = Object.freeze({
     CLIENT: 'client',
     CURATOR: 'curator',
 })
+

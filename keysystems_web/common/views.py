@@ -110,12 +110,17 @@ def get_curator_view(request: HttpRequest):
     if request.method != RequestMethod.POST:
         return JsonResponse({'error': 'request method must be POST'}, status=404)
 
-    data = request.POST
-    log_error(f'fdata: {data}', wt=False)
+    data: dict = json.loads(request.body)
+    # log_error(f'fdata: {type(data)} {data}', wt=False)
     try:
+        order_id = int(data.get('order_id', 0))
         curators = UserKS.objects.filter(is_staff=True).all()
+        # curators = UserKS.objects.filter(is_staff=True).exclude(
+        #     id__in=OrderCurator.objects.filter(order_id=order_id).values('user_id')
+        # )
 
         return JsonResponse(UserKSSerializer(curators, many=True).data, status=200, safe=False)
 
     except Exception as ex:
-        return JsonResponse({'error': ex}, status=401)
+        log_error(ex)
+        return JsonResponse({'error': str(ex)}, status=401, safe=False)
