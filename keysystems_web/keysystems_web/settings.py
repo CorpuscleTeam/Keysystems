@@ -24,8 +24,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
-    'ckeditor',
-    'ckeditor_uploader',
+    'django_ckeditor_5',
     'channels',
     'common',
     'client_app',
@@ -186,4 +185,45 @@ CHANNEL_LAYERS = {
             "hosts": [('redis_ks', 6379)],
         },
     },
+}
+
+
+# редактор текста в админке
+DJANGO_CKEDITOR_5_CONFIGS = {
+    'default': {
+        'toolbar': 'full',
+        'height': 500,
+        'width': 'auto',
+        'remove_plugins': 'stylesheetparser',
+        'extra_plugins': ','.join([
+            'uploadimage',  # Для загрузки изображений
+            'basicstyles',  # Простые стили (жирный, курсив)
+            # Добавьте сюда дополнительные плагины, если нужно
+        ]),
+    },
+}
+# CK_EDITOR_5_UPLOAD_FILE_VIEW_NAME = "media"
+CKEDITOR_5_CUSTOM_CSS = 'path_to.css'  # optional
+CKEDITOR_5_CONFIGS = {
+    'default': {
+        'blockToolbar': [
+            'paragraph', 'heading1', 'heading2', 'heading3',
+            '|',
+            'bulletedList', 'numberedList',
+            '|',
+            'blockQuote',
+        ],
+        'toolbar': ['heading', '|', 'outdent', 'indent', '|', 'bold', 'italic', 'link', 'underline', 'strikethrough',
+                    'code', 'subscript', 'superscript', 'highlight', '|', 'codeBlock', 'sourceEditing',
+                    'bulletedList', 'numberedList', 'todoList', '|',  'blockQuote', '|',
+                    'fontSize', 'fontFamily', 'fontColor', 'fontBackgroundColor', 'mediaEmbed', 'removeFormat',
+                    ],
+    },
+    'list': {
+        'properties': {
+            'styles': 'true',
+            'startIndex': 'true',
+            'reversed': 'true',
+        }
+    }
 }
