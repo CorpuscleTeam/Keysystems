@@ -122,11 +122,10 @@ document.querySelectorAll('.modal_cr_order').forEach(link => {
                 // Заполняем модальное окно данными из `data`
                 modalApplicationStatusContent.innerHTML = `
                     <div class="modal1_img modal-close">
-                        
                         <img src="${imgLink}" alt="">
                     </div>
                     <h4>${data.order.customer.title}</h4>
-                    <p>${data.order.status}</p>
+                    <p class="status_new_req status_req_p">Задача</p>
                     <ul class="tabs">
                         <li class="tab"><a href="#tab1">Описание</a></li>
                         <li class="tab">
@@ -158,54 +157,53 @@ document.querySelectorAll('.modal_cr_order').forEach(link => {
                         <div class="files_in_modal"></div>
                         <h6 class="title_in_modal">Исполнители</h6>
                         <div class="curators_of_request"></div>
-                        
+                        <div class="btn_footer_request"></div>
 
                     </div>
-
                     
-                        <div id="tab2" class="tab-content client_chat">
-                            <div class="client_chat">
-                                <div id="client_chat" cols="100" rows="20" class="chat_area"></div>
-                                <div class="footer_message">
-                                    <input id="client-msg-input" class="chat-message-input" type="text" size="100">
-                                    <p>
-                                        <input id="client-msg-file" name="client-msg-file" class="chat_add_file" type="file" multiple style="display: none;">
+                    <div id="tab2" class="tab-content client_chat">
+                        <div class="client_chat">
+                                div id="client_chat" cols="100" rows="20" class="chat_area"></div>
+                            <div class="footer_message">
+                                <input id="client-msg-input" class="chat-message-input" type="text" size="100">
+                                <p>
+                                    <input id="client-msg-file" name="client-msg-file" class="chat_add_file" type="file" multiple style="display: none;">
                                         <label for="client-msg-file" class="chat_add_file">
-                                            <img src="${addFile2}" alt="">
-                                        </label>
-                                    </p>
-                                    <p>
-                                        <input id="client-msg-submit" name="client-msg-submit" class="chat_submit" type="button" value="Send" style="display: none;">
+                                        <img src="${addFile2}" alt="">
+                                    </label>
+                                </p>
+                                <p>
+                                    <input id="client-msg-submit" name="client-msg-submit" class="chat_submit" type="button" value="Send" style="display: none;">
                                         <label for="client-msg-submit" class="chat_submit">
-                                            <img src="${sentMsg}" alt="">
-                                        </label>
-                                    </p>
-                                </div>
+                                        <img src="${sentMsg}" alt="">
+                                    </label>
+                                </p>
                             </div>
                         </div>
+                    </div>
                     
-
-                    
-                        <div id="tab3" class="tab-content curator_chat">
-                            <div class="curator_chat">
-                                <div id="curator_chat" cols="100" rows="20" class="chat_area"></div>
-                                <div class="footer_message">
-                                    <input id="curator-msg-input" name="curator-msg-input" class="chat-message-input" type="text" size="100">
-                                    <p>
-                                        <input id="curator-msg-file" name="curator-msg-file" class="chat_add_file" type="file" multiple style="display: none;">
-                                        <label for="curator-msg-file" class="chat_add_file">
-                                            <img src="${addFile2}" alt="">
-                                        </label>
-                                    </p>
-                                    <p>
-                                        <input id="curator-msg-submit" name="curator-msg-submit" class="chat_submit" type="button" value="Send" style="display: none;">
+                    <div id="tab3" class="tab-content curator_chat">
+                        <div class="curator_chat">
+                            <div id="curator_chat" cols="100" rows="20" class="chat_area"></div>
+                            <div class="footer_message">
+                                <input id="curator-msg-input" name="curator-msg-input" class="chat-message-input" type="text" size="100">
+                                <p>
+                                    <input id="curator-msg-file" name="curator-msg-file" class="chat_add_file" type="file" multiple style="display: none;">
+                                    <label for="curator-msg-file" class="chat_add_file">
+                                        <img src="${addFile2}" alt="">
+                                    </label>
+                                </p>
+                                <p>
+                                    <input id="curator-msg-submit" name="curator-msg-submit" class="chat_submit" type="button" value="Send" style="display: none;">
                                         <label for="curator-msg-submit" class="chat_submit">
-                                            <img src="${sentMsg}" alt="">
-                                        </label>
-                                    </p>
-                                </div>
+                                        <img src="${sentMsg}" alt="">
+                                    </label>
+                                </p>
                             </div>
-                        </div>    
+                        </div>
+                    </div>
+                    
+                    <button class="btn_new_req btn_req_p">Взять в работу</button>
                 `;
 
                 // Инициализация вкладок Materialize
@@ -247,6 +245,17 @@ document.querySelectorAll('.modal_cr_order').forEach(link => {
 
                 modalAddCurators()
 
+                if(data['order']['status'] == 'new') {
+                    changeStatusNewToWork()
+                    data['order']['status'] = 'active'
+                } else if (data['order']['status'] == 'active') {
+                    let btnElem = document.querySelector('.btn_work_req')
+                    let statusElem = document.querySelector('.status_work_req')
+                    btnElem.addEventListener('click', function() {
+                        changeStatusWorkToEnd(btnElem, statusElem)
+                    })
+                }
+
                 // сокет. оставляем последним
                 initOrderSocket(data.room, data.user_id)
             })
@@ -258,47 +267,5 @@ document.querySelectorAll('.modal_cr_order').forEach(link => {
 let modalAddCurator = document.createElement('div')
 modalAddCurator.setAttribute('id', 'modal_add_curator')
 modalAddCurator.classList.add('modal')
-
+// все что в МО заполняется через function modalAddCurators()
 document.body.append(modalAddCurator)
-
-// let modalAddCuratorContent = document.createElement('div')
-// modalAddCuratorContent.classList.add('modal-content')
-// modalAddCurator.appendChild(modalAddCuratorContent)
-
-// let modalAddCuratorClose = btnClose()
-// modalAddCuratorContent.appendChild(modalAddCuratorClose)
-
-// let modalAddCuratorTitle = modalTitle('Добавить исполнителя')
-// modalAddCuratorContent.appendChild(modalAddCuratorTitle)
-
-// // Форма
-// let formAddCurator = document.createElement('form')
-// formAddCurator.classList.add('mod_request_form')
-// formAddCurator.classList.add('enter_form')
-// formAddCurator.setAttribute('id', 'add_curator')
-// formAddCurator.setAttribute('method', 'post')
-// formAddCurator.innerHTML = getCSFRT()
-// modalAddCuratorContent.appendChild(formAddCurator)
-
-// Выбрать исполнителя
-// let addCurator = document.createElement('p')
-// formAddCurator.appendChild(addCurator)
-
-// let labelAddCurator = document.createElement('label')
-// labelAddCurator.setAttribute('for', 'add_curator')
-// labelAddCurator.classList.add('required')
-// labelAddCurator.innerHTML = `Выберите исполнителя`
-// addCurator.appendChild(labelAddCurator)
-
-// let selectAddCurator = document.createElement('select')
-// selectAddCurator.setAttribute('name', 'add_curator')
-// selectAddCurator.setAttribute('id', 'add_curator')
-// addCurator.appendChild(selectAddCurator)
-
-// добавить цикл с вариантами выбора
-// for (let i = 0; i < ??.length; i++) {
-//     let optionAddCurator = document.createElement('option')
-//     optionAddCurator.setAttribute('value', ??.pk)
-//     optionAddCurator.innerHTML = ??.fields.topic
-//     selectAddCurator.appendChild(optionAddCurator)
-// }

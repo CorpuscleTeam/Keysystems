@@ -903,12 +903,18 @@ textarea {
     grid-template-columns: repeat(2, 1fr);
     gap: 20px;
 }
+/* кнопка для скачивания файла в МО */
+.files_in_modal {
+    display: grid;
+    grid-template-columns: repeat(1, 1fr);
+    gap: 5px;
+    margin-bottom: 20px;
+}
 .update_file_item {
     display: flex;
     justify-content: space-between;
     align-items: center;
     gap: 10px;
-    
     min-width: 0;
     padding: 10px 16px;
 }
@@ -929,10 +935,10 @@ textarea {
 /* } */
 .update_file_name {
     /* display: block; */
-    font-size: 14px;
-    line-height: 18px;
-    color: var(--color_dark);
-    font-family: "Oswald", sans-serif;
+    font-size: 14px !important;
+    line-height: 18px !important;
+    color: var(--color_dark) !important;
+    font-family: "Oswald", sans-serif !important;
     text-align: left;
     margin-left: 0;
     padding-left: 0;
@@ -941,14 +947,19 @@ textarea {
     text-overflow: ellipsis;
     max-width: 180px;
     width: 100%;
+    margin-bottom: 0 !important;
+}
+.file_name_width {
+    max-width: 280px !important;
 }
 .update_file_size {
     /* display: block; */
     text-align: left;
-    font-size: 12px;
-    line-height: 17px;
-    color: rgba(153, 153, 153, 1);
-    font-family: "Oswald", sans-serif;
+    font-size: 12px !important;
+    line-height: 17px !important;
+    color: rgba(153, 153, 153, 1) !important;
+    font-family: "Oswald", sans-serif !important;
+    margin-bottom: 0 !important;
 }
 
 /* Кураторская панель */
@@ -1176,4 +1187,84 @@ textarea {
     background-color: var(--color_green);
     width: 37px;
     height: 37px;
+}
+.btn_end_curator {
+    display: none;
+}
+
+/* Исполнители в МО */
+.curators_of_request {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+}
+.curator_item {
+    display: flex;
+    background-color: rgba(238, 238, 238, 1);
+    justify-content: space-between;
+    align-items: center;
+    padding-left: 10px;
+    padding-right: 10px;
+    height: 37px;
+}
+.curator_item_left {
+    margin-right: 6px;
+}
+.curator_item_right {
+    margin-left: 15px;
+}
+.btn_add_curator {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* Статус заявки */
+.status_new_req {
+    background-color: rgba(238, 238, 238, 1);
+    color: var(--color_dark);
+}
+.status_work_req {
+    background-color: rgba(5, 145, 198, 1);
+    color: #fff !important;
+}
+.status_end_req {
+    background-color: rgba(122, 184, 14, 1);
+    color: #fff !important;
+}
+.status_req_p {
+    height: 21px;
+    font-size: 13px !important;
+    padding-left: 6px;
+    padding-right: 6px;
+    display: inline-block !important;
+    text-transform: uppercase;
+}
+
+/* кнопка в МО "взять в работу" */
+.btn_req_p {
+    font-size: 16px;
+    line-height: 21px;
+    color: #fff;
+    font-family: "Oswald", sans-serif;
+    border: none;
+    width: 100%;
+    margin-top: 20px;
+    height: 46px;
+    cursor: pointer;
+}
+.btn_new_req {
+    background-color: rgba(5, 145, 198, 1);
+}
+.btn_new_req:hover {
+    background-color: rgba(4, 111, 152, 1);
+}
+.btn_work_req {
+    background-color: rgba(122, 184, 14, 1);
+}
+.btn_work_req:hover {
+    background-color: rgba(110, 165, 10, 1);
+}
+.btn_end_req {
+    display: none;
 }
