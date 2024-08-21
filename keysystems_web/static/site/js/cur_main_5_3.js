@@ -98,8 +98,6 @@ document.querySelectorAll('.modal_cr_order').forEach(link => {
             .then(response => response.json())
             .then(data => {
 
-                console.log(data)
-
                 if (data.client_chat.length > 0) {
                     window.lastMsgForClientChat = data.client_chat[data.client_chat.length - 1].from_user.id;
                 } else {
@@ -115,6 +113,11 @@ document.querySelectorAll('.modal_cr_order').forEach(link => {
                 window.selectedTab = '#tab1'
                 window.orderId = orderId
                 window.userId = data.user_id
+                window.roomName = data.room
+
+//                создаём переменную для сокета
+                // создаём переменную для сокета
+                window.chatSocket = 'null';
 
                 // Заполняем модальное окно данными из `data`
                 modalApplicationStatusContent.innerHTML = `

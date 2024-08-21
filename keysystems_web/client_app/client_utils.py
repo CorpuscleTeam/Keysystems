@@ -64,6 +64,12 @@ def get_main_client_front_data(request: HttpRequest) -> dict:
                     'full_name': request.user.full_name,
                     'used_soft': used_soft.id,
                     'phone': request.user.phone,
+                    'topics': topics_json,
+                    'soft': soft_json,
+                    'orders_count': user_orders_count,
+                    'notice': notice_count,
+                    'update_count': unviewed_updates_count,
+                    'unviewed_updates': unviewed_updates,
                 }
             )
         }
@@ -83,6 +89,12 @@ def get_main_client_front_data(request: HttpRequest) -> dict:
                     'full_name': 'Мурат Насырович Шлакоблокунь',
                     'used_soft': 2,
                     'phone': '79012345678',
+                    'topics': topics_json,
+                    'soft': soft_json,
+                    'orders_count': 2,
+                    'notice': 3,
+                    'update_count': 12,
+
                 }
             )
         }

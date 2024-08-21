@@ -1,6 +1,7 @@
 from django.db import models
 # from ckeditor.fields import RichTextField
-from django.db.models.fields import TextField as RichTextField
+from django_ckeditor_5.fields import CKEditor5Field
+from django.db.models.fields import TextField
 
 from common.models import UserKS, Soft
 from enums import OrderStatus
@@ -14,7 +15,7 @@ class News(models.Model):
     author = models.CharField('автор', max_length=255, null=True, blank=True)
     title = models.CharField('Название', max_length=255)
     text_preview = models.TextField('Текст привью', null=True, blank=True)
-    text = RichTextField('Текст')
+    text = CKEditor5Field('Текст')
     photo = models.ImageField ('Фото', upload_to="news", null=True, blank=True)
 
     is_active = models.BooleanField(default=True)
@@ -55,7 +56,7 @@ class UpdateSoft(models.Model):
     created_at = models.DateTimeField('Создана', auto_now_add=True)
     updated_at = models.DateTimeField('Обновлена', auto_now=True)
     soft = models.ForeignKey(Soft, on_delete=models.DO_NOTHING, related_name='update_soft', verbose_name='Обновления ПО')
-    description = RichTextField('Описание')
+    description = CKEditor5Field('Описание')
     is_active = models.BooleanField(default=True)
 
     objects: models.Manager = models.Manager()
@@ -118,7 +119,7 @@ class FAQ(models.Model):
     created_at = models.DateTimeField('Создана', auto_now_add=True)
     updated_at = models.DateTimeField('Обновлена', auto_now=True)
     question = models.TextField('Вопрос')
-    answer = RichTextField('Ответ')
+    answer = CKEditor5Field('Ответ')
     is_active = models.BooleanField('Активно', default=True)
 
     objects: models.Manager = models.Manager()
