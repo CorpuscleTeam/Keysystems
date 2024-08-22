@@ -90,7 +90,7 @@ class ChatConsumer(WebsocketConsumer):
             if data_json.get('add'):
                 add_user_id = int(data_json.get('add'))
                 OrderCurator.objects.create(order_id=order_id, user_id=add_user_id)
-            
+
             # если есть кого удалить
             if data_json.get('del'):
                 del_user_id = int(data_json.get('del'))
@@ -99,6 +99,13 @@ class ChatConsumer(WebsocketConsumer):
             async_to_sync(self.channel_layer.group_send)(
                 self.room_group_name, {"type": "curator.list", 'order_id': order_id}
             )
+
+        # изменить статус заказа
+        elif data_json['event'] == EditOrderAction.EDIT_STATUS:
+            order_id = int(data_json['order_id'])
+            order = Order.objects.filter(id=order_id)
+            order.status = data_json['status']
+            order.save()
 
     # обновляет сообщения в чате
     def chat_message(self, event):

@@ -72,5 +72,7 @@ class EditOrderAction(str, Enum):
     MSG = 'msg'
     EDIT_SOFT = 'edit_soft'
     EDIT_CURATOR = 'edit_curator'
+    EDIT_STATUS = 'edit_status'
+
     ADD_CURATOR = 'add_curator'
     DEL_CURATOR = 'del_curator'
