@@ -92,14 +92,14 @@ class SimpleOrderSerializer(serializers.ModelSerializer):
     topic = OrderTopicSerializer()
     files = DownloadedFileSerializer(many=True, source='downloaded_file')
     # from_user = UserKSSerializer()
-    # customer = CustomerSerializer()
+    customer = CustomerSerializer()
 
     id_str = serializers.SerializerMethodField()
 
     class Meta:
         model = cm.Order
         # fields = ['id', 'from_user', 'customer', 'text', 'soft', 'topic', 'status', 'id_str']
-        fields = ['id', 'text', 'soft', 'topic', 'status', 'id_str', 'files']
+        fields = ['id', 'text', 'soft', 'topic', 'status', 'id_str', 'files', 'customer']
 
     def get_id_str(self, obj):
         return f'#{str(obj.id).zfill(5)}'
@@ -128,7 +128,6 @@ class FullOrderSerializer(serializers.ModelSerializer):
     def get_curators(self, obj):
         curators = obj.order_curator.all()
         return UserKSSerializer([curator.user for curator in curators], many=True).data
-
 
 
 # сообщения

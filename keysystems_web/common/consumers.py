@@ -41,6 +41,7 @@ class ChatConsumer(WebsocketConsumer):
 
         if data_json['event'] == EditOrderAction.MSG:
             user = UserKS.objects.filter(id=data_json['user_id']).first()
+            log_error(wt=False, message=f'user: {user}\n')
             if user:
                 order = Order.objects.select_related('from_user').filter(id=int(data_json['order_id'])).first()
                 curators = OrderCurator.objects.select_related('user').filter(order=order).all()
@@ -49,7 +50,8 @@ class ChatConsumer(WebsocketConsumer):
                 new_message = Message(
                     type_msg=MsgType.MSG.value,
                     from_user=user,
-                    chat=ChatType.CLIENT.value if data_json['tab'] == '#tab2' else ChatType.CURATOR.value,
+                    # chat=ChatType.CLIENT.value if data_json['chat'] == '#tab2' else ChatType.CURATOR.value,
+                    chat=data_json['chat'],
                     order_id=int(data_json['order_id']),
                     text=data_json['message']
                 )
@@ -57,7 +59,8 @@ class ChatConsumer(WebsocketConsumer):
 
                 # рассылаем уведомления
                 notice_list = [curator.user.id for curator in curators] + [order.from_user.id]
-                notice_list.remove(data_json['user_id'])
+                if data_json['user_id'] in notice_list:
+                    notice_list.remove(data_json['user_id'])
 
                 notice: str = notices_dict.get(NoticeType.NEW_MSG.value)
                 notice_text = notice.format(pk=order.id)
