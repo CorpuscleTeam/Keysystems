@@ -247,7 +247,12 @@ document.querySelectorAll('.modal_cr_order').forEach(link => {
                     });
                 });
 
-                modalAddCurators('.curator_item_right')
+//                modalAddCurators('.curator_item_right')
+                try {
+                    modalAddCurators('.curator_item_right');
+                    } catch (error) {
+                console.error('An error occurred:', error);
+                }
                 modalAddCurators('.btn_add_curator')
 
                 if(data['order']['status'] == 'new') {
