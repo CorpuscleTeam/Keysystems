@@ -108,7 +108,7 @@ function createCuratorsList(selector, arr) {
             curatorUser.append(userMe)
 
             let curatorItemRight = document.createElement('a')
-            curatorItemRight.setAttribute('href', '#modal_closeFromMe')
+            curatorItemRight.setAttribute('href', '#modal_add_curator')
             curatorItemRight.classList.add('curator_item_right')
             curatorForRequest.appendChild(curatorItemRight)
 
@@ -140,7 +140,7 @@ function initOrderSocket(roomName, userId) {
         + roomName
         + '/'
     );
-//    window.chatSocket = chatSocket
+    //    window.chatSocket = chatSocket
     // получение сообщений
     window.chatSocket.onmessage = function (e) {
         const data = JSON.parse(e.data);
@@ -358,31 +358,31 @@ function getCSFRT() {
 
 
 // изменяет список кураторов
-function clickAddCurator() {
+function clickAddCurator(delUser = null) {
 
     document.getElementById('btnAddCurator').addEventListener('click', function () {
 
         // Получаем выбранный элемент
-         const selectedOption = document.getElementById('add_curator_1').value;
+        const selectedOption = document.getElementById('add_curator_1').value;
 
         // Выполняем нужную функцию
         console.log(selectedOption);
         console.log(window.chatSocket);
-         // Отправляем данные на бэкэнд через WebSocket
+        // Отправляем данные на бэкэнд через WebSocket
         window.chatSocket.send(JSON.stringify({
             'event': 'edit_curator',
             'add': selectedOption,
+            'del': delUser,
             'order_id': window.orderId,
             'room_name': window.roomName
         }));
     });
 }
-//<form class="mod_request_form enter_form" id="add_curator" method="post"><p><label for="add_curator" class="required">Выберите исполнителя</label><select name="add_curator" id="add_curator"><option value="4">Меркул Иванович</option><option value="3">Пётр</option></select></p></form><form class="mod_request_form enter_form" id="add_curator" method="post"><p><label for="add_curator" class="required">Выберите исполнителя</label><select name="add_curator" id="add_curator"><option value="4">Меркул Иванович</option><option value="3">Пётр</option></select></p></form>
 
 // создает модальное окно с выбором исполнителей
-function modalAddCurators() {
+function modalAddCurators(selector) {
     // обработчик событий для открытия второго окна
-    document.querySelector('#statusOrder .btn_add_curator').addEventListener('click', function () {
+    document.querySelector(`#statusOrder ${selector}`).addEventListener('click', function () {
         // Открываем второе модальное окно
         let modalInstance = M.Modal.getInstance(document.querySelector('#modal_add_curator'));
         modalInstance.open();
@@ -402,12 +402,20 @@ function modalAddCurators() {
             .then(data => {
                 console.log('data')
                 console.log(data)
-                // МО добавить исполнителя
-                // let modalAddCurator = document.createElement('div')
-                // modalAddCurator.setAttribute('id', 'modal_add_curator')
-                // modalAddCurator.classList.add('modal')
+                // console.log(modalInstance)
 
-                // document.body.append(modalAddCurator)
+                // modalInstance.innerHTML = ''
+                
+                
+                let oldModal = document.querySelector('#modal_add_curator')
+                oldModal.innerHTML = ''
+
+                // if (oldModal) {
+                //     // Если модальное окно существует, удаляем его
+                //     // oldModal.remove();
+                //     console.log('modalAddCurator1111')
+                //     modalInstance.innerHTML = ''
+                // }
 
                 let modalAddCuratorContent = document.createElement('div')
                 modalAddCuratorContent.classList.add('modal-content')
@@ -416,8 +424,18 @@ function modalAddCurators() {
                 let modalAddCuratorClose = btnClose()
                 modalAddCuratorContent.appendChild(modalAddCuratorClose)
 
-                let modalAddCuratorTitle = modalTitle('Добавить исполнителя')
-                modalAddCuratorContent.appendChild(modalAddCuratorTitle)
+
+                if (selector == '.btn_add_curator') {
+                    let modalAddCuratorTitle = modalTitle('Добавить исполнителя')
+                    modalAddCuratorContent.appendChild(modalAddCuratorTitle)
+                } else {
+                    let modalAddCuratorTitle = modalTitle('Снять с себя задачу')
+                    modalAddCuratorContent.appendChild(modalAddCuratorTitle)
+
+                    let text = document.createElement('p')
+                    text.innerHTML = 'Для того чтобы снять с себя задачу, вам необходимо назничить кого другого на роль исполнителя.'
+                    modalAddCuratorContent.appendChild(text)
+                }
 
                 // Форма
                 let formAddCurator = document.createElement('form')
@@ -430,7 +448,7 @@ function modalAddCurators() {
 
                 // Выбрать исполнителя
                 let addCurator = document.createElement('p')
-//                addCurator.id = 'test-id-addCurator'
+                // addCurator.id = 'test-id-addCurator'
                 formAddCurator.appendChild(addCurator)
 
                 let labelAddCurator = document.createElement('label')
@@ -468,10 +486,18 @@ function modalAddCurators() {
                 let btnAddCuratorSubmit = document.createElement('button')
                 btnAddCuratorSubmit.setAttribute('id', 'btnAddCurator')
                 btnAddCuratorSubmit.classList.add('btn_support_submit')
-                btnAddCuratorSubmit.innerHTML = `Добавить`
+                // btnAddCuratorSubmit.innerHTML = `Добавить`
+
+                let delUser = null
+                if (selector == '.btn_add_curator') {
+                    btnAddCuratorSubmit.innerHTML = `Добавить`
+                } else {
+                    btnAddCuratorSubmit.innerHTML = `Подтвердить`
+                    delUser = window.userId
+                }
                 footerAddCurator.appendChild(btnAddCuratorSubmit)
 
-                clickAddCurator()
+                clickAddCurator(delUser)
             })
             .catch(error => console.error('Error:', error));
     });
@@ -488,6 +514,13 @@ function changeStatusWorkToEnd(btnElem, statusElem) {
 
     let btnAddCurator = document.querySelector('.btn_add_curator')
     btnAddCurator.classList.replace('btn_add_curator', 'btn_end_curator')
+
+    window.chatSocket.send(JSON.stringify({
+        'event': 'edit_status',
+        'room_name': window.roomName,
+        'status': 'done',
+        'order_id': window.orderId,
+    }))
 }
 // функция для кнопки "взять в работу" и изменение статуса
 function changeStatusNewToWork() {
@@ -505,6 +538,13 @@ function changeStatusNewToWork() {
         btnElem.addEventListener('click', function () {
             changeStatusWorkToEnd(btnElem, statusElem)
         })
+
+        window.chatSocket.send(JSON.stringify({
+            'event': 'edit_status',
+            'room_name': window.roomName,
+            'status': 'active',
+            'order_id': window.orderId,
+        }))
     })
 }
 

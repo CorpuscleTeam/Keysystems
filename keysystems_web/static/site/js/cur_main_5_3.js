@@ -243,11 +243,12 @@ document.querySelectorAll('.modal_cr_order').forEach(link => {
                     });
                 });
 
-                modalAddCurators()
+                modalAddCurators('.curator_item_right')
+                modalAddCurators('.btn_add_curator')
 
                 if(data['order']['status'] == 'new') {
                     changeStatusNewToWork()
-                    data['order']['status'] = 'active'
+                    // data['order']['status'] = 'active'
                 } else if (data['order']['status'] == 'active') {
                     let btnElem = document.querySelector('.btn_work_req')
                     let statusElem = document.querySelector('.status_work_req')
@@ -264,8 +265,10 @@ document.querySelectorAll('.modal_cr_order').forEach(link => {
 });
 
 // МО добавить исполнителя
+
 let modalAddCurator = document.createElement('div')
 modalAddCurator.setAttribute('id', 'modal_add_curator')
 modalAddCurator.classList.add('modal')
 // все что в МО заполняется через function modalAddCurators()
+
 document.body.append(modalAddCurator)
