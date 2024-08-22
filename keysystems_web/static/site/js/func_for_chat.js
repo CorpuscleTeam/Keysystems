@@ -77,8 +77,9 @@ function createChat(selector, arr_message, userId, chatType) {
     // let fdf = document.querySelector(selector);
     // fdf.appendChild(chat_message);
 
-    return chat_message
+    // return chat_message
     // chat_message.scrollTop = chat_message.scrollHeight;
+    document.querySelector(selector).appendChild(chat_message)
 }
 
 
