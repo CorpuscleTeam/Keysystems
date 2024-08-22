@@ -392,6 +392,7 @@ input[placeholder] {
     display: grid;
     gap: 20px;
     grid-template-columns: 1fr 2.3fr;
+    align-items: start;
     /* justify-content: space-between; */
 }
 
@@ -401,8 +402,11 @@ input[placeholder] {
     background-color: rgba(255, 255, 255, 1);
     border: var(--border_grey);
     box-shadow: var(--border_shadow);
-    max-height: 370px;
+    /* max-height: 230px; */
     padding: 30px;
+    height: auto;
+    min-height: 0;
+    overflow: visible;
 }
 .page_menu_ul {
     list-style: none;
@@ -411,9 +415,13 @@ input[placeholder] {
 .page_menu_ul li {
     margin-bottom: 20px;
     display: flex;
+    /* gap: 20px; */
     align-items: center;
     height: 46px;
     width: 100%;
+}
+.page_menu_ul li:last-child {
+    margin-bottom: 0; 
 }
 .page_menu_ul li > a {
     display: block;
@@ -513,6 +521,9 @@ input[placeholder] {
     border: var(--border_grey);
     box-shadow: var(--border_shadow);
     padding: 20px 30px 30px;
+}
+.page_body_curator {
+    margin-bottom: 40px;
 }
 .page_body_h2 {
     font-size: 28px;
@@ -1033,6 +1044,20 @@ textarea {
     align-items: center;
     justify-content: flex-start;
     margin-bottom: 20px;
+    margin-right: 0;
+}
+.tabs .indicator {
+    padding-left: 0;
+    padding-right: 0;
+}
+.tabs::after {
+    content: ''; /* Создаем псевдоэлемент */
+    display: block; /* Заставляем псевдоэлемент занимать место в потоке */
+    max-width: 66px;
+    width: 100%;
+    height: 1px; /* Толщина линии */
+    background-color: rgba(200, 200, 200, 1); /* Цвет линии */
+    margin-top: 38px; 
 }
 .tabs li {
     list-style: none;
