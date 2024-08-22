@@ -192,7 +192,7 @@
 
     // карточки заявок
     let card_orders = JSON.parse('{{ orders|escapejs }}')
-    console.log(card_orders)
+    // console.log(card_orders)
 
     // картинки
     let curator_user_img = "{% static 'site/img/curator_user.svg' %}"
@@ -204,16 +204,32 @@
     let userForOrder = {{ order_all_data|default:0 }}
 
     let link = "{% static 'site/img/close-large.svg' %}"
+    let imgLink = "{% static 'site/img/close-large.svg' %}"
+    let imgPlus = "{% static 'site/img/plus.svg' %}"
+
+    // картинка справа скачать файл
+    let fileDnl = "{% static 'site/img/download.svg' %}"
+
+    // картинка для списка кураторов
+    let curatorItemImg = "{% static 'site/img/user.svg' %}"
+
+    // окно чата
+    // картинка добавить файл
+    let addFile2 = "{% static 'site/img/addFile2.svg' %}"
+    // картинка отправить сообщение
+    let sentMsg = "{% static 'site/img/sentMsg.svg' %}"
 
     </script>
 
     <script type="text/javascript" src="{% static 'site/js/materialize.min.js' %}"></script>
+    <script type="text/javascript" src="{% static 'site/js/enums.js' %}"></script>
     <script type="text/javascript" src="{% static 'site/js/main_sidenav.js' %}"></script>
-    <script type="text/javascript" src="{% static 'site/js/main_sidenav.js' %}"></script>
+    <!-- <script type="text/javascript" src="{% static 'site/js/main_sidenav.js' %}"></script> -->
     <script type="text/javascript" src="{% static 'site/js/cur_curaton_fio.js' %}"></script>
     <script type="text/javascript" src="{% static 'site/js/cur_nitice.js' %}"></script>
     <script type="text/javascript" src="{% static 'site/js/cur_cards_request.js' %}"></script>
     <script type="text/javascript" src="{% static 'site/js/cur_filters_2_1.js' %}"></script>
+    <script type="text/javascript" src="{% static 'site/js/func_for_chat.js' %}"></script>
     <script type="text/javascript" src="{% static 'site/js/cur_main_5_3.js' %}"></script>
     
 
