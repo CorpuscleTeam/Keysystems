@@ -5,16 +5,16 @@ from django.shortcuts import render
 import json
 import logging
 
-from .models import Order, Message, OrderCurator, ViewMessage, UserKS
-from .serializers import FullOrderSerializer, MessageSerializer, UserKSSerializer
+from .models import Order, Message, OrderCurator, ViewMessage, UserKS, Soft
+from .serializers import FullOrderSerializer, MessageSerializer, UserKSSerializer, SoftSerializer
 from .logs import log_error
 from enums import ChatType, RequestMethod, EditOrderAction
 
 
 def get_order_data(request: HttpRequest, order_id):
-    log_error('>>>>>>>>>>>>', wt=False)
+    # log_error('>>>>>>>>>>>>', wt=False)
     try:
-        log_error(f'{order_id}', wt=False)
+        # log_error(f'{order_id}', wt=False)
 
         order = Order.objects.filter(id=order_id).first()
         messages = Message.objects.filter(order=order).order_by('created_at')
@@ -23,6 +23,9 @@ def get_order_data(request: HttpRequest, order_id):
         # разделяем чаты на клиентский и кураторский
         client_messages = messages.filter(chat=ChatType.CLIENT.value)
         curator_messages = messages.filter(chat=ChatType.CURATOR.value)
+
+        # список софта
+        soft = Soft.objects.all()
 
         room_name = f'order{order_id}'
 
@@ -44,7 +47,8 @@ def get_order_data(request: HttpRequest, order_id):
                 'user_id': 2,
                 'unv_msg_client': client_unviewed_message,
                 'unv_msg_curator': curator_unviewed_message,
-                'room': room_name
+                'room': room_name,
+                'soft': SoftSerializer(soft, many=True).data,
             },
             safe=False
         )
