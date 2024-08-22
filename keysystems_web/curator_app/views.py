@@ -13,7 +13,7 @@ from . import curator_utils as utils
 from common.models import OrderTopic, Notice, Order, Soft
 from common.serializers import NoticeSerializer
 import common as ut
-from enums import RequestMethod, OrderStatus, notices_dict
+from enums import RequestMethod, OrderStatus, notices_dict, ChatType
 
 
 # мои задачи

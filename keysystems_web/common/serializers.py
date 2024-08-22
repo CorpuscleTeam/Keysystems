@@ -130,7 +130,6 @@ class FullOrderSerializer(serializers.ModelSerializer):
         return UserKSSerializer([curator.user for curator in curators], many=True).data
 
 
-
 # сообщения
 class MessageSerializer(serializers.ModelSerializer):
     from_user = UserKSSerializer()

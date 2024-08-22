@@ -155,8 +155,8 @@ function initOrderSocket(roomName, userId) {
         // let chat_message = document.querySelector('.chat_msg_item')
         // chat_message.appendChild(newMsg)
 
-        if (data.type == 'msg') {
-
+        if (data.message.type_msg == 'msg') {
+            console.log(BASE.CLIENT)
             if (data.message.chat == BASE.CLIENT) {
                 if (data.message.from_user.id == window.lastMsgForClientChat) {
                     withHeader = false
@@ -181,6 +181,7 @@ function initOrderSocket(roomName, userId) {
                 chat_message.scrollTop = chat_message.scrollHeight;
 
                 window.lastMsgForCuratorChat = data.message.from_user.id
+                console.log('end')
             }
         }
 
@@ -209,6 +210,7 @@ function initOrderSocket(roomName, userId) {
         window.chatSocket.send(JSON.stringify({
             'event': 'msg',
             'message': message,
+            'chat': 'client',
             'tab': window.selectedTab,
             'order_id': window.orderId,
             'user_id': window.userId
@@ -228,7 +230,9 @@ function initOrderSocket(roomName, userId) {
         const messageInputDom = document.querySelector('#curator-msg-input');
         const message = messageInputDom.value;
         window.chatSocket.send(JSON.stringify({
+            'event': 'msg',
             'message': message,
+            'chat': 'curator',
             'tab': window.selectedTab,
             'order_id': window.orderId,
             'user_id': window.userId
@@ -359,7 +363,6 @@ function getCSFRT() {
 
 // изменяет список кураторов
 function clickAddCurator(delUser = null) {
-
     document.getElementById('btnAddCurator').addEventListener('click', function () {
 
         // Получаем выбранный элемент
@@ -402,6 +405,7 @@ function modalAddCurators(selector) {
             .then(data => {
                 console.log('data')
                 console.log(data)
+
                 // console.log(modalInstance)
 
                 // modalInstance.innerHTML = ''

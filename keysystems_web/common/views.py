@@ -33,10 +33,12 @@ def get_order_data(request: HttpRequest, order_id):
         if request.user.is_authenticated:
             client_unviewed_message = client_messages.filter(~Q(view_message__user_ks=request.user)).distinct().count()
             curator_unviewed_message = curator_messages.filter(~Q(view_message__user_ks=request.user)).distinct().count()
+            user_id = request.user.id
 
         else:
             client_unviewed_message = 1
             curator_unviewed_message = 2
+            user_id = 3
 
         return JsonResponse(
             {
@@ -44,7 +46,7 @@ def get_order_data(request: HttpRequest, order_id):
                 'client_chat': MessageSerializer(client_messages.all(), many=True).data,
                 'curator_chat': MessageSerializer(curator_messages.all(), many=True).data,
                 'chat': MessageSerializer(messages.all(), many=True).data,
-                'user_id': 2,
+                'user_id': user_id,
                 'unv_msg_client': client_unviewed_message,
                 'unv_msg_curator': curator_unviewed_message,
                 'room': room_name,
