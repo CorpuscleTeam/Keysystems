@@ -98,6 +98,7 @@ document.querySelectorAll('.modal_cr_order').forEach(link => {
             .then(response => response.json())
             .then(data => {
 
+                console.log(data)
                 if (data.client_chat.length > 0) {
                     window.lastMsgForClientChat = data.client_chat[data.client_chat.length - 1].from_user.id;
                 } else {
@@ -161,9 +162,9 @@ document.querySelectorAll('.modal_cr_order').forEach(link => {
 
                     </div>
                     
-                    <div id="tab2" class="tab-content client_chat">
+                    <div id="tab2" class="tab-content">
                         <div class="client_chat">
-                                div id="client_chat" cols="100" rows="20" class="chat_area"></div>
+                                <div id="client_chat" cols="100" rows="20" class="chat_area"></div>
                             <div class="footer_message">
                                 <input id="client-msg-input" class="chat-message-input" type="text" size="100">
                                 <p>
@@ -182,7 +183,7 @@ document.querySelectorAll('.modal_cr_order').forEach(link => {
                         </div>
                     </div>
                     
-                    <div id="tab3" class="tab-content curator_chat">
+                    <div id="tab3" class="tab-content">
                         <div class="curator_chat">
                             <div id="curator_chat" cols="100" rows="20" class="chat_area"></div>
                             <div class="footer_message">
@@ -235,7 +236,10 @@ document.querySelectorAll('.modal_cr_order').forEach(link => {
                         // вернуться позже сюда!!!
                         if (selectedTab == '#tab2') {
                             let chat = document.querySelector('#client_chat_item')
-                            chat.scrollTop = chat.scrollHeight
+                            if (chat) {
+                                chat.scrollTop = chat.scrollHeight
+                            }
+                            
                         }
 
                         // Логируем ID открытой вкладки
@@ -243,11 +247,12 @@ document.querySelectorAll('.modal_cr_order').forEach(link => {
                     });
                 });
 
-                modalAddCurators()
+                modalAddCurators('.curator_item_right')
+                modalAddCurators('.btn_add_curator')
 
                 if(data['order']['status'] == 'new') {
                     changeStatusNewToWork()
-                    data['order']['status'] = 'active'
+                    // data['order']['status'] = 'active'
                 } else if (data['order']['status'] == 'active') {
                     let btnElem = document.querySelector('.btn_work_req')
                     let statusElem = document.querySelector('.status_work_req')
@@ -264,8 +269,10 @@ document.querySelectorAll('.modal_cr_order').forEach(link => {
 });
 
 // МО добавить исполнителя
+
 let modalAddCurator = document.createElement('div')
 modalAddCurator.setAttribute('id', 'modal_add_curator')
 modalAddCurator.classList.add('modal')
 // все что в МО заполняется через function modalAddCurators()
+
 document.body.append(modalAddCurator)
