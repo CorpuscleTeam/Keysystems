@@ -110,7 +110,7 @@ function createCuratorsList(selector, arr) {
 
             let curatorItemRight = document.createElement('a')
             curatorItemRight.setAttribute('href', '#modal_add_curator')
-            curatorItemRight.classList.add('curator_item_right')
+            curatorItemRight.classList.add('')
             curatorForRequest.appendChild(curatorItemRight)
 
             let curItemImgClose = document.createElement('img')
@@ -322,7 +322,7 @@ function btnLdFile(selector, arr) {
 //
 //            let curatorItemRight = document.createElement('a')
 //            curatorItemRight.setAttribute('href', '#modal_closeFromMe')
-//            curatorItemRight.classList.add('curator_item_right')
+//            curatorItemRight.classList.add('')
 //            curatorForRequest.appendChild(curatorItemRight)
 //
 //            let curItemImgClose = document.createElement('img')
