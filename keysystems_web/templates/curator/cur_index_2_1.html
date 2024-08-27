@@ -5,10 +5,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     {% load static %}
+    <link rel="stylesheet" href="{% static 'site/css/tabs.css' %}">
     <link rel="stylesheet" href="{% static 'site/css/basic_style.css' %}">
     <link rel="stylesheet" href="{% static 'site/css/sidenav.css' %}">
     <link rel="stylesheet" href="{% static 'site/css/modal_create_request.css' %}">
     <link rel="stylesheet" href="{% static 'site/css/style.css' %}">
+    <link rel="stylesheet" href="{% static 'site/css/media.css' %}">
     <link rel="stylesheet" href="{% static 'site/css/media.css' %}">
     <title>Личный кабинет КСЯ</title>
 </head>
@@ -218,6 +220,8 @@
     let addFile2 = "{% static 'site/img/addFile2.svg' %}"
     // картинка отправить сообщение
     let sentMsg = "{% static 'site/img/sentMsg.svg' %}"
+
+    let curatorUser = true
 
     </script>
 

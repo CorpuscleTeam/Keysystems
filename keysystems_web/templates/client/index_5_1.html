@@ -5,6 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     {% load static %}
+    <link rel="stylesheet" href="{% static 'site/css/tabs.css' %}">
     <link rel="stylesheet" href="{% static 'site/css/basic_style.css' %}">
     <link rel="stylesheet" href="{% static 'site/css/sidenav.css' %}">
     <link rel="stylesheet" href="{% static 'site/css/modal_create_request.css' %}">
@@ -30,7 +31,8 @@
         </div>
         <!-- <a class="btn_back" href="http://ksykt.ru/"><button>&larr; Назад</button></a> -->
         <div class="header_mobile_client_burger">
-            <a href="#" data-target="slide-out" class="sidenav-trigger"><i class="material-icons"><img src="{% static 'site/img/burger.svg' %}" alt=""></i></a>
+            <a href="#" data-target="slide-out" class="sidenav-trigger"><i class="material-icons"><img
+                        src="{% static 'site/img/burger.svg' %}" alt=""></i></a>
         </div>
     </header>
 
@@ -231,6 +233,7 @@
         let link = "{% static 'site/img/close-large.svg' %}"
         let imgLink = "{% static 'site/img/close-large.svg' %}"
         let linkAddFile = "{% static 'site/img/addFile.svg' %}"
+        let imgPlus = "{% static 'site/img/plus.svg' %}"
 
         // переменная "выбор ПО"
         let soft = JSON.parse('{{ soft|escapejs }}')
@@ -264,7 +267,17 @@
 
         let userForOrder = {{ order_all_data|default:0 }}
 
+        // картинка добавить файл
+        let addFile2 = "{% static 'site/img/addFile2.svg' %}"
+        // картинка отправить сообщение
+        let sentMsg = "{% static 'site/img/sentMsg.svg' %}"
+        // картинка справа скачать файл
+        let fileDnl = "{% static 'site/img/download.svg' %}"
 
+        // картинка для списка кураторов
+        let curatorItemImg = "{% static 'site/img/user.svg' %}"
+
+        let curatorUser = false
 
     </script>
 
@@ -276,6 +289,8 @@
     <!-- <script type="text/javascript" src="{% static 'site/js/main_tech_support.js' %}"></script> -->
     <!-- <script type="text/javascript" src="{% static 'site/js/request_5_1.js' %}"></script> -->
     <script type="text/javascript" src="{% static 'site/js/cur_cards_request.js' %}"></script>
+    <script type="text/javascript" src="{% static 'site/js/enums.js' %}"></script>
+    <script type="text/javascript" src="{% static 'site/js/func_for_chat.js' %}"></script>
     <script type="text/javascript" src="{% static 'site/js/cur_main_5_3.js' %}"></script>
     <script type="text/javascript" src="{% static 'site/js/inn_institution.js' %}"></script>
     <!-- <script type="text/javascript" src="{% static 'site/js/test_soket.js' %}"></script> -->
