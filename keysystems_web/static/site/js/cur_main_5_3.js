@@ -275,6 +275,7 @@ document.querySelectorAll('.modal_cr_order').forEach(link => {
                     });
                 });
 
+
                 if (curatorUser == true) {
                     modalAddCurators('.curator_item_right')
                     modalAddCurators('.btn_add_curator')
@@ -298,6 +299,7 @@ document.querySelectorAll('.modal_cr_order').forEach(link => {
                         btnBackReq ()
                         modalBackToWork ()
                     }
+
                 }
                 // modalBackToWork ()
 
