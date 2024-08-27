@@ -12,6 +12,21 @@
         flex-direction: column;
     } */
 }
+@media screen and (max-width: 850px) {
+    .page_flex_menu {
+        padding: 10px;
+    }
+    .page_flex_body {
+        padding: 10px;
+    }
+    .page_news_header {
+        flex-direction: column;
+    }
+    .page_menu_li_flex {
+        padding-left: 15px;
+        padding-right: 15px;
+    }
+}
 @media screen and (max-width: 600px) {
     /* Авторизация */
     .header_start {

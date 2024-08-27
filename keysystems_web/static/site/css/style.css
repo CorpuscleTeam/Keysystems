@@ -267,12 +267,19 @@ input[placeholder] {
     color: var(--color_dark);
     margin-bottom: 20px;
 }
+.modal-content h5 {
+    font-size: 20px;
+    line-height: 22px;
+    font-weight: 400;
+    color: var(--color_dark);
+    margin-bottom: 10px;
+}
 .modal-content p {
     font-size: 16px;
     font-weight: 400;
     line-height: 21px;
     color: var(--color_dark);
-    margin-bottom: 30px;
+    margin-bottom: 20px;
 }
 
 /* Клиентская панель */
@@ -529,6 +536,10 @@ input[placeholder] {
     font-size: 28px;
     font-weight: 400;
     margin-bottom: 30px;
+    word-wrap: break-word;
+    word-break: break-word;
+    max-width: 100%;
+    line-height: 30px; 
 }
 
 
@@ -547,18 +558,26 @@ input[placeholder] {
 }
 
 /* Модальное окно "Создать заявку", "Настройки" */
-.mod_request_form p, .mod_settings_form p {
+.mod_request_form p, .mod_settings_form p, .select_PO p {
     display: flex;
     flex-direction: column;
 }
-.mod_request_form label, .mod_settings_form label {
+.mod_request_form label, .mod_settings_form label, .select_PO label {
     margin-bottom: 6px;
 }
-.mod_request_form select, .mod_settings_form select {
+.mod_request_form select, .mod_settings_form select, .select_PO select {
     height: 37px;
     border: rgba(204, 204, 204, 1) 1px solid;
     font-family: "Oswald", sans-serif;
     padding-left: 10px;
+    margin-bottom: 20px;
+}
+select option {
+    height: 37px;
+    border-radius: 0;
+}
+select option:hover {
+    background-color: rgba(238, 238, 238, 1);
 }
 .mod_settings_form input {
     height: 37px;
@@ -680,17 +699,21 @@ textarea {
     font-size: 13px;
     color: rgba(153, 153, 153, 1);
 }
-.news_text_preview {
-    font-size: 16px;
-    line-height: 21px;
-    margin-bottom: 20px;
+.page_news_img img {
+    max-width: 580px;
+    width: 100%;
 }
-.news_text_preview {
+.news_text_preview, .page_news_content {
     font-size: 16px;
     font-weight: 400;
     width: 100%;
     white-space: normal;
     overflow-wrap: break-word;
+    word-wrap: break-word;
+    word-break: break-word;
+    max-width: 100%;
+    line-height: 21px;
+    margin-bottom: 20px;
 }
 .news_link_read {
     border: 2px solid var(--color_dark);
@@ -729,9 +752,9 @@ textarea {
 .page_4_2_btn_back {
     margin-bottom: 20px;
 }
-.page_news_content {
+/* .page_news_content {
     margin-bottom: 20px;
-}
+} */
 .page_4_2_btn_news_footer-flex {
     display: flex;
     justify-content: space-between;
@@ -1031,12 +1054,12 @@ textarea {
     display: flex;
     flex-direction: column;
 }
-.select_PO select {
+/* .select_PO select {
     height: 37px;
     border: 1px solid rgba(204, 204, 204, 1);
-    padding: 10px;
+    padding-left: 10px;
     margin-bottom: 20px;
-}
+} */
 
 /* стили вкладок */
 .tabs {
@@ -1057,7 +1080,7 @@ textarea {
     width: 100%;
     height: 1px; /* Толщина линии */
     background-color: rgba(200, 200, 200, 1); /* Цвет линии */
-    margin-top: 38px; 
+    margin-top: 37px; 
 }
 .tabs li {
     list-style: none;
@@ -1093,9 +1116,14 @@ textarea {
     justify-content: flex-end;
     max-width: 380px;
     width: 100%;
-    height: 440px;
+    height: 64vh;
+    flex-grow: 1;
+    /* max-height: 380px; */
+    /* height: 60%; */
     margin: 20px auto 0;
     padding: 10px;
+    box-sizing: border-box;
+    resize: none;
     
 }
 .chat_msg_item {
@@ -1121,12 +1149,14 @@ textarea {
     flex-direction: row-reverse;
 }
 .from_msg {
-    font-size: 12px;
-    line-height: 17px;
+    font-size: 12px !important;
+    line-height: 17px !important;
+    margin-bottom: 0 !important;
 }
 .time_msg {
-    color: rgba(153, 153, 153, 1);
-    font-size: 10px;
+    color: rgba(153, 153, 153, 1) !important;
+    font-size: 10px !important;
+    margin-bottom: 0 !important;
 }
 .msgFromHim .context_msg {
     background-color: rgba(238, 238, 238, 1);
@@ -1203,7 +1233,7 @@ textarea {
 
 /* Стиль для ползунка (thumb) полосы прокрутки */
 ::-webkit-scrollbar-thumb {
-    background-color: rgba(200, 200, 200, 1); /* Цвет ползунка */
+    background-color: rgba(200, 200, 200, 1);
     border-radius: 0;
 }
 
@@ -1212,6 +1242,9 @@ textarea {
     background-color: var(--color_green);
     width: 37px;
     height: 37px;
+}
+.btn_add_curator:hover {
+    background-color: rgba(110, 165, 10, 1);
 }
 .btn_end_curator {
     display: none;
@@ -1264,6 +1297,7 @@ textarea {
     padding-right: 6px;
     display: inline-block !important;
     text-transform: uppercase;
+    margin-bottom: 20px !important;
 }
 
 /* кнопка в МО "взять в работу" */

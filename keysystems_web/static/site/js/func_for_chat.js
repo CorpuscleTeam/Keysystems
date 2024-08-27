@@ -553,4 +553,72 @@ function changeStatusNewToWork() {
     })
 }
 
+function selectPO(selector, arr) {
+    for (let i=0; i<arr.length; i++) {
+        let optionPO = document.createElement('option')
+        optionPO.setAttribute('value', arr[i]['id'])
+        optionPO.innerHTML = arr[i]['title']
+        document.querySelector(selector).appendChild(optionPO)
+    }
+}
 
+// удаление кнопки для клиентской МО статус заявки
+function noBtnNewReq () {
+    let btnNewReq = document.querySelector('.btn_new_req')
+    btnNewReq.remove()
+}
+// кнопка "вернуть в работу"
+function btnBackReq () {
+    let linkBackReq = document.createElement('a')
+    linkBackReq.setAttribute('href', '#modalBackToWork')
+    document.querySelector('#tab1').appendChild(linkBackReq)
+
+    let btnBackReq = document.createElement('button')
+    btnBackReq.classList.add('status_work_req')
+    btnBackReq.classList.add('btn_req_p')
+    btnBackReq.innerHTML = 'Вернуть в работу'
+    linkBackReq.appendChild(btnBackReq)
+}
+// МО "вернуть в работу"
+function modalBackToWork () {
+    let modalBackToWork = document.createElement('div')
+    modalBackToWork.classList.add('modal')
+    modalBackToWork.setAttribute('id', 'modalBackToWork')
+
+    document.body.append(modalBackToWork)
+
+    let modalBackToWorkContent = document.createElement('div')
+    modalBackToWorkContent.classList.add('modal-content')
+    modalBackToWork.appendChild(modalBackToWorkContent)
+
+    let close = btnClose()
+    modalBackToWorkContent.appendChild(close)
+
+    let title = modalTitle('Возврат в работу')
+    modalBackToWorkContent.appendChild(title)
+
+    let text = document.createElement('p')
+    text.classList.add('mod_content_p')
+    modalBackToWorkContent.appendChild(text)
+
+    let form = document.createElement('form')
+    form.classList.add('enter_form')
+    form.setAttribute('id', 'formBackToWork')
+    form.setAttribute('method', 'post')
+    form.innerHTML = tokenForForm
+    modalBackToWorkContent.appendChild(form)
+
+    let description = document.createElement('p')
+    form.appendChild(description)
+
+    let labelDescription = document.createElement('label')
+    labelDescription.setAttribute('for', 'description')
+    labelDescription.classList.add('required')
+    labelDescription.innerHTML = `Комментарий`
+    description.appendChild(labelDescription)
+
+    let textAreaDescription = document.createElement('textarea')
+    textAreaDescription.setAttribute('name', 'description')
+    textAreaDescription.setAttribute('id', 'description')
+    description.appendChild(textAreaDescription)
+}

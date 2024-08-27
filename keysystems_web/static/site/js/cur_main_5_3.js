@@ -116,7 +116,7 @@ document.querySelectorAll('.modal_cr_order').forEach(link => {
                 window.userId = data.user_id
                 window.roomName = data.room
 
-//                создаём переменную для сокета
+                //                создаём переменную для сокета
                 // создаём переменную для сокета
                 window.chatSocket = 'null';
 
@@ -125,7 +125,7 @@ document.querySelectorAll('.modal_cr_order').forEach(link => {
                     <div class="modal1_img modal-close">
                         <img src="${imgLink}" alt="">
                     </div>
-                    <h4>${data.order.customer.title}</h4>
+                    <h5>${data.order.customer.title}</h5>
                     <p class="status_new_req status_req_p">Задача</p>
                     <ul class="tabs">
                         <li class="tab"><a href="#tab1">Описание</a></li>
@@ -156,7 +156,7 @@ document.querySelectorAll('.modal_cr_order').forEach(link => {
                         <h6 class="title_in_modal">Описание</h6>
                         <div class="text_in_modal">${data.order.text}</div>
                         <div class="files_in_modal"></div>
-                        <h6 class="title_in_modal">Исполнители</h6>
+                        <h6 class="title_in_modal title_of_curators_request">Исполнители</h6>
                         <div class="curators_of_request"></div>
                         <div class="btn_footer_request"></div>
 
@@ -214,11 +214,39 @@ document.querySelectorAll('.modal_cr_order').forEach(link => {
                 // Открываем модальное окно
                 M.Modal.getInstance(modalApplicationStatus).open();
 
+                // отображение вкладки "чат кураторов"
+                if (curatorUser == false) {
+                    let tabCuratorChat = document.querySelector('.tabs>li:nth-child(3)')
+
+                    if (tabCuratorChat) {
+                        tabCuratorChat.style.display = "none"
+                    }
+                }
+
+                // список ПО
+                if (curatorUser == false) {
+                    let selectPOClientTab = document.querySelector('.select_PO select')
+                    selectPOClientTab.style.display = "none"
+
+                    let textPOClientTab = document.createElement('p')
+                    textPOClientTab.classList.add('text_in_modal')
+                    textPOClientTab.innerHTML = data['order']['soft']['title']
+                    document.querySelector('.select_PO').appendChild(textPOClientTab)
+                } else {
+                    selectPO('#soft_in_chat', data['soft'])
+                }
+
+
                 // кнопка скачать файл
                 btnLdFile('.files_in_modal', data['order']['files'])
 
                 // исполнители
-                createCuratorsList('.curators_of_request', data['order']['curators'])
+                if (curatorUser == true) {
+                    createCuratorsList('.curators_of_request', data['order']['curators'])
+                } else {
+                    let titleOfCuratorsList = document.querySelector('.title_of_curators_request')
+                    titleOfCuratorsList.style.display = "none"
+                }
 
                 let client_chat = createChat('#client_chat', data.client_chat, data.user_id, BASE.CLIENT)
 
@@ -239,7 +267,7 @@ document.querySelectorAll('.modal_cr_order').forEach(link => {
                             if (chat) {
                                 chat.scrollTop = chat.scrollHeight
                             }
-                            
+
                         }
 
                         // Логируем ID открытой вкладки
@@ -247,19 +275,30 @@ document.querySelectorAll('.modal_cr_order').forEach(link => {
                     });
                 });
 
-                modalAddCurators('.curator_item_right')
-                modalAddCurators('.btn_add_curator')
-
-                if(data['order']['status'] == 'new') {
-                    changeStatusNewToWork()
-                    // data['order']['status'] = 'active'
-                } else if (data['order']['status'] == 'active') {
-                    let btnElem = document.querySelector('.btn_work_req')
-                    let statusElem = document.querySelector('.status_work_req')
-                    btnElem.addEventListener('click', function() {
-                        changeStatusWorkToEnd(btnElem, statusElem)
-                    })
+                if (curatorUser == true) {
+                    modalAddCurators('.curator_item_right')
+                    modalAddCurators('.btn_add_curator')
                 }
+
+
+                if (curatorUser == true) {
+                    if (data['order']['status'] == 'new') {
+                        changeStatusNewToWork()
+                        // data['order']['status'] = 'active'
+                    } else if (data['order']['status'] == 'active') {
+                        let btnElem = document.querySelector('.btn_work_req')
+                        let statusElem = document.querySelector('.status_work_req')
+                        btnElem.addEventListener('click', function () {
+                            changeStatusWorkToEnd(btnElem, statusElem)
+                        })
+                    }
+                } else {
+                    noBtnNewReq ()
+                    if (data['order']['status'] == 'done') {
+                        btnBackReq ()
+                    }
+                }
+
 
                 // сокет. оставляем последним
                 initOrderSocket(data.room, data.user_id)
