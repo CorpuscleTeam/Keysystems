@@ -410,8 +410,8 @@ function modalAddCurators(selector) {
                 // console.log(modalInstance)
 
                 // modalInstance.innerHTML = ''
-                
-                
+
+
                 let oldModal = document.querySelector('#modal_add_curator')
                 oldModal.innerHTML = ''
 
@@ -554,7 +554,7 @@ function changeStatusNewToWork() {
 }
 
 function selectPO(selector, arr) {
-    for (let i=0; i<arr.length; i++) {
+    for (let i = 0; i < arr.length; i++) {
         let optionPO = document.createElement('option')
         optionPO.setAttribute('value', arr[i]['id'])
         optionPO.innerHTML = arr[i]['title']
@@ -563,13 +563,14 @@ function selectPO(selector, arr) {
 }
 
 // удаление кнопки для клиентской МО статус заявки
-function noBtnNewReq () {
+function noBtnNewReq() {
     let btnNewReq = document.querySelector('.btn_new_req')
     btnNewReq.remove()
 }
 // кнопка "вернуть в работу"
-function btnBackReq () {
+function btnBackReq() {
     let linkBackReq = document.createElement('a')
+    linkBackReq.classList.add('modal-trigger')
     linkBackReq.setAttribute('href', '#modalBackToWork')
     document.querySelector('#tab1').appendChild(linkBackReq)
 
@@ -580,7 +581,7 @@ function btnBackReq () {
     linkBackReq.appendChild(btnBackReq)
 }
 // МО "вернуть в работу"
-function modalBackToWork () {
+function modalBackToWork() {
     let modalBackToWork = document.createElement('div')
     modalBackToWork.classList.add('modal')
     modalBackToWork.setAttribute('id', 'modalBackToWork')
@@ -599,6 +600,7 @@ function modalBackToWork () {
 
     let text = document.createElement('p')
     text.classList.add('mod_content_p')
+    text.innerHTML = 'Для возврата в работу оставьте комментарий. Опишите что еще нужно доработать.'
     modalBackToWorkContent.appendChild(text)
 
     let form = document.createElement('form')
@@ -621,4 +623,23 @@ function modalBackToWork () {
     textAreaDescription.setAttribute('name', 'description')
     textAreaDescription.setAttribute('id', 'description')
     description.appendChild(textAreaDescription)
+
+    let footerDescription = document.createElement('div')
+    footerDescription.classList.add('mod_support_flex')
+    form.appendChild(footerDescription)
+
+    let btnDescriptionCancel = document.createElement('a')
+    btnDescriptionCancel.classList.add('btn_support_cancel')
+    btnDescriptionCancel.classList.add('modal-close')
+    btnDescriptionCancel.innerHTML = `Отмена`
+    footerDescription.appendChild(btnDescriptionCancel)
+
+    let btnDescriptionSubmit = document.createElement('button')
+    btnDescriptionSubmit.setAttribute('id', 'btnDescriptionSubmit')
+    btnDescriptionSubmit.classList.add('btn_support_submit')
+    btnDescriptionSubmit.innerHTML = `Вернуть в работу`
+    footerDescription.appendChild(btnDescriptionSubmit)
+
+     // Инициализация модального окна Materialize после добавления в DOM
+    M.Modal.init(modalBackToWork);
 }

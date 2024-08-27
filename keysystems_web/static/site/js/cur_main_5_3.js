@@ -296,8 +296,10 @@ document.querySelectorAll('.modal_cr_order').forEach(link => {
                     noBtnNewReq ()
                     if (data['order']['status'] == 'done') {
                         btnBackReq ()
+                        modalBackToWork ()
                     }
                 }
+                // modalBackToWork ()
 
 
                 // сокет. оставляем последним
