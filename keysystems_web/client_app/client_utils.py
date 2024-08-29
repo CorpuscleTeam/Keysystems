@@ -161,6 +161,8 @@ def form_processing(request: HttpRequest) -> None:
                 filename = fs.save(file_name, uploaded_file)  # Используем только имя файла
                 file_url = fs.url(filename)  # Получаем URL файла
 
+                log_error(f'file_url: {len(file_url)} {file_url}', wt=False)
+
                 m.DownloadedFile.objects.create(
                     user_ks=request.user,
                     order=new_order,
