@@ -1,74 +1,4 @@
 console.log('cur_main_5_3.js')
-/* 
-{
-    "order": {
-        "id": 4,
-        "from_user": {
-            "id": 3,
-            "full_name": "as df gh",
-            "username": "grudoav@gmail.com"
-        },
-        "customer": {
-            "id": 1,
-            "inn": 1234567890,
-            "district": {
-                "title": "Верхнеколымский район"
-            },
-            "title": "ООО plastic world"
-        },
-        "text": "Учет поступления платежей в бюджет",
-        "soft": {
-            "id": 1,
-            "title": "ПО 1",
-            "description": "Описание ПО 1",
-            "is_active": true
-        },
-        "topic": {
-            "id": 1,
-            "topic": "Сломалос(",
-            "is_active": true
-        },
-        "status": "new",
-        "id_str": "#00004",
-        "order_curators": [
-            {
-                "id": 1,
-                "user": {
-                    "id": 3,
-                    "full_name": "as df gh",
-                    "username": "grudoav@gmail.com"
-                }
-            },
-            
-        ],
-        "curators": "as df gh, as df gh, as df gh, as df gh",
-        "files": []
-    },
-    "chat": [
-        {
-            "type_msg": "msg",
-            "from_user": {
-                "id": 3,
-                "full_name": "as df gh",
-                "username": "grudoav@gmail.com"
-            },
-            "text": "привет",
-            "time": "07:14",
-            "chat": "client",
-            "file_url": null,
-            "file_size": "н/д",
-            "icon": null,
-            "filename": null
-        },
-        
-    ],
-    "user_id": 4,
-    "unv_msg_client": 3,
-    "unv_msg_curator": 4
-}
-    */
-
-
 
 document.addEventListener('DOMContentLoaded', function () {
     var elems = document.querySelectorAll('.modal');
@@ -85,6 +15,15 @@ modalApplicationStatus.appendChild(modalApplicationStatusContent)
 
 document.body.append(modalApplicationStatus)
 console.log('должно создатьс модальное окно')
+
+// МО добавить новых кураторов
+
+let modalAddCurator = document.createElement('div')
+modalAddCurator.setAttribute('id', 'modal_add_curator')
+modalAddCurator.classList.add('modal')
+// все что в МО заполняется через function modalAddCurators()
+
+document.body.append(modalAddCurator)
 
 // обработчик событий данные с бэка
 
@@ -250,9 +189,10 @@ document.querySelectorAll('.modal_cr_order').forEach(link => {
                 }
 
 
-
+                // список кураторов
                 if (curatorUser == true) {
-                   
+                    
+
                     modalAddCurators('.curator_item_right')
                     modalAddCurators('.btn_add_curator')
                 }
