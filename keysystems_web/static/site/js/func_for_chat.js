@@ -115,19 +115,22 @@ function createCuratorsList(selector, arr) {
             let curItemImgClose = document.createElement('img')
             curItemImgClose.setAttribute('src', link)
             curatorItemRight.appendChild(curItemImgClose)
+
+            // кнопка добавить испольнителей
+            let addCurator = document.createElement('a')
+            addCurator.setAttribute('href', '#modal_add_curator')
+            addCurator.classList.add('btn_add_curator')
+            addCurator.classList.add('modal-trigger')
+
+            document.querySelector(selector).appendChild(addCurator)
+
+            console.log(addCurator)
+
+            let addCuratorImg = document.createElement('img')
+            addCuratorImg.setAttribute('src', imgPlus)
+            addCurator.appendChild(addCuratorImg)
         }
     }
-
-    // кнопка добавить испольнителей
-    let addCurator = document.createElement('a')
-    addCurator.setAttribute('href', '#modal_add_curator')
-    addCurator.classList.add('btn_add_curator')
-    addCurator.classList.add('modal-trigger')
-    document.querySelector(selector).appendChild(addCurator)
-
-    let addCuratorImg = document.createElement('img')
-    addCuratorImg.setAttribute('src', imgPlus)
-    addCurator.appendChild(addCuratorImg)
 }
 
 // изменяет список кураторов
@@ -153,135 +156,157 @@ function clickAddCurator(delUser = null) {
 
 // создает модальное окно с выбором исполнителей
 function modalAddCurators(selector) {
+     // МО добавить новых кураторов
+
+     let modalAddCurator = document.createElement('div')
+     modalAddCurator.setAttribute('id', 'modal_add_curator')
+     modalAddCurator.classList.add('modal')
+     // все что в МО заполняется через function modalAddCurators()
+
+     document.body.append(modalAddCurator)
     // обработчик событий для открытия второго окна
-    document.querySelector(`#statusOrder ${selector}`).addEventListener('click', function () {
-        // Открываем второе модальное окно
-        let modalInstance = M.Modal.getInstance(document.querySelector('#modal_add_curator'));
-        modalInstance.open();
+    const target = document.querySelector(`#statusOrder ${selector}`)
+    if (target) {
+        target.addEventListener('click', function () {
+            // Открываем второе модальное окно
+            // let modalInstance = M.Modal.getInstance(document.querySelector('#modal_add_curator'));
+            // console.log(modalInstance)
+            // modalInstance.open();
 
-        // Выполняем запрос к бэку
-        fetch("get-curators", {
-            method: "POST", // Указываем метод POST
-            headers: {
-                "Content-Type": "application/json", // Указываем, что отправляем JSON данные
-                "X-CSRFToken": getCSFRT() // Добавляем CSRF токен, если используете Django
-            },
-            body: JSON.stringify({
-                order_id: window.orderId,
+
+            // Выполняем запрос к бэку
+            fetch("get-curators", {
+                method: "POST", // Указываем метод POST
+                headers: {
+                    "Content-Type": "application/json", // Указываем, что отправляем JSON данные
+                    "X-CSRFToken": getCSFRT() // Добавляем CSRF токен, если используете Django
+                },
+                body: JSON.stringify({
+                    order_id: window.orderId,
+                })
             })
-        })
-            .then(response => response.json())
-            .then(data => {
-                console.log('data')
-                console.log(data)
+                .then(response => response.json())
+                .then(data => {
+                    console.log('data')
+                    console.log(data)
 
-                // console.log(modalInstance)
+                    // console.log(modalInstance)
 
-                // modalInstance.innerHTML = ''
-
-
-                let oldModal = document.querySelector('#modal_add_curator')
-                oldModal.innerHTML = ''
-
-                // if (oldModal) {
-                //     // Если модальное окно существует, удаляем его
-                //     // oldModal.remove();
-                //     console.log('modalAddCurator1111')
-                //     modalInstance.innerHTML = ''
-                // }
-
-                let modalAddCuratorContent = document.createElement('div')
-                modalAddCuratorContent.classList.add('modal-content')
-                modalAddCurator.appendChild(modalAddCuratorContent)
-
-                let modalAddCuratorClose = btnClose()
-                modalAddCuratorContent.appendChild(modalAddCuratorClose)
+                    // modalInstance.innerHTML = ''
 
 
-                if (selector == '.btn_add_curator') {
-                    let modalAddCuratorTitle = modalTitle('Добавить исполнителя')
-                    modalAddCuratorContent.appendChild(modalAddCuratorTitle)
-                } else {
-                    let modalAddCuratorTitle = modalTitle('Снять с себя задачу')
-                    modalAddCuratorContent.appendChild(modalAddCuratorTitle)
+                    let oldModal = document.querySelector('#modal_add_curator')
+                    oldModal.innerHTML = ''
 
-                    let text = document.createElement('p')
-                    text.innerHTML = 'Для того чтобы снять с себя задачу, вам необходимо назничить кого другого на роль исполнителя.'
-                    modalAddCuratorContent.appendChild(text)
-                }
+                    // if (oldModal) {
+                    //     // Если модальное окно существует, удаляем его
+                    //     // oldModal.remove();
+                    //     console.log('modalAddCurator1111')
+                    //     modalInstance.innerHTML = ''
+                    // }
 
-                // Форма
-                let formAddCurator = document.createElement('form')
-                formAddCurator.classList.add('mod_request_form')
-                formAddCurator.classList.add('enter_form')
-                formAddCurator.setAttribute('id', 'form_add_curator')
-                formAddCurator.setAttribute('method', 'post')
-                formAddCurator.innerHTML = getCSFRT()
-                modalAddCuratorContent.appendChild(formAddCurator)
+                    let modalAddCuratorContent = document.createElement('div')
+                    modalAddCuratorContent.classList.add('modal-content')
+                    modalAddCurator.appendChild(modalAddCuratorContent)
 
-                // Выбрать исполнителя
-                let addCurator = document.createElement('p')
-                // addCurator.id = 'test-id-addCurator'
-                formAddCurator.appendChild(addCurator)
+                    let modalAddCuratorClose = btnClose()
+                    modalAddCuratorContent.appendChild(modalAddCuratorClose)
 
-                let labelAddCurator = document.createElement('label')
-                labelAddCurator.setAttribute('for', 'add_curator')
-                labelAddCurator.classList.add('required')
-                labelAddCurator.innerHTML = `Выберите исполнителя`
-                addCurator.appendChild(labelAddCurator)
 
-                let selectAddCurator = document.createElement('select')
-                selectAddCurator.setAttribute('name', 'add_curator')
-                selectAddCurator.setAttribute('id', 'add_curator_1')
-                addCurator.appendChild(selectAddCurator)
+                    if (selector == '.btn_add_curator') {
+                        let modalAddCuratorTitle = modalTitle('Добавить исполнителя')
+                        modalAddCuratorContent.appendChild(modalAddCuratorTitle)
+                    } else {
+                        let modalAddCuratorTitle = modalTitle('Снять с себя задачу')
+                        modalAddCuratorContent.appendChild(modalAddCuratorTitle)
 
-                // добавить цикл с вариантами выбора
-                console.log('data.length')
-                console.log(data.length)
-                for (let i = 0; i < data.length; i++) {
-                    console.log(data[i])
-                    let optionAddCurator = document.createElement('option')
-                    optionAddCurator.setAttribute('value', data[i]['id'])
-                    optionAddCurator.innerHTML = data[i]['full_name']
-                    selectAddCurator.appendChild(optionAddCurator)
-                }
+                        let text = document.createElement('p')
+                        text.innerHTML = 'Для того чтобы снять с себя задачу, вам необходимо назничить кого другого на роль исполнителя.'
+                        modalAddCuratorContent.appendChild(text)
+                    }
 
-                // футер-кнопки
-                let footerAddCurator = document.createElement('div')
-                footerAddCurator.classList.add('mod_support_flex')
-                modalAddCuratorContent.appendChild(footerAddCurator)
+                    // Форма
+                    let formAddCurator = document.createElement('form')
+                    formAddCurator.classList.add('mod_request_form')
+                    formAddCurator.classList.add('enter_form')
+                    formAddCurator.setAttribute('id', 'form_add_curator')
+                    formAddCurator.setAttribute('method', 'post')
+                    formAddCurator.innerHTML = getCSFRT()
+                    modalAddCuratorContent.appendChild(formAddCurator)
 
-                let btnAddCuratorCancel = document.createElement('a')
-                btnAddCuratorCancel.classList.add('btn_support_cancel')
-                btnAddCuratorCancel.innerHTML = `Отмена`
-                footerAddCurator.appendChild(btnAddCuratorCancel)
+                    // Выбрать исполнителя
+                    let addCurator = document.createElement('p')
+                    // addCurator.id = 'test-id-addCurator'
+                    formAddCurator.appendChild(addCurator)
 
-                let btnAddCuratorSubmit = document.createElement('button')
-                btnAddCuratorSubmit.setAttribute('id', 'btnAddCurator')
-                btnAddCuratorSubmit.classList.add('btn_support_submit')
-                // btnAddCuratorSubmit.innerHTML = `Добавить`
+                    let labelAddCurator = document.createElement('label')
+                    labelAddCurator.setAttribute('for', 'add_curator')
+                    labelAddCurator.classList.add('required')
+                    labelAddCurator.innerHTML = `Выберите исполнителя`
+                    addCurator.appendChild(labelAddCurator)
 
-                let delUser = null
-                if (selector == '.btn_add_curator') {
-                    btnAddCuratorSubmit.innerHTML = `Добавить`
-                } else {
-                    btnAddCuratorSubmit.innerHTML = `Подтвердить`
-                    delUser = window.userId
-                }
-                footerAddCurator.appendChild(btnAddCuratorSubmit)
+                    let selectAddCurator = document.createElement('select')
+                    selectAddCurator.setAttribute('name', 'add_curator')
+                    selectAddCurator.setAttribute('id', 'add_curator_1')
+                    addCurator.appendChild(selectAddCurator)
 
-                clickAddCurator(delUser)
-            })
-            .catch(error => console.error('Error:', error));
-    });
+                    // добавить цикл с вариантами выбора
+                    console.log('data.length')
+                    console.log(data.length)
+                    for (let i = 0; i < data.length; i++) {
+                        console.log(data[i])
+                        let optionAddCurator = document.createElement('option')
+                        optionAddCurator.setAttribute('value', data[i]['id'])
+                        optionAddCurator.innerHTML = data[i]['full_name']
+                        selectAddCurator.appendChild(optionAddCurator)
+                    }
+
+                    // футер-кнопки
+                    let footerAddCurator = document.createElement('div')
+                    footerAddCurator.classList.add('mod_support_flex')
+                    modalAddCuratorContent.appendChild(footerAddCurator)
+
+                    let btnAddCuratorCancel = document.createElement('a')
+                    btnAddCuratorCancel.classList.add('btn_support_cancel')
+                    btnAddCuratorCancel.innerHTML = `Отмена`
+                    footerAddCurator.appendChild(btnAddCuratorCancel)
+
+                    let btnAddCuratorSubmit = document.createElement('button')
+                    btnAddCuratorSubmit.setAttribute('id', 'btnAddCurator')
+                    btnAddCuratorSubmit.classList.add('btn_support_submit')
+                    // btnAddCuratorSubmit.innerHTML = `Добавить`
+
+                    let delUser = null
+                    if (selector == '.btn_add_curator') {
+                        btnAddCuratorSubmit.innerHTML = `Добавить`
+                    } else {
+                        btnAddCuratorSubmit.innerHTML = `Подтвердить`
+                        delUser = window.userId
+                    }
+                    footerAddCurator.appendChild(btnAddCuratorSubmit)
+
+                    clickAddCurator(delUser)
+                })
+                .catch(error => console.error('Error:', error));
+        });
+    }
+    // document.querySelector(`#statusOrder ${selector}`).
 }
 
 // кнопка "взять в работу" - изменение статуса
 function status_btn(status) {
+    let oldStatus = document.querySelector('#mark_status p')
+    if (oldStatus) {
+        oldStatus.remove()
+    }
     let text_status = document.createElement('p')
     text_status.classList.add('status_req_p')
     document.querySelector('#mark_status').appendChild(text_status)
 
+    let oldBtn = document.querySelector('#btn_mark_status a')
+    if (oldBtn) {
+        oldBtn.remove()
+    }
     let link_status = document.createElement('a')
     document.querySelector('#btn_mark_status').appendChild(link_status)
 
@@ -331,6 +356,12 @@ function status_btn(status) {
 
         btn_status.style.display = 'none'
     }
+
+    // изменение статуса
+    document.querySelector('#btn_mark_status button').addEventListener('click', function () {
+        let newStatus = this.getAttribute('data-newStatus')
+        sendChangeStatus(newStatus)
+    })
 }
 
 // сокет - отправяется новый статус на бэк
@@ -343,11 +374,7 @@ function sendChangeStatus(newStatus) {
     }))
 }
 
-// изменение статуса
-document.querySelector('#btn_mark_status button').addEventListener('click', function() {
-    let newStatus = this.getAttribute('data-newStatus')
-    sendChangeStatus(newStatus)
-})
+
 
 // функция создает сообщения
 function createMsg(ObjMsg, userId, withHeader = true) {
@@ -432,7 +459,7 @@ function getCSFRT() {
     return cookieValue;
 }
 
-    // !!_КОРРЕКТИРУЕТСЯ
+// !!_КОРРЕКТИРУЕТСЯ
 // функция для кнопки "завершить работу" и изменение статуса
 // function changeStatusWorkToEnd(btnElem, statusElem) {
 //     statusElem.classList.replace('status_work_req', 'status_end_req')
@@ -452,36 +479,36 @@ function getCSFRT() {
 //     }))
 // }
 
-    // !!_КОРРЕКТИРУЕТСЯ
+// !!_КОРРЕКТИРУЕТСЯ
 // функция для кнопки "взять в работу" и изменение статуса
 // function changeStatusNewToWork() {
 //     document.querySelector('.btn_new_req').addEventListener('click', sendChangeStatus('active')
-        // {
-        // let statusElem = document.querySelector('.status_new_req')
-        // let btnElem = this
+// {
+// let statusElem = document.querySelector('.status_new_req')
+// let btnElem = this
 
-        // statusElem.classList.replace('status_new_req', 'status_work_req')
-        // statusElem.textContent = 'в работе'
+// statusElem.classList.replace('status_new_req', 'status_work_req')
+// statusElem.textContent = 'в работе'
 
-        // btnElem.classList.replace('btn_new_req', 'btn_work_req')
-        // btnElem.textContent = 'Завершить работу'
+// btnElem.classList.replace('btn_new_req', 'btn_work_req')
+// btnElem.textContent = 'Завершить работу'
 
-        // btnElem.removeEventListener('click', changeStatusNewToWork)
-        // btnElem.addEventListener('click', function () {
-        //     changeStatusWorkToEnd(btnElem, statusElem)
-        // })
+// btnElem.removeEventListener('click', changeStatusNewToWork)
+// btnElem.addEventListener('click', function () {
+//     changeStatusWorkToEnd(btnElem, statusElem)
+// })
 
-        // window.chatSocket.send(JSON.stringify({
-        //     'event': 'edit_status',
-        //     'room_name': window.roomName,
-        //     'status': 'active',
-        //     'order_id': window.orderId,
-        // }))
-        // }
+// window.chatSocket.send(JSON.stringify({
+//     'event': 'edit_status',
+//     'room_name': window.roomName,
+//     'status': 'active',
+//     'order_id': window.orderId,
+// }))
+// }
 //     )
 // }
 
-    // !!_КОРРЕКТИРУЕТСЯ
+// !!_КОРРЕКТИРУЕТСЯ
 // кнопка "взять в работу" изменение класса и содержимого
 // function btn_mark_status (status) {
 //     let btn_mark_status = document.querySelector('#btn_mark_status')
@@ -497,14 +524,14 @@ function getCSFRT() {
 //     }
 // }
 
-    // !!_КОРРЕКТИРУЕТСЯ
+// !!_КОРРЕКТИРУЕТСЯ
 // функция меняет кнопку "взять в работу"
 // function newStatusBtn(newStatus) {
 //     let statusElem = document.querySelector('#mark_status')
 //     let btnElem = document.querySelector('#btn_mark_status')
 
 //     if (newStatus == 'active') {
-       
+
 //         statusElem.classList.replace('status_new_req', 'status_work_req')
 //         statusElem.textContent = 'в работе'
 
@@ -632,7 +659,7 @@ function initOrderSocket(roomName, userId) {
         console.log(data)
         let withHeader = true
 
-        if (data.message.type_msg == 'msg') {
+        if (data.type == 'msg') {
             console.log(BASE.CLIENT)
             if (data.message.chat == BASE.CLIENT) {
                 if (data.message.from_user.id == window.lastMsgForClientChat) {
@@ -662,7 +689,7 @@ function initOrderSocket(roomName, userId) {
         else if (data.type == 'edit_curator') {
             createCuratorsList('.curators_of_request', data.curators)
         }
-        else if (data.type == 'status') {
+        else if (data.type == 'edit_status') {
             status_btn(data.status)
         }
     };
