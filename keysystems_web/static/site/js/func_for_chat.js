@@ -18,228 +18,14 @@ function modalTitle(title) {
     return ModalRequestH
 }
 
-// функция создает сообщения
-function createMsg(ObjMsg, userId, withHeader = true) {
-    let newMsg = document.createElement('div')
-    newMsg.classList.add('msg')
-    if (userId == ObjMsg['from_user']['id']) {
-        newMsg.classList.add('msgFromMe')
-    } else {
-        newMsg.classList.add('msgFromHim')
-    }
-
-    if (withHeader == true) {
-        let headerMsg = document.createElement('div')
-        headerMsg.classList.add('header_msg')
-        newMsg.appendChild(headerMsg)
-
-        let fromMsg = document.createElement('p')
-        fromMsg.classList.add('from_msg')
-        fromMsg.innerHTML = ObjMsg['from_user']['full_name']
-        headerMsg.appendChild(fromMsg)
-
-        let timeMsg = document.createElement('p')
-        timeMsg.classList.add('time_msg')
-        timeMsg.innerHTML = ObjMsg['time']
-        headerMsg.appendChild(timeMsg)
-    }
-
-    let contextMsg = document.createElement('div')
-    contextMsg.classList.add('context_msg')
-    contextMsg.innerHTML = ObjMsg['text']
-    newMsg.appendChild(contextMsg)
-
-    return newMsg
-}
-
-// функция создает чат
-function createChat(selector, arr_message, userId, chatType) {
-    let lastUser = 0
-    let chat_message = document.createElement('div')
-    chat_message.classList.add('chat_msg_item')
-    if (chatType == BASE.CLIENT) {
-        chat_message.setAttribute('id', idOfChat.clientChat)
-    } else {
-        chat_message.setAttribute('id', idOfChat.curatorChat)
-    }
-
-    // chat_message.setAttribute('id', `area_chat_${arr_message[0]['chat']}`)
-    for (let i = 0; i < arr_message.length; i++) {
-        let withHeader = true
-        if (i > 0 && arr_message[i]['from_user']['id'] == arr_message[i - 1]['from_user']['id']) {
-            withHeader = false
-        }
-        let newMsg = createMsg(arr_message[i], userId, withHeader)
-        chat_message.appendChild(newMsg)
-        lastUser = arr_message[i]['from_user']['id']
-    }
-
-    // let fdf = document.querySelector(selector);
-    // fdf.appendChild(chat_message);
-
-    // return chat_message
-    // chat_message.scrollTop = chat_message.scrollHeight;
-    document.querySelector(selector).appendChild(chat_message)
-}
-
-
-// функция для списка кураторов
-function createCuratorsList(selector, arr) {
+// создает список ПО для кураторской панели
+function selectPO(selector, arr) {
     for (let i = 0; i < arr.length; i++) {
-        let curatorForRequest = document.createElement('div')
-        curatorForRequest.classList.add('curator_item')
-        document.querySelector(selector).appendChild(curatorForRequest)
-
-        let curatorItemLeft = document.createElement('div')
-        curatorItemLeft.classList.add('curator_item_left')
-        curatorForRequest.appendChild(curatorItemLeft)
-
-        let curItemImg = document.createElement('img')
-        curItemImg.setAttribute('src', curatorItemImg)
-        curatorItemLeft.appendChild(curItemImg)
-
-        let curatorUser = document.createElement('div')
-        curatorUser.classList.add('curator_item_center')
-        curatorUser.innerHTML = arr[i]['full_name']
-        curatorForRequest.appendChild(curatorUser)
-
-        if (arr[i]['id'] == window.userId) {
-            let userMe = document.createElement('span')
-            userMe.innerHTML = ` (Я)`
-            curatorUser.append(userMe)
-
-            let curatorItemRight = document.createElement('a')
-            curatorItemRight.setAttribute('href', '#modal_add_curator')
-            curatorItemRight.classList.add('')
-            curatorForRequest.appendChild(curatorItemRight)
-
-            let curItemImgClose = document.createElement('img')
-            curItemImgClose.setAttribute('src', link)
-            curatorItemRight.appendChild(curItemImgClose)
-        }
+        let optionPO = document.createElement('option')
+        optionPO.setAttribute('value', arr[i]['id'])
+        optionPO.innerHTML = arr[i]['title']
+        document.querySelector(selector).appendChild(optionPO)
     }
-
-    // кнопка добавить испольнителей
-    let addCurator = document.createElement('a')
-    addCurator.setAttribute('href', '#modal_add_curator')
-    addCurator.classList.add('btn_add_curator')
-    document.querySelector(selector).appendChild(addCurator)
-
-    let addCuratorImg = document.createElement('img')
-    addCuratorImg.setAttribute('src', imgPlus)
-    addCurator.appendChild(addCuratorImg)
-}
-
-
-function initOrderSocket(roomName, userId) {
-    // const roomName = JSON.parse(document.getElementById('room-name').textContent);
-
-    window.chatSocket = new WebSocket(
-        'ws://'
-        + window.location.host
-        + '/ws/chat/'
-        + roomName
-        + '/'
-    );
-    //    window.chatSocket = chatSocket
-    // получение сообщений
-    window.chatSocket.onmessage = function (e) {
-        const data = JSON.parse(e.data);
-
-        console.log('window.chatSocket.onmessage')
-        console.log(data)
-        let withHeader = true
-        // if (lastUser == data.message.from_user.id) {
-        //     withHeader = false
-        // }
-        // let newMsg = createMsg(data.message, userId, withHeader)
-        // let chat_message = document.querySelector('.chat_msg_item')
-        // chat_message.appendChild(newMsg)
-
-        if (data.message.type_msg == 'msg') {
-            console.log(BASE.CLIENT)
-            if (data.message.chat == BASE.CLIENT) {
-                if (data.message.from_user.id == window.lastMsgForClientChat) {
-                    withHeader = false
-                }
-                let newMsg = createMsg(data.message, userId, withHeader)
-                let chat_message = document.querySelector('#client_chat_item')
-                chat_message.appendChild(newMsg)
-
-                // Прокрутка вниз при получении нового сообщения
-                chat_message.scrollTop = chat_message.scrollHeight;
-
-                window.lastMsgForClientChat = data.message.from_user.id
-            } else {
-                if (data.message.from_user.id == window.lastMsgForCuratorChat) {
-                    withHeader = false
-                }
-                let newMsg = createMsg(data.message, userId, withHeader)
-                let chat_message = document.querySelector('#curator_chat_item')
-                chat_message.appendChild(newMsg)
-
-                // Прокрутка вниз при получении нового сообщения
-                chat_message.scrollTop = chat_message.scrollHeight;
-
-                window.lastMsgForCuratorChat = data.message.from_user.id
-                console.log('end')
-            }
-        }
-
-        else if (data.type == 'edit_curator') {
-            createCuratorsList('.curators_of_request', data.curators)
-        }
-
-        // lastUser = data.message.from_user.id
-    };
-
-    window.chatSocket.onclose = function (e) {
-        console.error('Chat socket closed unexpectedly');
-    };
-
-    // отправка сообщений client_chat
-    document.querySelector('#client-msg-input').focus();
-    document.querySelector('#client-msg-input').onkeyup = function (e) {
-        if (e.key === 'Enter') {  // enter, return
-            document.querySelector('#client-msg-submit').click();
-        }
-    };
-
-    document.querySelector('#client-msg-submit').onclick = function (e) {
-        const messageInputDom = document.querySelector('#client-msg-input');
-        const message = messageInputDom.value;
-        window.chatSocket.send(JSON.stringify({
-            'event': 'msg',
-            'message': message,
-            'chat': 'client',
-            'tab': window.selectedTab,
-            'order_id': window.orderId,
-            'user_id': window.userId
-        }));
-        messageInputDom.value = '';
-    };
-
-    // отправка сообщений curator_chat
-    document.querySelector('#curator-msg-input').focus();
-    document.querySelector('#curator-msg-input').onkeyup = function (e) {
-        if (e.key === 'Enter') {  // enter, return
-            document.querySelector('#curator-msg-submit').click();
-        }
-    };
-
-    document.querySelector('#curator-msg-submit').onclick = function (e) {
-        const messageInputDom = document.querySelector('#curator-msg-input');
-        const message = messageInputDom.value;
-        window.chatSocket.send(JSON.stringify({
-            'event': 'msg',
-            'message': message,
-            'chat': 'curator',
-            'tab': window.selectedTab,
-            'order_id': window.orderId,
-            'user_id': window.userId
-        }));
-        messageInputDom.value = '';
-    };
 }
 
 // для скачивания файлов (приложены к заявкам)
@@ -295,72 +81,54 @@ function btnLdFile(selector, arr) {
     }
 }
 
-//// функция для списка кураторов
-//function createCuratorsList(selector, arr) {
-//    for (let i = 0; i < arr.length; i++) {
-//        let curatorForRequest = document.createElement('div')
-//        curatorForRequest.classList.add('curator_item')
-//        document.querySelector(selector).appendChild(curatorForRequest)
-//
-//        let curatorItemLeft = document.createElement('div')
-//        curatorItemLeft.classList.add('curator_item_left')
-//        curatorForRequest.appendChild(curatorItemLeft)
-//
-//        let curItemImg = document.createElement('img')
-//        curItemImg.setAttribute('src', curatorItemImg)
-//        curatorItemLeft.appendChild(curItemImg)
-//
-//        let curatorUser = document.createElement('div')
-//        curatorUser.classList.add('curator_item_center')
-//        curatorUser.innerHTML = arr[i]['full_name']
-//        curatorForRequest.appendChild(curatorUser)
-//
-//        if (arr[i]['id'] == window.userId) {
-//            let userMe = document.createElement('span')
-//            userMe.innerHTML = ` (Я)`
-//            curatorUser.append(userMe)
-//
-//            let curatorItemRight = document.createElement('a')
-//            curatorItemRight.setAttribute('href', '#modal_closeFromMe')
-//            curatorItemRight.classList.add('')
-//            curatorForRequest.appendChild(curatorItemRight)
-//
-//            let curItemImgClose = document.createElement('img')
-//            curItemImgClose.setAttribute('src', link)
-//            curatorItemRight.appendChild(curItemImgClose)
-//        }
-//    }
-//
-//    // кнопка добавить испольнителей
-//    let addCurator = document.createElement('a')
-//    addCurator.setAttribute('href', '#modal_add_curator')
-//    addCurator.classList.add('btn_add_curator')
-//    document.querySelector(selector).appendChild(addCurator)
-//
-//    let addCuratorImg = document.createElement('img')
-//    addCuratorImg.setAttribute('src', imgPlus)
-//    addCurator.appendChild(addCuratorImg)
-//}
+// функция для списка кураторов
+function createCuratorsList(selector, arr) {
+    for (let i = 0; i < arr.length; i++) {
+        let curatorForRequest = document.createElement('div')
+        curatorForRequest.classList.add('curator_item')
+        document.querySelector(selector).appendChild(curatorForRequest)
 
+        let curatorItemLeft = document.createElement('div')
+        curatorItemLeft.classList.add('curator_item_left')
+        curatorForRequest.appendChild(curatorItemLeft)
 
-// вызывает токен безопасности
-function getCSFRT() {
-    let name = 'csrftoken'
-    let cookieValue = null;
-    if (document.cookie && document.cookie !== '') {
-        const cookies = document.cookie.split(';');
-        for (let i = 0; i < cookies.length; i++) {
-            const cookie = cookies[i].trim();
-            // Если это cookie с именем 'csrftoken', верните его значение
-            if (cookie.substring(0, name.length + 1) === (name + '=')) {
-                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-                break;
-            }
+        let curItemImg = document.createElement('img')
+        curItemImg.setAttribute('src', curatorItemImg)
+        curatorItemLeft.appendChild(curItemImg)
+
+        let curatorUser = document.createElement('div')
+        curatorUser.classList.add('curator_item_center')
+        curatorUser.innerHTML = arr[i]['full_name']
+        curatorForRequest.appendChild(curatorUser)
+
+        if (arr[i]['id'] == window.userId) {
+            let userMe = document.createElement('span')
+            userMe.innerHTML = ` (Я)`
+            curatorUser.append(userMe)
+
+            let curatorItemRight = document.createElement('a')
+            curatorItemRight.setAttribute('href', '#modal_add_curator')
+            curatorItemRight.classList.add('modal-trigger')
+            curatorItemRight.classList.add('curator_item_right')
+            curatorForRequest.appendChild(curatorItemRight)
+
+            let curItemImgClose = document.createElement('img')
+            curItemImgClose.setAttribute('src', link)
+            curatorItemRight.appendChild(curItemImgClose)
         }
     }
-    return cookieValue;
-}
 
+    // кнопка добавить испольнителей
+    let addCurator = document.createElement('a')
+    addCurator.setAttribute('href', '#modal_add_curator')
+    addCurator.classList.add('btn_add_curator')
+    addCurator.classList.add('modal-trigger')
+    document.querySelector(selector).appendChild(addCurator)
+
+    let addCuratorImg = document.createElement('img')
+    addCuratorImg.setAttribute('src', imgPlus)
+    addCurator.appendChild(addCuratorImg)
+}
 
 // изменяет список кураторов
 function clickAddCurator(delUser = null) {
@@ -508,59 +276,261 @@ function modalAddCurators(selector) {
     });
 }
 
+// кнопка "взять в работу" - изменение статуса
+function status_btn(status) {
+    let text_status = document.createElement('p')
+    text_status.classList.add('status_req_p')
+    document.querySelector('#mark_status').appendChild(text_status)
 
-// функция для кнопки "завершить работу" и изменение статуса
-function changeStatusWorkToEnd(btnElem, statusElem) {
-    statusElem.classList.replace('status_work_req', 'status_end_req')
-    statusElem.textContent = 'выполнено'
+    let link_status = document.createElement('a')
+    document.querySelector('#btn_mark_status').appendChild(link_status)
 
-    btnElem.classList.replace('btn_work_req', 'btn_end_req')
-    btnElem.textContent = 'завершено'
+    let btn_status = document.createElement('button')
+    btn_status.classList.add('btn_req_p')
+    link_status.appendChild(btn_status)
 
-    let btnAddCurator = document.querySelector('.btn_add_curator')
-    btnAddCurator.classList.replace('btn_add_curator', 'btn_end_curator')
+    if (curatorUser == true && status == 'new') {
+        text_status.classList.add('status_new_req')
+        text_status.innerHTML = 'Задача'
 
+        link_status.setAttribute('href', '#')
+
+        btn_status.classList.add('btn_new_req')
+        btn_status.innerHTML = 'Взять в работу'
+
+        btn_status.setAttribute('data-newStatus', 'active')
+    }
+    else if (curatorUser == true && status == 'active') {
+        text_status.classList.add('status_work_req')
+        text_status.innerHTML = 'В работе'
+
+        link_status.setAttribute('href', '#')
+
+        btn_status.classList.add('btn_work_req')
+        btn_status.innerHTML = 'Завершить работу'
+
+        btn_status.setAttribute('data-newStatus', 'done')
+    }
+    else if (curatorUser == false && status == 'done') {
+        text_status.classList.add('status_end_req')
+        text_status.innerHTML = 'Выполнено'
+
+        link_status.setAttribute('href', '#modalBackToWork')
+        link_status.classList.add('modal-trigger')
+
+        btn_status.classList.add('status_work_req')
+        btn_status.innerHTML = 'Вернуть в работу'
+
+        btn_status.setAttribute('data-newStatus', 'active')
+    }
+    else {
+        text_status.classList.add('status_end_req')
+        text_status.innerHTML = 'Выполнено'
+
+        link_status.setAttribute('href', '#')
+
+        btn_status.style.display = 'none'
+    }
+}
+
+// сокет - отправяется новый статус на бэк
+function sendChangeStatus(newStatus) {
     window.chatSocket.send(JSON.stringify({
         'event': 'edit_status',
         'room_name': window.roomName,
-        'status': 'done',
+        'status': newStatus,
         'order_id': window.orderId,
     }))
 }
-// функция для кнопки "взять в работу" и изменение статуса
-function changeStatusNewToWork() {
-    document.querySelector('.btn_new_req').addEventListener('click', function () {
-        let statusElem = document.querySelector('.status_new_req')
-        let btnElem = this
 
-        statusElem.classList.replace('status_new_req', 'status_work_req')
-        statusElem.textContent = 'в работе'
+// изменение статуса
+document.querySelector('#btn_mark_status button').addEventListener('click', function() {
+    let newStatus = this.getAttribute('data-newStatus')
+    sendChangeStatus(newStatus)
+})
 
-        btnElem.classList.replace('btn_new_req', 'btn_work_req')
-        btnElem.textContent = 'Завершить работу'
-
-        btnElem.removeEventListener('click', changeStatusNewToWork)
-        btnElem.addEventListener('click', function () {
-            changeStatusWorkToEnd(btnElem, statusElem)
-        })
-
-        window.chatSocket.send(JSON.stringify({
-            'event': 'edit_status',
-            'room_name': window.roomName,
-            'status': 'active',
-            'order_id': window.orderId,
-        }))
-    })
-}
-
-function selectPO(selector, arr) {
-    for (let i = 0; i < arr.length; i++) {
-        let optionPO = document.createElement('option')
-        optionPO.setAttribute('value', arr[i]['id'])
-        optionPO.innerHTML = arr[i]['title']
-        document.querySelector(selector).appendChild(optionPO)
+// функция создает сообщения
+function createMsg(ObjMsg, userId, withHeader = true) {
+    let newMsg = document.createElement('div')
+    newMsg.classList.add('msg')
+    if (userId == ObjMsg['from_user']['id']) {
+        newMsg.classList.add('msgFromMe')
+    } else {
+        newMsg.classList.add('msgFromHim')
     }
+
+    if (withHeader == true) {
+        let headerMsg = document.createElement('div')
+        headerMsg.classList.add('header_msg')
+        newMsg.appendChild(headerMsg)
+
+        let fromMsg = document.createElement('p')
+        fromMsg.classList.add('from_msg')
+        fromMsg.innerHTML = ObjMsg['from_user']['full_name']
+        headerMsg.appendChild(fromMsg)
+
+        let timeMsg = document.createElement('p')
+        timeMsg.classList.add('time_msg')
+        timeMsg.innerHTML = ObjMsg['time']
+        headerMsg.appendChild(timeMsg)
+    }
+
+    let contextMsg = document.createElement('div')
+    contextMsg.classList.add('context_msg')
+    contextMsg.innerHTML = ObjMsg['text']
+    newMsg.appendChild(contextMsg)
+
+    return newMsg
 }
+
+// функция создает чат
+function createChat(selector, arr_message, userId, chatType) {
+    let lastUser = 0
+    let chat_message = document.createElement('div')
+    chat_message.classList.add('chat_msg_item')
+    if (chatType == BASE.CLIENT) {
+        chat_message.setAttribute('id', idOfChat.clientChat)
+    } else {
+        chat_message.setAttribute('id', idOfChat.curatorChat)
+    }
+
+    // chat_message.setAttribute('id', `area_chat_${arr_message[0]['chat']}`)
+    for (let i = 0; i < arr_message.length; i++) {
+        let withHeader = true
+        if (i > 0 && arr_message[i]['from_user']['id'] == arr_message[i - 1]['from_user']['id']) {
+            withHeader = false
+        }
+        let newMsg = createMsg(arr_message[i], userId, withHeader)
+        chat_message.appendChild(newMsg)
+        lastUser = arr_message[i]['from_user']['id']
+    }
+
+    // let fdf = document.querySelector(selector);
+    // fdf.appendChild(chat_message);
+
+    // return chat_message
+    // chat_message.scrollTop = chat_message.scrollHeight;
+    document.querySelector(selector).appendChild(chat_message)
+}
+
+
+// вызывает токен безопасности
+function getCSFRT() {
+    let name = 'csrftoken'
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+            const cookie = cookies[i].trim();
+            // Если это cookie с именем 'csrftoken', верните его значение
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
+
+    // !!_КОРРЕКТИРУЕТСЯ
+// функция для кнопки "завершить работу" и изменение статуса
+// function changeStatusWorkToEnd(btnElem, statusElem) {
+//     statusElem.classList.replace('status_work_req', 'status_end_req')
+//     statusElem.textContent = 'выполнено'
+
+//     btnElem.classList.replace('btn_work_req', 'btn_end_req')
+//     btnElem.textContent = 'завершено'
+
+//     let btnAddCurator = document.querySelector('.btn_add_curator')
+//     btnAddCurator.classList.replace('btn_add_curator', 'btn_end_curator')
+
+//     window.chatSocket.send(JSON.stringify({
+//         'event': 'edit_status',
+//         'room_name': window.roomName,
+//         'status': 'done',
+//         'order_id': window.orderId,
+//     }))
+// }
+
+    // !!_КОРРЕКТИРУЕТСЯ
+// функция для кнопки "взять в работу" и изменение статуса
+// function changeStatusNewToWork() {
+//     document.querySelector('.btn_new_req').addEventListener('click', sendChangeStatus('active')
+        // {
+        // let statusElem = document.querySelector('.status_new_req')
+        // let btnElem = this
+
+        // statusElem.classList.replace('status_new_req', 'status_work_req')
+        // statusElem.textContent = 'в работе'
+
+        // btnElem.classList.replace('btn_new_req', 'btn_work_req')
+        // btnElem.textContent = 'Завершить работу'
+
+        // btnElem.removeEventListener('click', changeStatusNewToWork)
+        // btnElem.addEventListener('click', function () {
+        //     changeStatusWorkToEnd(btnElem, statusElem)
+        // })
+
+        // window.chatSocket.send(JSON.stringify({
+        //     'event': 'edit_status',
+        //     'room_name': window.roomName,
+        //     'status': 'active',
+        //     'order_id': window.orderId,
+        // }))
+        // }
+//     )
+// }
+
+    // !!_КОРРЕКТИРУЕТСЯ
+// кнопка "взять в работу" изменение класса и содержимого
+// function btn_mark_status (status) {
+//     let btn_mark_status = document.querySelector('#btn_mark_status')
+//     if(status == 'new') {
+//         btn_mark_status.classList.add('btn_new_req')
+//         btn_mark_status.innerHTML = 'Взять в работу'
+//     } else if (status == 'active') {
+//         btn_mark_status.classList.add('btn_work_req')
+//         btn_mark_status.innerHTML = 'Завершить работу'
+//     } else if (status == 'done') {
+//         btn_mark_status.classList.add('btn_end_req')
+//         btn_mark_status.style.display = 'none'
+//     }
+// }
+
+    // !!_КОРРЕКТИРУЕТСЯ
+// функция меняет кнопку "взять в работу"
+// function newStatusBtn(newStatus) {
+//     let statusElem = document.querySelector('#mark_status')
+//     let btnElem = document.querySelector('#btn_mark_status')
+
+//     if (newStatus == 'active') {
+       
+//         statusElem.classList.replace('status_new_req', 'status_work_req')
+//         statusElem.textContent = 'в работе'
+
+//         btnElem.classList.replace('btn_new_req', 'btn_work_req')
+//         btnElem.textContent = 'Завершить работу'
+
+//         btnElem.removeEventListener('click', changeStatusNewToWork)
+//         btnElem.addEventListener('click', function () {
+//             changeStatusWorkToEnd(btnElem, statusElem)
+//         })
+//     } else if (newStatus == 'done') {
+//         statusElem.classList.replace('status_work_req', 'status_end_req')
+//         statusElem.textContent = 'выполнено'
+
+//         btnElem.classList.replace('btn_work_req', 'btn_end_req')
+//         btnElem.textContent = 'завершено'
+
+//         let btnAddCurator = document.querySelector('.btn_add_curator')
+//         btnAddCurator.classList.replace('btn_add_curator', 'btn_end_curator')
+//     }
+
+// }
+// функция меняет стату заявки. отправка изменения статуса
+
+
+
 
 // удаление кнопки для клиентской МО статус заявки
 function noBtnNewReq() {
@@ -640,6 +610,107 @@ function modalBackToWork() {
     btnDescriptionSubmit.innerHTML = `Вернуть в работу`
     footerDescription.appendChild(btnDescriptionSubmit)
 
-     // Инициализация модального окна Materialize после добавления в DOM
+    // Инициализация модального окна Materialize после добавления в DOM
     M.Modal.init(modalBackToWork);
+}
+
+// создание сокета и все с ним функции
+function initOrderSocket(roomName, userId) {
+    window.chatSocket = new WebSocket(
+        'ws://'
+        + window.location.host
+        + '/ws/chat/'
+        + roomName
+        + '/'
+    );
+
+    // получение сообщений
+    window.chatSocket.onmessage = function (e) {
+        const data = JSON.parse(e.data);
+
+        console.log('window.chatSocket.onmessage')
+        console.log(data)
+        let withHeader = true
+
+        if (data.message.type_msg == 'msg') {
+            console.log(BASE.CLIENT)
+            if (data.message.chat == BASE.CLIENT) {
+                if (data.message.from_user.id == window.lastMsgForClientChat) {
+                    withHeader = false
+                }
+                let newMsg = createMsg(data.message, userId, withHeader)
+                let chat_message = document.querySelector('#client_chat_item')
+                chat_message.appendChild(newMsg)
+
+                // Прокрутка вниз при получении нового сообщения
+                chat_message.scrollTop = chat_message.scrollHeight;
+                window.lastMsgForClientChat = data.message.from_user.id
+            } else {
+                if (data.message.from_user.id == window.lastMsgForCuratorChat) {
+                    withHeader = false
+                }
+                let newMsg = createMsg(data.message, userId, withHeader)
+                let chat_message = document.querySelector('#curator_chat_item')
+                chat_message.appendChild(newMsg)
+
+                // Прокрутка вниз при получении нового сообщения
+                chat_message.scrollTop = chat_message.scrollHeight;
+                window.lastMsgForCuratorChat = data.message.from_user.id
+                console.log('end')
+            }
+        }
+        else if (data.type == 'edit_curator') {
+            createCuratorsList('.curators_of_request', data.curators)
+        }
+        else if (data.type == 'status') {
+            status_btn(data.status)
+        }
+    };
+    window.chatSocket.onclose = function (e) {
+        console.log('Chat socket closed unexpectedly');
+    };
+
+    // отправка сообщений client_chat
+    document.querySelector('#client-msg-input').focus();
+    document.querySelector('#client-msg-input').onkeyup = function (e) {
+        if (e.key === 'Enter') {  // enter, return
+            document.querySelector('#client-msg-submit').click();
+        }
+    };
+
+    document.querySelector('#client-msg-submit').onclick = function (e) {
+        const messageInputDom = document.querySelector('#client-msg-input');
+        const message = messageInputDom.value;
+        window.chatSocket.send(JSON.stringify({
+            'event': 'msg',
+            'message': message,
+            'chat': 'client',
+            'tab': window.selectedTab,
+            'order_id': window.orderId,
+            'user_id': window.userId
+        }));
+        messageInputDom.value = '';
+    };
+
+    // отправка сообщений curator_chat
+    document.querySelector('#curator-msg-input').focus();
+    document.querySelector('#curator-msg-input').onkeyup = function (e) {
+        if (e.key === 'Enter') {  // enter, return
+            document.querySelector('#curator-msg-submit').click();
+        }
+    };
+
+    document.querySelector('#curator-msg-submit').onclick = function (e) {
+        const messageInputDom = document.querySelector('#curator-msg-input');
+        const message = messageInputDom.value;
+        window.chatSocket.send(JSON.stringify({
+            'event': 'msg',
+            'message': message,
+            'chat': 'curator',
+            'tab': window.selectedTab,
+            'order_id': window.orderId,
+            'user_id': window.userId
+        }));
+        messageInputDom.value = '';
+    };
 }

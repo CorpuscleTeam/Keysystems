@@ -126,7 +126,7 @@ document.querySelectorAll('.modal_cr_order').forEach(link => {
                         <img src="${imgLink}" alt="">
                     </div>
                     <h5>${data.order.customer.title}</h5>
-                    <p class="status_new_req status_req_p">Задача</p>
+                    <div id="mark_status"></div>
                     <ul class="tabs">
                         <li class="tab"><a href="#tab1">Описание</a></li>
                         <li class="tab">
@@ -158,7 +158,7 @@ document.querySelectorAll('.modal_cr_order').forEach(link => {
                         <div class="files_in_modal"></div>
                         <h6 class="title_in_modal title_of_curators_request">Исполнители</h6>
                         <div class="curators_of_request"></div>
-                        <div class="btn_footer_request"></div>
+                        <div id="btn_mark_status"></div>
 
                     </div>
                     
@@ -203,8 +203,6 @@ document.querySelectorAll('.modal_cr_order').forEach(link => {
                             </div>
                         </div>
                     </div>
-                    
-                    <button class="btn_new_req btn_req_p">Взять в работу</button>
                 `;
 
                 // Инициализация вкладок Materialize
@@ -282,25 +280,28 @@ document.querySelectorAll('.modal_cr_order').forEach(link => {
                 }
 
 
-                if (curatorUser == true) {
-                    if (data['order']['status'] == 'new') {
-                        changeStatusNewToWork()
-                        // data['order']['status'] = 'active'
-                    } else if (data['order']['status'] == 'active') {
-                        let btnElem = document.querySelector('.btn_work_req')
-                        let statusElem = document.querySelector('.status_work_req')
-                        btnElem.addEventListener('click', function () {
-                            changeStatusWorkToEnd(btnElem, statusElem)
-                        })
-                    }
-                } else {
-                    noBtnNewReq ()
-                    if (data['order']['status'] == 'done') {
-                        btnBackReq ()
-                        modalBackToWork ()
-                    }
+                btn_mark_status (data['order']['status'])
 
-                }
+                    // !!_вернуться к этому!!
+                // if (curatorUser == true) {
+                //     if (data['order']['status'] == 'new') {
+                //         // changeStatusNewToWork()
+                //         // data['order']['status'] = 'active'
+                //     } else if (data['order']['status'] == 'active') {
+                //         let btnElem = document.querySelector('.btn_work_req')
+                //         let statusElem = document.querySelector('.status_work_req')
+                //         btnElem.addEventListener('click', function () {
+                //             changeStatusWorkToEnd(btnElem, statusElem)
+                //         })
+                //     }
+                // } else {
+                //     noBtnNewReq ()
+                //     if (data['order']['status'] == 'done') {
+                //         btnBackReq ()
+                //         modalBackToWork ()
+                //     }
+
+                // }
                 // modalBackToWork ()
 
 
