@@ -211,6 +211,9 @@ document.querySelectorAll('.modal_cr_order').forEach(link => {
 
                 // Открываем модальное окно
                 M.Modal.getInstance(modalApplicationStatus).open();
+                // M.Modal.getInstance(modalAddCurator).open();
+
+
 
                 // отображение вкладки "чат кураторов"
                 if (curatorUser == false) {
@@ -246,8 +249,22 @@ document.querySelectorAll('.modal_cr_order').forEach(link => {
                     titleOfCuratorsList.style.display = "none"
                 }
 
+
+
+                if (curatorUser == true) {
+                   
+                    modalAddCurators('.curator_item_right')
+                    modalAddCurators('.btn_add_curator')
+                }
+
+                // отображение статуса заявки (+кнопка в первой вкладке)
+                status_btn(data.order.status)
+
+
+                // !!_проперить надо ли?
                 let client_chat = createChat('#client_chat', data.client_chat, data.user_id, BASE.CLIENT)
 
+                // !!_проперить надо ли?
                 let curator_chat = createChat('#curator_chat', data.curator_chat, data.user_id, BASE.CURATOR)
 
                 // вкладки
@@ -274,15 +291,12 @@ document.querySelectorAll('.modal_cr_order').forEach(link => {
                 });
 
 
-                if (curatorUser == true) {
-                    modalAddCurators('.curator_item_right')
-                    modalAddCurators('.btn_add_curator')
-                }
 
 
-                btn_mark_status (data['order']['status'])
 
-                    // !!_вернуться к этому!!
+                // btn_mark_status (data['order']['status'])
+
+                // !!_вернуться к этому!!
                 // if (curatorUser == true) {
                 //     if (data['order']['status'] == 'new') {
                 //         // changeStatusNewToWork()
@@ -312,11 +326,4 @@ document.querySelectorAll('.modal_cr_order').forEach(link => {
     });
 });
 
-// МО добавить исполнителя
 
-let modalAddCurator = document.createElement('div')
-modalAddCurator.setAttribute('id', 'modal_add_curator')
-modalAddCurator.classList.add('modal')
-// все что в МО заполняется через function modalAddCurators()
-
-document.body.append(modalAddCurator)
