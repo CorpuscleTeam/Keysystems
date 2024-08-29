@@ -83,6 +83,7 @@ function btnLdFile(selector, arr) {
 
 // функция для списка кураторов
 function createCuratorsList(selector, arr) {
+    let myOrder = false
     for (let i = 0; i < arr.length; i++) {
         let curatorForRequest = document.createElement('div')
         curatorForRequest.classList.add('curator_item')
@@ -102,6 +103,7 @@ function createCuratorsList(selector, arr) {
         curatorForRequest.appendChild(curatorUser)
 
         if (arr[i]['id'] == window.userId) {
+            myOrder = true
             let userMe = document.createElement('span')
             userMe.innerHTML = ` (Я)`
             curatorUser.append(userMe)
@@ -116,20 +118,21 @@ function createCuratorsList(selector, arr) {
             curItemImgClose.setAttribute('src', link)
             curatorItemRight.appendChild(curItemImgClose)
 
-            // кнопка добавить испольнителей
-            let addCurator = document.createElement('a')
-            addCurator.setAttribute('href', '#modal_add_curator')
-            addCurator.classList.add('btn_add_curator')
-            addCurator.classList.add('modal-trigger')
-
-            document.querySelector(selector).appendChild(addCurator)
-
-            console.log(addCurator)
-
-            let addCuratorImg = document.createElement('img')
-            addCuratorImg.setAttribute('src', imgPlus)
-            addCurator.appendChild(addCuratorImg)
+            
         }
+    }
+    if (myOrder) {
+        // кнопка добавить испольнителей
+        let addCurator = document.createElement('a')
+        addCurator.setAttribute('href', '#modal_add_curator')
+        addCurator.classList.add('btn_add_curator')
+        addCurator.classList.add('modal-trigger')
+
+        document.querySelector(selector).appendChild(addCurator)
+
+        let addCuratorImg = document.createElement('img')
+        addCuratorImg.setAttribute('src', imgPlus)
+        addCurator.appendChild(addCuratorImg)
     }
 }
 
@@ -156,14 +159,7 @@ function clickAddCurator(delUser = null) {
 
 // создает модальное окно с выбором исполнителей
 function modalAddCurators(selector) {
-     // МО добавить новых кураторов
-
-     let modalAddCurator = document.createElement('div')
-     modalAddCurator.setAttribute('id', 'modal_add_curator')
-     modalAddCurator.classList.add('modal')
-     // все что в МО заполняется через function modalAddCurators()
-
-     document.body.append(modalAddCurator)
+    let  modalAddCurator = document.querySelector('#modal_add_curator')
     // обработчик событий для открытия второго окна
     const target = document.querySelector(`#statusOrder ${selector}`)
     if (target) {
