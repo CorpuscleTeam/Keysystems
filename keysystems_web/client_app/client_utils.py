@@ -14,9 +14,9 @@ import json
 from keysystems_web.settings import FILE_STORAGE, DEBUG
 from .forms import OrderForm, UserSettingForm
 from .models import News, ViewNews, UpdateSoft
-from common.models import OrderTopic, Soft, Order, DownloadedFile, Notice, UsedSoft, CuratorDist, OrderCurator
+from common import models as m
 from common import log_error, months_str_ru
-from enums import OrderStatus, FormType
+from enums import OrderStatus, FormType, order_topic_dict
 
 
 # проверяет доступ к странице
@@ -31,20 +31,20 @@ def is_access_denied(request: HttpRequest) -> bool:
 
 # Собирает данные для стандартного окружения клиентской части
 def get_main_client_front_data(request: HttpRequest) -> dict:
-    soft_json = serialize(format='json', queryset=Soft.objects.filter(is_active=True).all())
-    topics_json = serialize(format='json', queryset=OrderTopic.objects.filter(is_active=True).all())
+    soft_json = serialize(format='json', queryset=m.Soft.objects.filter(is_active=True).all())
+    topics_json = serialize(format='json', queryset=m.OrderTopic.objects.filter(is_active=True).all())
 
     if request.user.is_authenticated:
         # количество заявок
-        user_orders_count = Order.objects.filter(from_user=request.user).exclude(status=OrderStatus.DONE).count()
+        user_orders_count = m.Order.objects.filter(from_user=request.user).exclude(status=OrderStatus.DONE).count()
         # количество непросмотренных уведомлений
-        notice_count = Notice.objects.filter(viewed=False, user_ks=request.user).count()
+        notice_count = m.Notice.objects.filter(viewed=False, user_ks=request.user).count()
         # Получаем все объекты UpdateSoft, которые пользователь не просмотрел
         unviewed_updates = UpdateSoft.objects.filter(~Q(view_update__user_ks=request.user)).distinct()
         # Считаем количество непросмотренных обновлений
         unviewed_updates_count = unviewed_updates.count()
         # используемый софт
-        used_soft = UsedSoft.objects.get(user=request.user)
+        used_soft = m.UsedSoft.objects.get(user=request.user)
 
         # log_error(f'>>>> {request.user.customer.inn}', wt=False)
 
@@ -64,12 +64,12 @@ def get_main_client_front_data(request: HttpRequest) -> dict:
                     'full_name': request.user.full_name,
                     'used_soft': used_soft.id,
                     'phone': request.user.phone,
-                    # 'topics': topics_json,
-                    # 'soft': soft_json,
-                    # 'orders_count': user_orders_count,
-                    # 'notice': notice_count,
-                    # 'update_count': unviewed_updates_count,
-                    # 'unviewed_updates': unviewed_updates,
+                    'topics': topics_json,
+                    'soft': soft_json,
+                    'orders_count': user_orders_count,
+                    'notice': notice_count,
+                    'update_count': unviewed_updates_count,
+                    'unviewed_updates': unviewed_updates.count(),
                 }
             )
         }
@@ -102,6 +102,10 @@ def get_main_client_front_data(request: HttpRequest) -> dict:
 
 # >>>> <QueryDict: {'csrfmiddlewaretoken': ['pYTOAQritYwXPWYtFZ11WJiIYZOY2Dei7EnijgTOLqaDbg5dfuTEHWeM9poMfXnP'],
 # 'type_form': ['order'], 'type_appeal': ['1'], 'type_soft': ['1'], 'description': [''], 'addfile': ['']}>
+# возвращает куратора
+def get_order_curator() -> m.UserKS:
+    user = m.UserKS.objects.filter(is_staff=True).order_by('?')
+    return user.first()
 
 
 def form_processing(request: HttpRequest) -> None:
@@ -112,28 +116,40 @@ def form_processing(request: HttpRequest) -> None:
         form = OrderForm(request.POST, request.FILES)
         # log_error(f'>>>> form.is_valid(): {form.is_valid()}\n{form.errors}\n{form.data}', wt=False)
         if form.is_valid():
-            soft = Soft.objects.get(pk=form.cleaned_data['type_soft'])
-            topic = OrderTopic.objects.get(pk=form.cleaned_data['type_soft'])
-            new_order = Order(
+            log_error(f'>>>> form.cleaned_data: {form.cleaned_data}\n\n{order_topic_dict.get(1)}', wt=False)
+            # soft = m.Soft.objects.get(pk=form.cleaned_data['type_soft'])
+            # topic = m.OrderTopic.objects.get(pk=form.cleaned_data['type_soft'])
+            # создаёт заказ
+            new_order = m.Order(
                 from_user=request.user,
                 text=form.cleaned_data['description'],
-                soft=soft,
-                topic=topic,
+                soft_id=form.cleaned_data['type_soft'],
+                topic_id=form.cleaned_data['type_soft'],
+                # soft=soft,
+                # topic=topic,
                 customer=request.user.customer
             )
             new_order.save()
 
-            order_curators = CuratorDist.objects.filter(soft=soft, district=request.user.customer.district).all()
-            for curator in order_curators:
-                OrderCurator.objects.create(
-                    user=curator,
-                    order=new_order
-                )
+            # добавляет куратора
+            m.OrderCurator.objects.create(
+                user=get_order_curator(),
+                order=new_order
+            )
 
+            # order_curators = m.CuratorDist.objects.filter(soft=soft, district=request.user.customer.district).all()
+            # for curator in order_curators:
+            #     m.OrderCurator.objects.create(
+            #         user=curator,
+            #         order=new_order
+            #     )
+
+            #
             files = request.FILES.getlist('addfile')
 
+            if not files:
+                return
             folder_path = os.path.join(FILE_STORAGE, str(request.user.customer.inn), str(new_order.pk))
-            # folder_path = os.path.join(FILE_STORAGE, str(request.user.customer.inn), 'test')
             if not os.path.exists(folder_path) and files:
                 os.makedirs(folder_path)
 
@@ -143,10 +159,9 @@ def form_processing(request: HttpRequest) -> None:
 
                 # Сохраняем файл
                 filename = fs.save(file_name, uploaded_file)  # Используем только имя файла
-
                 file_url = fs.url(filename)  # Получаем URL файла
 
-                DownloadedFile.objects.create(
+                m.DownloadedFile.objects.create(
                     user_ks=request.user,
                     order=new_order,
                     url=file_url,
@@ -165,9 +180,10 @@ def form_processing(request: HttpRequest) -> None:
         user.phone = form.cleaned_data['settings_phone']
         user.save()
 
-        soft = Soft.objects.get(id=form.cleaned_data['type_soft'])
-        used_soft = UsedSoft.objects.get(user=user)
-        used_soft.soft = soft
+        # soft = m.Soft.objects.get(id=form.cleaned_data['type_soft'])
+        used_soft = m.UsedSoft.objects.get(user=user)
+        used_soft.soft_id = form.cleaned_data['type_soft']
+        # used_soft.soft = soft
         used_soft.save()
         log_error(f'>>>> save user', wt=False)
 

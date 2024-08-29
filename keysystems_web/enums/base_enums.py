@@ -71,3 +71,15 @@ class EditOrderAction(str, Enum):
 
     ADD_CURATOR = 'add_curator'
     DEL_CURATOR = 'del_curator'
+
+
+# темы обращения
+class OrderTopic(str, Enum):
+    TECH = 'tech'
+    CONTRACT = 'contract'
+
+
+order_topic_dict = {
+    1: {OrderTopic.TECH.value: 'Техническая проблема'},
+    2: {OrderTopic.CONTRACT.value: 'Договорной отдел'},
+}

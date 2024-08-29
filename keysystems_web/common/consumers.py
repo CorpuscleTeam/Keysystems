@@ -17,8 +17,11 @@ class ChatConsumer(WebsocketConsumer):
         self.room_name = self.scope["url_route"]["kwargs"]["room_name"]
         self.room_group_name = f"chat_{self.room_name}"
 
+        user_id = self.scope["user"].id
+
         log_error(wt=False, message=f'connect\n'
                                     f'{self.scope["url_route"]}\n'
+                                    f'{self.scope["user_id"]}\n'
                                     f'self.channel_name: {self.channel_name}')
 
         # Join room group
@@ -110,6 +113,10 @@ class ChatConsumer(WebsocketConsumer):
             order.status = data_json['status']
             order.save()
 
+            async_to_sync(self.channel_layer.group_send)(
+                self.room_group_name, {"type": "select.status", 'status': data_json['status']}
+            )
+
     # обновляет сообщения в чате
     def chat_message(self, event):
         # {'type': 'chat.message', 'message': 'рррр', 'tab': '#tab2', 'order_id': '18'}
@@ -141,6 +148,16 @@ class ChatConsumer(WebsocketConsumer):
         context = {
             'type': EditOrderAction.EDIT_CURATOR.value,
             'curators': UserKSSerializer([curator.user for curator in curators], many=True).data,
+        }
+
+        self.send(text_data=json.dumps(context))
+
+    # отправляет новый список кураторов
+    def select_status(self, event):
+        log_error(wt=False, message=f'select_status\n{event}\n')
+        context = {
+            'type': EditOrderAction.EDIT_STATUS.value,
+            'status': event['status'],
         }
 
         self.send(text_data=json.dumps(context))
