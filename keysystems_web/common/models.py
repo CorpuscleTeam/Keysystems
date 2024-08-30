@@ -69,7 +69,7 @@ class UserKS(AbstractUser):
     class Meta:
         verbose_name = 'Пользователь'
         verbose_name_plural = 'Пользователи'
-        db_table = 'users_ks'
+        # db_table = 'users_ks'
 
 
 # Список ПО

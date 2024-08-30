@@ -110,6 +110,9 @@ USE_I18N = True
 
 USE_TZ = True
 
+SESSION_EXPIRE_AT_BROWSER_CLOSE = False  # Сессия сохраняется при закрытии браузера
+SESSION_COOKIE_AGE = 60 * 60 * 24 * 365  # год
+
 STATIC_URL = '/static/'
 STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
