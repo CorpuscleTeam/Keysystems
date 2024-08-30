@@ -19,10 +19,10 @@ class ChatConsumer(WebsocketConsumer):
 
         user_id = self.scope["user"].id
 
-        # log_error(wt=False, message=f'connect\n'
-        #                             f'{self.scope["url_route"]}\n'
-        #                             f'{self.scope["user_id"]}\n'
-        #                             f'self.channel_name: {self.channel_name}')
+        log_error(wt=False, message=f'connect\n'
+                                    f'{self.scope["url_route"]}\n'
+                                    f'{self.scope["user"]}\n'
+                                    f'self.channel_name: {self.channel_name}')
 
         # Join room group
         async_to_sync(self.channel_layer.group_add)(
