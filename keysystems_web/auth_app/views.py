@@ -108,16 +108,15 @@ def index_2_2(request: HttpRequest):
     error_msg = None
     if request.method == RequestMethod.POST:
         pass_form = PasswordForm(request.POST)
-        log_error(f'>>>>>> {pass_form.is_valid()}', wt=False)
         if pass_form.is_valid():
             user_id = request.POST.get('user_id', 0)
-            log_error(f'>>>>>> {request.POST}\n{user_id}', wt=False)
             user = UserKS.objects.filter(id=user_id).first()
-
-            log_error(f'{user}  {check_password(pass_form.cleaned_data["password"], user.password)}', wt=False)
 
             if user and check_password(pass_form.cleaned_data['password'], user.password):
                 login(request, user)
+                if not pass_form.cleaned_data['checkbox']:
+                    request.session.set_expiry(0)
+
                 return redirect('redirect')
 
             else:

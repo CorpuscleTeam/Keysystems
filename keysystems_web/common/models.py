@@ -66,6 +66,11 @@ class UserKS(AbstractUser):
     def __str__(self):
         return f"{self.full_name}"
 
+    class Meta:
+        verbose_name = 'Пользователь'
+        verbose_name_plural = 'Пользователи'
+        # db_table = 'users_ks'
+
 
 # Список ПО
 class Soft(models.Model):

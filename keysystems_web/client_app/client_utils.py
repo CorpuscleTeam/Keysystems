@@ -11,6 +11,7 @@ from datetime import datetime
 import os
 import json
 
+from keysystems_web.settings import MEDIA_URL
 from keysystems_web.settings import FILE_STORAGE, DEBUG
 from .forms import OrderForm, UserSettingForm
 from .models import News, ViewNews, UpdateSoft
@@ -158,8 +159,8 @@ def form_processing(request: HttpRequest) -> None:
                 file_name = get_valid_filename(uploaded_file.name)
 
                 # Сохраняем файл
-                filename = fs.save(file_name, uploaded_file)  # Используем только имя файла
-                file_url = fs.url(filename)  # Получаем URL файла
+                fs.save(file_name, uploaded_file)  # Используем только имя файла
+                file_url = os.path.join(folder_path, file_name).replace('/app', '')
 
                 m.DownloadedFile.objects.create(
                     user_ks=request.user,

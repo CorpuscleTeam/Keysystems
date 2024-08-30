@@ -2,7 +2,7 @@ from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from django.contrib.auth.forms import UserCreationForm, UserChangeForm
 
-from .models import Soft, Customer, OrderTopic, UserKS, Order, District, Notice, OrderCurator, Message
+from .models import Soft, Customer, OrderTopic, UserKS, Order, District, Notice, OrderCurator, Message, DownloadedFile
 # from .forms import CustomUserChangeForm
 
 
@@ -79,10 +79,16 @@ class OrderCuratorInline(admin.TabularInline):
     extra = 1
 
 
+class OrderFilesInline(admin.TabularInline):
+    model = DownloadedFile
+    fields = ['url', 'file_size']
+    extra = 1
+
+
 # админка обращения
 @admin.register(Order)
 class ViewAdminOrder(admin.ModelAdmin):
-    inlines = [OrderCuratorInline]
+    inlines = [OrderCuratorInline, OrderFilesInline]
     list_display = ['id', 'from_user', 'soft', 'topic', 'status']
     readonly_fields = ['created_at', 'updated_at']
 

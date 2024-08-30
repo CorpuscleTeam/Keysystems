@@ -17,12 +17,12 @@ class ChatConsumer(WebsocketConsumer):
         self.room_name = self.scope["url_route"]["kwargs"]["room_name"]
         self.room_group_name = f"chat_{self.room_name}"
 
-        # user_id = self.scope["user"].id
+        user_id = self.scope["user"].id
 
-        # log_error(wt=False, message=f'connect\n'
-        #                             f'{self.scope["url_route"]}\n'
-        #                             f'{self.scope["user_id"]}\n'
-        #                             f'self.channel_name: {self.channel_name}')
+        log_error(wt=False, message=f'connect\n'
+                                    f'{self.scope["url_route"]}\n'
+                                    f'{self.scope["user"]}\n'
+                                    f'self.channel_name: {self.channel_name}')
 
         # Join room group
         async_to_sync(self.channel_layer.group_add)(
@@ -43,11 +43,7 @@ class ChatConsumer(WebsocketConsumer):
         log_error(wt=False, message=f'receive\n{data_json}\n')
 
         if data_json['event'] == EditOrderAction.MSG:
-            if data_json.get('user_id'):
-                user = UserKS.objects.filter(id=data_json['user_id']).first()
-            else:
-                user = UserKS.objects.filter(is_staff=True).order_by('?')
-
+            user = UserKS.objects.filter(id=data_json['user_id']).first()
             log_error(wt=False, message=f'user: {user}\n')
             if user:
                 order = Order.objects.select_related('from_user').filter(id=int(data_json['order_id'])).first()
@@ -113,7 +109,7 @@ class ChatConsumer(WebsocketConsumer):
         # изменить статус заказа
         elif data_json['event'] == EditOrderAction.EDIT_STATUS:
             order_id = int(data_json['order_id'])
-            order = Order.objects.filter(id=order_id).first()
+            order = Order.objects.filter(id=order_id)
             order.status = data_json['status']
             order.save()
 

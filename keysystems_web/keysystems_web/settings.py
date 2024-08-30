@@ -2,6 +2,7 @@ from pathlib import Path
 from logging.handlers import TimedRotatingFileHandler
 
 import os
+import redis
 
 
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -70,8 +71,6 @@ TEMPLATES = [
 WSGI_APPLICATION = 'keysystems_web.wsgi.application'
 ASGI_APPLICATION = "keysystems_web.asgi.application"
 
-
-
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
@@ -81,6 +80,8 @@ DATABASES = {
         'HOST': os.getenv('DB_HOST'),
         'PORT': os.getenv('DB_PORT'),
     }}
+
+REDIS_DB = redis.Redis(host=os.getenv('DB_HOST'), port=Config.redis_port, db=0)
 
 
 AUTH_PASSWORD_VALIDATORS = [
@@ -109,6 +110,9 @@ TIME_ZONE = 'Asia/Yakutsk'
 USE_I18N = True
 
 USE_TZ = True
+
+SESSION_EXPIRE_AT_BROWSER_CLOSE = False  # Сессия сохраняется при закрытии браузера
+SESSION_COOKIE_AGE = 60 * 60 * 24 * 365  # год
 
 STATIC_URL = '/static/'
 STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
