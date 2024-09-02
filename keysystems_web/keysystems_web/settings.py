@@ -85,6 +85,7 @@ REDIS_DB = redis.Redis(host=os.getenv('DB_HOST'), port=6379, db=0)
 REDIS_TTL: int = 60 * 60  # один час
 
 
+
 AUTH_PASSWORD_VALIDATORS = [
     {
         'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
