@@ -11,13 +11,12 @@ from datetime import datetime
 import os
 import json
 
-from keysystems_web.settings import MEDIA_URL
 from keysystems_web.settings import FILE_STORAGE, DEBUG
 from .forms import OrderForm, UserSettingForm
 from .models import News, ViewNews, UpdateSoft
 from common import models as m
 from common import log_error, months_str_ru
-from enums import OrderStatus, FormType, order_topic_dict
+from enums import OrderStatus, FormType, order_topic_dict, MsgType, ChatType
 
 
 # проверяет доступ к странице
@@ -136,6 +135,15 @@ def form_processing(request: HttpRequest) -> None:
             m.OrderCurator.objects.create(
                 user=get_order_curator(),
                 order=new_order
+            )
+
+            # Запись коммента
+            m.Message.objects.create(
+                type_msg=MsgType.MSG.value,
+                from_user=request.user,
+                chat=ChatType.CLIENT.value,
+                order=new_order,
+                text='Подробное описание проблемы'
             )
 
             # order_curators = m.CuratorDist.objects.filter(soft=soft, district=request.user.customer.district).all()

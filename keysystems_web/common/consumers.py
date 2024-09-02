@@ -6,6 +6,7 @@ import json
 import random
 
 from . import utils as ut
+from . import redis_utils as ru
 from .logs import log_error
 from .models import Message, UserKS, Order, OrderCurator, Notice
 from .serializers import MessageSerializer, UserKSSerializer
