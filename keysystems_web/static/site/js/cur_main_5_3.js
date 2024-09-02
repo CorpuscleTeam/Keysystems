@@ -180,8 +180,8 @@ document.querySelectorAll('.modal_cr_order').forEach(link => {
                     textPOClientTab.classList.add('text_in_modal')
                     textPOClientTab.innerHTML = data['order']['soft']['title']
                     document.querySelector('.select_PO').appendChild(textPOClientTab)
-                } else {
-                    selectPO('#soft_in_chat', data['soft'])
+                } else {                    
+                    selectPO('#soft_in_chat', data['soft'], data.order.soft.title)
                 }
 
 
