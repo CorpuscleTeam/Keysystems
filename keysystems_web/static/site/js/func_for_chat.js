@@ -81,8 +81,20 @@ function btnLdFile(selector, arr) {
     }
 }
 
+//  если пользователь в списке исполнителей
+function isMyOrder(arr) {
+    let myOrder = false
+    for (let i = 0; i < arr.length; i++) {
+        if (arr[i]['id'] == window.userId) {
+            myOrder = true
+        }
+    }
+    return myOrder
+}
+
 // функция для списка кураторов
-function createCuratorsList(selector, arr) {
+function createCuratorsList(selector, arr, status) {
+    let myOrder = false
     for (let i = 0; i < arr.length; i++) {
         let curatorForRequest = document.createElement('div')
         curatorForRequest.classList.add('curator_item')
@@ -101,7 +113,8 @@ function createCuratorsList(selector, arr) {
         curatorUser.innerHTML = arr[i]['full_name']
         curatorForRequest.appendChild(curatorUser)
 
-        if (arr[i]['id'] == window.userId) {
+        if (arr[i]['id'] == window.userId && status !== 'done') {
+            myOrder = true
             let userMe = document.createElement('span')
             userMe.innerHTML = ` (Я)`
             curatorUser.append(userMe)
@@ -116,20 +129,21 @@ function createCuratorsList(selector, arr) {
             curItemImgClose.setAttribute('src', link)
             curatorItemRight.appendChild(curItemImgClose)
 
-            // кнопка добавить испольнителей
-            let addCurator = document.createElement('a')
-            addCurator.setAttribute('href', '#modal_add_curator')
-            addCurator.classList.add('btn_add_curator')
-            addCurator.classList.add('modal-trigger')
-
-            document.querySelector(selector).appendChild(addCurator)
-
-            console.log(addCurator)
-
-            let addCuratorImg = document.createElement('img')
-            addCuratorImg.setAttribute('src', imgPlus)
-            addCurator.appendChild(addCuratorImg)
+            
         }
+    }
+    if (myOrder) {
+        // кнопка добавить испольнителей
+        let addCurator = document.createElement('a')
+        addCurator.setAttribute('href', '#modal_add_curator')
+        addCurator.classList.add('btn_add_curator')
+        addCurator.classList.add('modal-trigger')
+
+        document.querySelector(selector).appendChild(addCurator)
+
+        let addCuratorImg = document.createElement('img')
+        addCuratorImg.setAttribute('src', imgPlus)
+        addCurator.appendChild(addCuratorImg)
     }
 }
 
@@ -156,14 +170,7 @@ function clickAddCurator(delUser = null) {
 
 // создает модальное окно с выбором исполнителей
 function modalAddCurators(selector) {
-     // МО добавить новых кураторов
-
-     let modalAddCurator = document.createElement('div')
-     modalAddCurator.setAttribute('id', 'modal_add_curator')
-     modalAddCurator.classList.add('modal')
-     // все что в МО заполняется через function modalAddCurators()
-
-     document.body.append(modalAddCurator)
+    let  modalAddCurator = document.querySelector('#modal_add_curator')
     // обработчик событий для открытия второго окна
     const target = document.querySelector(`#statusOrder ${selector}`)
     if (target) {
@@ -314,10 +321,20 @@ function status_btn(status) {
     btn_status.classList.add('btn_req_p')
     link_status.appendChild(btn_status)
 
-    if (curatorUser == true && status == 'new') {
+    // строка "статус"
+    if(status == 'new') {
         text_status.classList.add('status_new_req')
         text_status.innerHTML = 'Задача'
+    } else if (status == 'active') {
+        text_status.classList.add('status_work_req')
+        text_status.innerHTML = 'В работе'
+    } else if (status == 'done') {
+        text_status.classList.add('status_end_req')
+        text_status.innerHTML = 'Выполнено'
+    }
 
+    // кнопка 
+    if (curatorUser == true && status == 'new' && window.mgtOrder) {
         link_status.setAttribute('href', '#')
 
         btn_status.classList.add('btn_new_req')
@@ -325,10 +342,7 @@ function status_btn(status) {
 
         btn_status.setAttribute('data-newStatus', 'active')
     }
-    else if (curatorUser == true && status == 'active') {
-        text_status.classList.add('status_work_req')
-        text_status.innerHTML = 'В работе'
-
+    else if (curatorUser == true && status == 'active' && window.mgtOrder) {
         link_status.setAttribute('href', '#')
 
         btn_status.classList.add('btn_work_req')
@@ -337,9 +351,6 @@ function status_btn(status) {
         btn_status.setAttribute('data-newStatus', 'done')
     }
     else if (curatorUser == false && status == 'done') {
-        text_status.classList.add('status_end_req')
-        text_status.innerHTML = 'Выполнено'
-
         link_status.setAttribute('href', '#modalBackToWork')
         link_status.classList.add('modal-trigger')
 
@@ -349,16 +360,15 @@ function status_btn(status) {
         btn_status.setAttribute('data-newStatus', 'active')
     }
     else {
-        text_status.classList.add('status_end_req')
-        text_status.innerHTML = 'Выполнено'
-
         link_status.setAttribute('href', '#')
 
         btn_status.style.display = 'none'
     }
 
+
     // изменение статуса
     document.querySelector('#btn_mark_status button').addEventListener('click', function () {
+        
         let newStatus = this.getAttribute('data-newStatus')
         sendChangeStatus(newStatus)
     })
@@ -366,11 +376,18 @@ function status_btn(status) {
 
 // сокет - отправяется новый статус на бэк
 function sendChangeStatus(newStatus) {
+    let comment = ''
+    let commentBack = document.querySelector('#formBackToWork textarea')
+    if (commentBack) {
+        comment = commentBack.value
+    }
+
     window.chatSocket.send(JSON.stringify({
         'event': 'edit_status',
         'room_name': window.roomName,
         'status': newStatus,
         'order_id': window.orderId,
+        'comment': comment
     }))
 }
 
@@ -579,15 +596,11 @@ function btnBackReq() {
 }
 // МО "вернуть в работу"
 function modalBackToWork() {
-    let modalBackToWork = document.createElement('div')
-    modalBackToWork.classList.add('modal')
-    modalBackToWork.setAttribute('id', 'modalBackToWork')
-
-    document.body.append(modalBackToWork)
+    moBackToWork.innerHTML = ''
 
     let modalBackToWorkContent = document.createElement('div')
     modalBackToWorkContent.classList.add('modal-content')
-    modalBackToWork.appendChild(modalBackToWorkContent)
+    moBackToWork.appendChild(modalBackToWorkContent)
 
     let close = btnClose()
     modalBackToWorkContent.appendChild(close)
@@ -604,7 +617,7 @@ function modalBackToWork() {
     form.classList.add('enter_form')
     form.setAttribute('id', 'formBackToWork')
     form.setAttribute('method', 'post')
-    form.innerHTML = tokenForForm
+    // form.innerHTML = tokenForForm
     modalBackToWorkContent.appendChild(form)
 
     let description = document.createElement('p')
