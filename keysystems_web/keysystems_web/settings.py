@@ -81,7 +81,7 @@ DATABASES = {
         'PORT': os.getenv('DB_PORT'),
     }}
 
-REDIS_DB = redis.Redis(host=os.getenv('DB_HOST'), port=Config.redis_port, db=0)
+REDIS_DB = redis.Redis(host=os.getenv('DB_HOST'), port=6379, db=0)
 
 
 AUTH_PASSWORD_VALIDATORS = [
