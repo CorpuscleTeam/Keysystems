@@ -10,8 +10,8 @@ import os
 import json
 
 from . import curator_utils as utils
-from common.models import OrderTopic, Notice, Order, Soft
-from common.serializers import NoticeSerializer
+from common.models import OrderTopic, Notice, Order, Soft, UserKS
+from common.serializers import NoticeSerializer, SimpleOrderSerializer, UserKSSerializer
 import common as ut
 from enums import RequestMethod, OrderStatus, notices_dict, ChatType
 
@@ -34,10 +34,38 @@ def cur_index_2_1(request: HttpRequest):
     if utils.is_access_denied(request):
         return redirect('redirect')
 
+    inn_selected = None
+    cur_selected = None
+    dist_selected = None
+    soft_selected = None
+
+    orders = utils.get_orders_curator(request)
+    curators = UserKS.objects.filter(is_staff=True)
+    # for o in orders:
+    #     logging.warning(f'{type(o)} | {o.customer.inn} | {o}')
+
+    filters = {
+        'inn_list': list(set(order.customer.inn for order in orders)),
+        'inn_selected': inn_selected,
+        'cur_list': list(set(curator.full_name for curator in curators)),
+        'cur_selected': cur_selected,
+        'dist_list': list(set(order.customer.district.title for order in orders)),
+        'dist_selected': dist_selected,
+        'soft_list': list(set(order.soft.title for order in orders)),
+        'soft_selected': soft_selected,
+    }
+    '''
+    - список ИНН
+- список кураторов
+- список районов
+- список ПО
+    '''
     curator_data = utils.get_main_curator_front_data(request)
     context = {
+        'filters': json.dumps(filters),
         'main_data': curator_data,
-        'orders': utils.get_orders_curator(request),
+        # 'orders': SimpleOrderSerializer(orders, many=True).data,
+        'orders': json.dumps(SimpleOrderSerializer(orders, many=True).data),
         'order_all_data': 1
     }
     return render(request, 'curator/cur_index_2_1.html', context)

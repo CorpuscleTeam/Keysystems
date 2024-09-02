@@ -31,7 +31,6 @@ def is_access_denied(request: HttpRequest) -> bool:
 
 # Собирает данные для стандартного окружения кураторской части
 def get_main_curator_front_data(request: HttpRequest) -> str:
-    log_error(f'request.user.is_authenticated: {request.user.is_authenticated}', wt=False)
     if request.user.is_authenticated:
         # количество заявок
         user_orders_count = Order.objects.filter().exclude(status=OrderStatus.DONE).count()
@@ -61,4 +60,5 @@ def get_main_curator_front_data(request: HttpRequest) -> str:
 def get_orders_curator(request: HttpRequest, for_user: bool = False):
     orders = Order.objects.order_by('-created_at')
 
-    return json.dumps(SimpleOrderSerializer(orders.all(), many=True).data)
+    return orders.all()
+    # return json.dumps(SimpleOrderSerializer(orders.all(), many=True).data)
