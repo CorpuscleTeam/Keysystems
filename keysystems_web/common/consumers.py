@@ -110,7 +110,7 @@ class ChatConsumer(WebsocketConsumer):
         # изменить статус заказа
         elif data_json['event'] == EditOrderAction.EDIT_STATUS:
             order_id = int(data_json['order_id'])
-            order = Order.objects.filter(id=order_id)
+            order = Order.objects.filter(id=order_id).first()
             order.status = data_json['status']
             order.save()
 
