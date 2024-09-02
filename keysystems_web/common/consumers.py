@@ -128,16 +128,16 @@ class ChatConsumer(WebsocketConsumer):
             now = datetime.now()
             chat = random.choice([ChatType.CLIENT.value, ChatType.CURATOR.value])
             message = {
-                'type': EditOrderAction.MSG.value,
+                'type_msg': EditOrderAction.MSG.value,
                 'from_user': {'id': 2, 'full_name': 'Тест'},
                 'text': event["message"],
                 'time': ut.get_time_string(now),
                 'chat': chat
             }
-            self.send(text_data=json.dumps({"message": message}))
+            self.send(text_data=json.dumps({'type': 'msg', "message": message}))
 
         else:
-            self.send(text_data=json.dumps({"message": event['data']}))
+            self.send(text_data=json.dumps({'type': 'msg', "message": event['data']}))
 
     # отправляет новый список кураторов
     def curator_list(self, event):

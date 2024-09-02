@@ -21,10 +21,12 @@ def cur_index_1_1(request: HttpRequest):
     if utils.is_access_denied(request):
         return redirect('redirect')
 
+    orders = utils.get_orders_curator(request)
     curator_data = utils.get_main_curator_front_data(request)
     context = {
         'main_data': curator_data,
-        'orders': utils.get_orders_curator(request, for_user=True)
+        # 'orders': utils.get_orders_curator(request, for_user=True),
+        'orders': json.dumps(SimpleOrderSerializer(orders, many=True).data),
     }
     return render(request, 'curator/cur_index_1_1.html', context)
 
