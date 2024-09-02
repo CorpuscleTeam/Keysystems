@@ -31,7 +31,8 @@
         </div>
         <!-- <a class="btn_back" href="http://ksykt.ru/"><button>&larr; Назад</button></a> -->
         <div class="header_mobile_client_burger">
-            <a href="#" data-target="slide-out" class="sidenav-trigger"><i class="material-icons"><img src="{% static 'site/img/burger.svg' %}" alt=""></i></a>
+            <a href="#" data-target="slide-out" class="sidenav-trigger"><i class="material-icons"><img
+                        src="{% static 'site/img/burger.svg' %}" alt=""></i></a>
         </div>
     </header>
 
@@ -232,6 +233,7 @@
         let link = "{% static 'site/img/close-large.svg' %}"
         let imgLink = "{% static 'site/img/close-large.svg' %}"
         let linkAddFile = "{% static 'site/img/addFile.svg' %}"
+        let imgPlus = "{% static 'site/img/plus.svg' %}"
 
         // переменная "выбор ПО"
         let soft = JSON.parse('{{ soft|escapejs }}')
@@ -259,6 +261,16 @@
         // картинка стрелка вправо
         let arrow_right = "{% static 'site/img/arrow-right.svg' %}"
 
+        // картинка добавить файл
+        let addFile2 = "{% static 'site/img/addFile2.svg' %}"
+        // картинка отправить сообщение
+        let sentMsg = "{% static 'site/img/sentMsg.svg' %}"
+        // картинка справа скачать файл
+        let fileDnl = "{% static 'site/img/download.svg' %}"
+
+        // картинка для списка кураторов
+        let curatorItemImg = "{% static 'site/img/user.svg' %}"
+
         let curatorUser = false
 
     </script>
@@ -271,6 +283,8 @@
     <!-- <script type="text/javascript" src="{% static 'site/js/main_tech_support.js' %}"></script> -->
     <!-- <script type="text/javascript" src="{% static 'site/js/push_6.js' %}"></script> -->
     <script type="text/javascript" src="{% static 'site/js/cur_push_3.js' %}"></script>
+    <script type="text/javascript" src="{% static 'site/js/enums.js' %}"></script>
+    <script type="text/javascript" src="{% static 'site/js/func_for_chat.js' %}"></script>
     <script type="text/javascript" src="{% static 'site/js/cur_main_5_3.js' %}"></script>
     <script type="text/javascript" src="{% static 'site/js/inn_institution.js' %}"></script>
 
