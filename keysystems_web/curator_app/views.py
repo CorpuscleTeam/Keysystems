@@ -53,6 +53,7 @@ def cur_index_2_1(request: HttpRequest):
         'dist_selected': dist_selected,
         'soft_list': list(set(order.soft.title for order in orders)),
         'soft_selected': soft_selected,
+        'sort': None
     }
     '''
     - список ИНН
