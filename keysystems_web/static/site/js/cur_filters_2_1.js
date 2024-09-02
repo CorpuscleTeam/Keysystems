@@ -16,22 +16,3 @@ filter_flex.appendChild(filterImg)
 let filterText = document.createElement('p')
 filterText.innerHTML = `Фильтр`
 filter_flex.appendChild(filterText)
-
-// МО Фильтр
-let modalFilter = document.createElement('div')
-modalFilter.setAttribute('id', 'modalFilter')
-modalFilter.classList.add('modal')
-
-document.body.append(modalFilter)
-
-let modalFilterContent = document.createElement('div')
-modalFilterContent.classList.add('modal-content')
-modalFilter.appendChild(modalFilterContent)
-
-let Close = btnClose()
-modalFilterContent.appendChild(Close)
-
-let title = modalTitle('Фильтр')
-modalFilterContent.appendChild(title)
-
-
