@@ -22,8 +22,15 @@ let modalAddCurator = document.createElement('div')
 modalAddCurator.setAttribute('id', 'modal_add_curator')
 modalAddCurator.classList.add('modal')
 // все что в МО заполняется через function modalAddCurators()
-
 document.body.append(modalAddCurator)
+
+// МО вернуть в работу (клиент)
+
+let moBackToWork = document.createElement('div')
+moBackToWork.classList.add('modal')
+moBackToWork.setAttribute('id', 'modalBackToWork')
+// заполняется в function modalBackToWork()
+document.body.append(moBackToWork)
 
 // обработчик событий данные с бэка
 
@@ -54,6 +61,7 @@ document.querySelectorAll('.modal_cr_order').forEach(link => {
                 window.orderId = orderId
                 window.userId = data.user_id
                 window.roomName = data.room
+                window.mgtOrder = isMyOrder(data.order.curators)
 
                 //                создаём переменную для сокета
                 // создаём переменную для сокета
@@ -182,17 +190,14 @@ document.querySelectorAll('.modal_cr_order').forEach(link => {
 
                 // исполнители
                 if (curatorUser == true) {
-                    createCuratorsList('.curators_of_request', data['order']['curators'])
+                    createCuratorsList('.curators_of_request', data['order']['curators'], data['order']['status'])
                 } else {
                     let titleOfCuratorsList = document.querySelector('.title_of_curators_request')
                     titleOfCuratorsList.style.display = "none"
                 }
 
-
                 // список кураторов
                 if (curatorUser == true) {
-                    
-
                     modalAddCurators('.curator_item_right')
                     modalAddCurators('.btn_add_curator')
                 }
@@ -200,6 +205,7 @@ document.querySelectorAll('.modal_cr_order').forEach(link => {
                 // отображение статуса заявки (+кнопка в первой вкладке)
                 status_btn(data.order.status)
 
+                modalBackToWork()
 
                 // !!_проперить надо ли?
                 let client_chat = createChat('#client_chat', data.client_chat, data.user_id, BASE.CLIENT)
