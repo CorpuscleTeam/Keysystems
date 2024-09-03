@@ -39,14 +39,13 @@ urlpatterns = [
     path('cur_index_3', curator.cur_index_3, name='cur_index_3'),
 
     path('admin/', admin.site.urls),
-#    path('ckeditor/', include('ckeditor_uploader.urls')),
 
     path('order-data/<int:order_id>/', com.get_order_data, name='order_data'),
-    [path("ckeditor5/", include('django_ckeditor_5.urls')), ]
+    path("ckeditor5/", include('django_ckeditor_5.urls'))
+
 ]
 
 if settings.DEBUG:
-    urlpatterns += [path("ckeditor5/", include('django_ckeditor_5.urls')), ]
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
     urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
 

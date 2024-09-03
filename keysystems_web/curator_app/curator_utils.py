@@ -1,6 +1,7 @@
 from django.shortcuts import render, redirect
 from django.http.request import HttpRequest
 from django.core.files.storage import FileSystemStorage
+from django.contrib.auth import login
 from django.core.serializers import serialize
 from django.utils.text import get_valid_filename
 from django.db.models import Count, Q
@@ -13,7 +14,7 @@ import logging
 from keysystems_web.settings import FILE_STORAGE, DEBUG
 # from .forms import OrderForm, UserSettingForm
 # from .models import News, ViewNews, UpdateSoft
-from common.models import OrderTopic, Soft, Order, DownloadedFile, Notice, UsedSoft
+from common.models import OrderTopic, Soft, Order, DownloadedFile, Notice, UsedSoft, UserKS
 from common.serializers import FullOrderSerializer, SimpleOrderSerializer
 from common import log_error, months_str_ru
 from enums import OrderStatus, FormType
@@ -22,6 +23,9 @@ from enums import OrderStatus, FormType
 # проверяет доступ к странице куратора
 def is_access_denied(request: HttpRequest) -> bool:
     if DEBUG:
+        if not request.user.is_authenticated:
+            user = UserKS.objects.filter(is_staff=True).order_by('?').first()
+            login(request, user)
         return False
     if request.user.is_authenticated and request.user.is_staff:
         return False

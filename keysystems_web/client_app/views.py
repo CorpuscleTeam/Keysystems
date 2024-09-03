@@ -11,6 +11,7 @@ import json
 
 from keysystems_web.settings import FILE_STORAGE
 from .forms import OrderForm
+from common.logs import log_error
 from .models import News, FAQ, UpdateSoft, UpdateSoftFiles, ViewUpdate
 from . import client_utils as utils
 from common.models import OrderTopic, Notice, Order, Soft, OrderCurator
@@ -25,7 +26,8 @@ def index_4_1(request: HttpRequest):
         return redirect('redirect')
 
     if request.method == RequestMethod.POST:
-       utils.form_processing(request)
+        utils.form_processing(request)
+        return redirect('index_4_1')
 
     news = News.objects.filter(is_active=True).order_by('-created_at').all()
     news_json = serialize(format='json', queryset=news)
@@ -57,6 +59,7 @@ def index_4_2(request: HttpRequest):
 
     if request.method == RequestMethod.POST:
         utils.form_processing(request)
+        return redirect('index_4_2')
 
     news_id = request.GET.get('news', 1)
     main_news = News.objects.get(pk=int(news_id))
@@ -101,29 +104,12 @@ def index_5_1(request: HttpRequest):
 
     if request.method == RequestMethod.POST:
         utils.form_processing(request)
+        return redirect('index_5_1')
 
-    orders = Order.objects.select_related('soft', 'topic', 'from_user', 'customer').order_by('-created_at')
-
-    new_orders = orders.filter(status=OrderStatus.NEW).all()
-    active_orders = orders.filter(status=OrderStatus.ACTIVE).all()
-    done_orders = orders.filter(status=OrderStatus.DONE).all()
-
-    new_orders_ser = SimpleOrderSerializer(new_orders, many=True)
-    active_orders_ser = SimpleOrderSerializer(active_orders, many=True)
-    done_orders_ser = SimpleOrderSerializer(done_orders, many=True)
-
-    orders = Order.objects.select_related(
-        'soft', 'topic', 'from_user', 'customer'
-    ).prefetch_related(
-        Prefetch('order_curator', queryset=OrderCurator.objects.select_related('user'))
-    ).order_by('-created_at')
-
+    orders = Order.objects.filter(from_user=request.user).order_by('created_at')
     client_data = utils.get_main_client_front_data(request)
     context = {
         **client_data,
-        'new_orders': json.dumps(new_orders_ser.data),
-        'active_orders': json.dumps(active_orders_ser.data),
-        'done_orders': json.dumps(done_orders_ser.data),
         'orders': json.dumps(SimpleOrderSerializer(orders, many=True).data)
     }
     return render(request, 'client/index_5_1.html', context)
@@ -136,6 +122,7 @@ def index_6(request: HttpRequest):
 
     if request.method == RequestMethod.POST:
         utils.form_processing(request)
+        return redirect('index_6')
 
     if request.user.is_authenticated:
         notices = Notice.objects.filter(user_ks=request.user).order_by('-created_at').all()
@@ -143,26 +130,27 @@ def index_6(request: HttpRequest):
         notices = Notice.objects.filter().order_by('-created_at').all()
 
     notice_list = []
-    # for notice in notices:
-    #     text: str = notices_dict.get(notice.type_notice)
-    #     if text:
-    #         notice_list.append(
-    #             {
-    #                 'order_id': notice.order.id,
-    #                 'num_push': notice.id,
-    #                 'date': ut.get_data_string(notice.created_at),
-    #                 'text': text.format(pk=notice.id)
-    #             }
-    #         )
+    for notice in notices:
+        text: str = notices_dict.get(notice.type_notice)
+        if text:
+            notice_list.append(
+                {
+                    'order_id': notice.order.id,
+                    'num_push': notice.id,
+                    'date': ut.get_data_string(notice.created_at),
+                    'text': text.format(pk=notice.id)
+                }
+            )
 
-    notice = NoticeSerializer(notices)
+    # notice = NoticeSerializer(notices)
+    # log_error(f'notice {len(notices)} {notice.data()}', wt=False)
     if request.user.is_authenticated:
     # обнуляем непросмотренные уведомления
         Notice.objects.filter(user_ks=request.user, viewed=False).update(viewed=True)
     client_data = utils.get_main_client_front_data(request)
     context = {
         **client_data,
-        'notices': notice.serialize()
+        'notices': json.dumps(notice_list)
     }
     return render(request, 'client/index_6.html', context)
 
@@ -174,6 +162,7 @@ def index_7_1(request: HttpRequest):
 
     if request.method == RequestMethod.POST:
         utils.form_processing(request)
+        return redirect('index_7_1')
     # updates = UpdateSoft.objects.select_related('soft').prefetch_related('files').filter(is_active=True).order_by('-created_at').all()
     updates = UpdateSoft.objects.select_related('soft').filter(is_active=True).order_by('-created_at').all()
 
@@ -223,6 +212,7 @@ def index_7_2(request: HttpRequest):
 
     if request.method == RequestMethod.POST:
         utils.form_processing(request)
+        return redirect('index_7_2')
 
     update_id = request.GET.get('update', 1)
     update = UpdateSoft.objects.select_related('soft').filter(id=int(update_id)).order_by('-created_at').first()
@@ -262,6 +252,7 @@ def index_8(request: HttpRequest):
 
     if request.method == RequestMethod.POST:
         utils.form_processing(request)
+        return redirect('index_8')
 
     faq = FAQ.objects.filter(is_active=True).order_by('-created_at').all()
 

@@ -6,6 +6,7 @@ from django.core.files.storage import FileSystemStorage
 from django.core.serializers import serialize
 from django.utils.text import get_valid_filename
 from django.db.models import Count, Q
+from django.contrib.auth import login
 from datetime import datetime
 
 import os
@@ -22,6 +23,9 @@ from enums import OrderStatus, FormType, order_topic_dict, MsgType, ChatType
 # проверяет доступ к странице
 def is_access_denied(request: HttpRequest) -> bool:
     if DEBUG:
+        if not request.user.is_authenticated:
+            user = m.UserKS.objects.filter(is_staff=False).order_by('?').first()
+            login(request, user)
         return False
     if request.user.is_authenticated and not request.user.is_staff:
         return False
