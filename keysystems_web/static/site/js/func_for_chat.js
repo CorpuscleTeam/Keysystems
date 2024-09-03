@@ -362,6 +362,8 @@ function status_btn(status) {
         btn_status.innerHTML = 'Вернуть в работу'
 
         btn_status.setAttribute('data-newStatus', 'active')
+        // маркер для события. Чтоб принимать коммент
+        btn_status.setAttribute('data-comment', true)
     }
     else {
         link_status.setAttribute('href', '#')
@@ -372,26 +374,43 @@ function status_btn(status) {
 
     // изменение статуса
     document.querySelector('#btn_mark_status button').addEventListener('click', function () {
-        
+        console.log('c1')
+        // маркер для перенаправки на модальное окно
+        let needComment = this.getAttribute('data-comment')
         let newStatus = this.getAttribute('data-newStatus')
-        sendChangeStatus(newStatus)
+        if (needComment) {
+            console.log(needComment)
+            eventReturnWork(newStatus)
+        } else {
+            sendChangeStatus(newStatus)
+        }
+            
     })
 }
 
-// сокет - отправяется новый статус на бэк
-function sendChangeStatus(newStatus) {
-    let comment = ''
-    let commentBack = document.querySelector('#formBackToWork textarea')
-    if (commentBack) {
-        comment = commentBack.value
-    }
+// принимает возврат в работу
+function eventReturnWork(newStatus) {
+    document.querySelector('#btnDescriptionSubmit').addEventListener('click', function () {
+        comment = ''
+        let commentBack = document.querySelector('#formBackToWork textarea')
+        if (commentBack) {
+            comment = commentBack.value
+        }
+        sendChangeStatus(newStatus, comment=comment)
+        // перезагружает страницу
+        window.location.reload()
+})
+}
 
+// сокет - отправяется новый статус на бэк (долбавил параметр comment для возврата в работу)
+function sendChangeStatus(newStatus, comment=null) {
     window.chatSocket.send(JSON.stringify({
         'event': 'edit_status',
         'room_name': window.roomName,
         'status': newStatus,
         'order_id': window.orderId,
-        'comment': comment
+        'comment': comment,
+        'user_id': window.userId,
     }))
 }
 
@@ -598,6 +617,8 @@ function btnBackReq() {
     btnBackReq.innerHTML = 'Вернуть в работу'
     linkBackReq.appendChild(btnBackReq)
 }
+
+
 // МО "вернуть в работу"
 function modalBackToWork() {
     moBackToWork.innerHTML = ''
@@ -648,7 +669,9 @@ function modalBackToWork() {
     btnDescriptionCancel.innerHTML = `Отмена`
     footerDescription.appendChild(btnDescriptionCancel)
 
+    // изменил элемент с button на а. При этом слители стили кнопки. Вернул опять button
     let btnDescriptionSubmit = document.createElement('button')
+    // let btnDescriptionSubmit = document.createElement('a')
     btnDescriptionSubmit.setAttribute('id', 'btnDescriptionSubmit')
     btnDescriptionSubmit.classList.add('btn_support_submit')
     btnDescriptionSubmit.innerHTML = `Вернуть в работу`
@@ -657,6 +680,7 @@ function modalBackToWork() {
     // Инициализация модального окна Materialize после добавления в DOM
     M.Modal.init(modalBackToWork);
 }
+
 
 // создание сокета и все с ним функции
 function initOrderSocket(roomName, userId) {

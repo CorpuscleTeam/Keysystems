@@ -103,6 +103,7 @@ def index_5_1(request: HttpRequest):
         return redirect('redirect')
 
     if request.method == RequestMethod.POST:
+        log_error(f'5_1 post {request.POST}', wt=False)
         utils.form_processing(request)
         return redirect('index_5_1')
 
@@ -129,28 +130,14 @@ def index_6(request: HttpRequest):
     else:
         notices = Notice.objects.filter().order_by('-created_at').all()
 
-    notice_list = []
-    for notice in notices:
-        text: str = notices_dict.get(notice.type_notice)
-        if text:
-            notice_list.append(
-                {
-                    'order_id': notice.order.id,
-                    'num_push': notice.id,
-                    'date': ut.get_data_string(notice.created_at),
-                    'text': text.format(pk=notice.id)
-                }
-            )
-
-    # notice = NoticeSerializer(notices)
-    # log_error(f'notice {len(notices)} {notice.data()}', wt=False)
     if request.user.is_authenticated:
-    # обнуляем непросмотренные уведомления
+        # обнуляем непросмотренные уведомления
         Notice.objects.filter(user_ks=request.user, viewed=False).update(viewed=True)
+
     client_data = utils.get_main_client_front_data(request)
     context = {
         **client_data,
-        'notices': json.dumps(notice_list)
+        'notices': json.dumps(NoticeSerializer(notices, many=True).data)
     }
     return render(request, 'client/index_6.html', context)
 

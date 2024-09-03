@@ -38,6 +38,8 @@ def get_main_client_front_data(request: HttpRequest) -> dict:
     soft_json = serialize(format='json', queryset=m.Soft.objects.filter(is_active=True).all())
     topics_json = serialize(format='json', queryset=m.OrderTopic.objects.filter(is_active=True).all())
 
+    log_error(f'request.user.is_authenticated: {request.user.is_authenticated}', wt=False)
+
     if request.user.is_authenticated:
         # количество заявок
         user_orders_count = m.Order.objects.filter(from_user=request.user).exclude(status=OrderStatus.DONE).count()
@@ -86,7 +88,7 @@ def get_main_client_front_data(request: HttpRequest) -> dict:
             'update_count': 12,
             'main_data': json.dumps(
                 {
-                    'inn': "1234567890",
+                    'inn': "Тест ИНН",
                     'institution': "OOO Oooo",
                     'region': 'ChO',
                     'email': 'ex@mail.com',

@@ -10,7 +10,7 @@ import os
 import json
 
 from . import curator_utils as utils
-from common.models import OrderTopic, Notice, Order, Soft, UserKS
+from common.models import OrderTopic, Notice, Order, Soft, UserKS, OrderCurator
 from common.serializers import NoticeSerializer, SimpleOrderSerializer, FullOrderSerializer, UserKSSerializer
 import common as ut
 from enums import RequestMethod, OrderStatus, notices_dict, ChatType
@@ -21,12 +21,16 @@ def cur_index_1_1(request: HttpRequest):
     if utils.is_access_denied(request):
         return redirect('redirect')
 
-    orders = utils.get_orders_curator(request)
+    # orders = utils.get_orders_curator(request)
+
+    orders = OrderCurator.objects.select_related('order').filter(user=request.user).order_by('order__created_at').all()
+    order_list = [order_curator.order for order_curator in orders]
+
     curator_data = utils.get_main_curator_front_data(request)
     context = {
         'main_data': curator_data,
         # 'orders': utils.get_orders_curator(request, for_user=True),
-        'orders': json.dumps(SimpleOrderSerializer(orders, many=True).data),
+        'orders': json.dumps(SimpleOrderSerializer(order_list, many=True).data),
     }
     return render(request, 'curator/cur_index_1_1.html', context)
 
@@ -78,14 +82,13 @@ def cur_index_3(request: HttpRequest):
     else:
         notices = Notice.objects.filter().order_by('-created_at').all()
 
-    notice = NoticeSerializer(notices)
     if request.user.is_authenticated:
-    # обнуляем непросмотренные уведомления
+        # обнуляем непросмотренные уведомления
         Notice.objects.filter(user_ks=request.user, viewed=False).update(viewed=True)
 
     curator_data = utils.get_main_curator_front_data(request)
     context = {
         'main_data': curator_data,
-        'notices': notice.serialize(),
+        'notices': json.dumps(NoticeSerializer(notices, many=True).data),
     }
     return render(request, 'curator/cur_index_3.html', context)

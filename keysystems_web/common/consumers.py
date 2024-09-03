@@ -109,10 +109,26 @@ class ChatConsumer(WebsocketConsumer):
 
         # изменить статус заказа
         elif data_json['event'] == EditOrderAction.EDIT_STATUS:
+
             order_id = int(data_json['order_id'])
             order = Order.objects.filter(id=order_id).first()
             order.status = data_json['status']
             order.save()
+            #
+            # # пишем коммент, если есть
+            comment = data_json.get('comment')
+            # log_error(comment, wt=False)
+            if comment:
+                # сохраняем сообщение
+                new_message = Message(
+                    type_msg=MsgType.MSG.value,
+                    from_user_id=int(data_json.get('user_id', 0)),
+                    # chat=ChatType.CLIENT.value if data_json['chat'] == '#tab2' else ChatType.CURATOR.value,
+                    chat=ChatType.CLIENT.value,
+                    order_id=int(data_json['order_id']),
+                    text=comment
+                )
+                new_message.save()
 
             async_to_sync(self.channel_layer.group_send)(
                 self.room_group_name, {"type": "select.status", 'status': data_json['status']}

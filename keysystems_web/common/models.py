@@ -36,8 +36,8 @@ class Customer(models.Model):
         return f"{self.title}"
 
     class Meta:
-        verbose_name = 'Клиент'
-        verbose_name_plural = 'Клиенты'
+        verbose_name = 'Компания'
+        verbose_name_plural = 'Компании'
         db_table = 'customers'
 
 

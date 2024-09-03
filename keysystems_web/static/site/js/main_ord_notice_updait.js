@@ -14,7 +14,7 @@ if (orders > 0) {
     document.querySelector('.mobile_orders').append(applicationMob)
 }
 
-if (notice >0 ) {
+if (notice > 0 ) {
     let push = document.createElement('div')
     push.classList.add('page_menu_li_right')
     push.classList.add('notice')
