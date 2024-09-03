@@ -93,4 +93,11 @@
     .page_flex_body {
         padding: 12px;
     }
+/* вкладки для мобильных */
+    .groups_orders {
+        display: none;
+    }
+    .mobile_tabs_request {
+        display: flex;
+    }
 }
