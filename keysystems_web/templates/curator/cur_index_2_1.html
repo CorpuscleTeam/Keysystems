@@ -175,6 +175,35 @@
 
                     </div>
 
+                    <div class="mobile_tabs_request">
+                        <ul class="tabs">
+                            <!-- вкладки -->
+                            <li class="tab">
+                                <a href="#tab1_mob">
+                                    <div class="order_tab">Задачи</div>
+
+                                </a>
+                            </li>
+                            <li class="tab">
+                                <a href="#tab2_mob">
+                                    <div class="order_tab">В работе</div>
+
+                                </a>
+                            </li>
+                            <li class="tab">
+                                <a href="#tab3_mob">
+                                    <div class="order_tab">Выполнено</div>
+                                    
+                                </a>
+                            </li>
+                        </ul>
+
+                        <!-- содержимое вкладок -->
+                        <div id="tab1_mob" class="tab-content active"></div>
+                        <div id="tab2_mob" class="tab-content"></div>
+                        <div id="tab3_mob" class="tab-content"></div>
+                    </div>
+
                 </div>
             </div>
         </div>
@@ -238,7 +267,7 @@
     <script type="text/javascript" src="{% static 'site/js/func_for_chat.js' %}"></script>
     <script type="text/javascript" src="{% static 'site/js/cur_main_5_3.js' %}"></script>
     <script type="text/javascript" src="{% static 'site/js/cur_mo_filter.js' %}"></script>
-
+    <script type="text/javascript" src="{% static 'site/js/mob_card_req.js' %}"></script>
     
 
 </body>

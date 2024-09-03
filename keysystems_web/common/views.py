@@ -12,9 +12,9 @@ from enums import ChatType, RequestMethod, EditOrderAction
 
 
 def get_order_data(request: HttpRequest, order_id):
-    # log_error('>>>>>>>>>>>>', wt=False)
+    log_error('>>>>>>>>>>>>', wt=False)
     try:
-        # log_error(f'{order_id}', wt=False)
+        log_error(f'{order_id}', wt=False)
 
         order = Order.objects.filter(id=order_id).first()
         messages = Message.objects.filter(order=order).order_by('created_at')
