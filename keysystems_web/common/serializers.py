@@ -87,12 +87,10 @@ class OrderCuratorSerializer(serializers.ModelSerializer):
 
 
 # заказы самая минимальная версия
-class JustOrderSerializer(serializers.ModelSerializer):
-
+class OnlyOrderSerializer(serializers.ModelSerializer):
     class Meta:
         model = cm.Order
         fields = ['id', 'text']
-
 
 
 # заказы минимальная версия
@@ -177,44 +175,38 @@ class MessageSerializer(serializers.ModelSerializer):
 
 
 # кураторы
-# class NoticeSerializer(serializers.ModelSerializer):
-#     order_id = serializers.SerializerMethodField()
-#     num_push = serializers.SerializerMethodField()
-#     date = serializers.SerializerMethodField()
-#     text = serializers.SerializerMethodField()
-#
-#     class Meta:
-#         model = cm.Notice
-#         fields = ['order_id', 'num_push', 'date', 'text']
-#
-#     def get_order_id(self, obj):
-#         return 13
-#
-#     def get_num_push(self, obj):
-#         return obj.id
-#
-#     def get_date(self, obj):
-#         return ut.get_date_string(obj.created_at)
-#
-#     def get_text(self, obj):
-#         return obj.type_notice
+class NoticeSerializer(serializers.ModelSerializer):
+    order = OnlyOrderSerializer()
+
+    date = serializers.SerializerMethodField()
+    text = serializers.SerializerMethodField()
+
+    class Meta:
+        model = cm.Notice
+        fields = ['id', 'order', 'date', 'text']
+
+    def get_date(self, obj):
+        return ut.get_date_string(obj.created_at)
+
+    def get_text(self, obj):
+        return obj.type_notice
 
 # уведомления
-class NoticeSerializer:
-    def __init__(self, notices: list):
-        self.notices = notices
-        self.notice_list = []
-
-    def serialize(self) -> str:
-        for notice in self.notices:
-            text: str = notices_dict.get(notice.type_notice)
-            if text:
-                self.notice_list.append(
-                    {
-                        'order_id': notice.order.id,
-                        'num_push': notice.id,
-                        'date': ut.get_date_string(notice.created_at),
-                        'text': text.format(pk=notice.id)
-                    }
-                )
-        return json.dumps(self.notice_list)
+# class NoticeSerializer:
+#     def __init__(self, notices: list):
+#         self.notices = notices
+#         self.notice_list = []
+#
+#     def serialize(self) -> str:
+#         for notice in self.notices:
+#             text: str = notices_dict.get(notice.type_notice)
+#             if text:
+#                 self.notice_list.append(
+#                     {
+#                         'order_id': notice.order.id,
+#                         'num_push': notice.id,
+#                         'date': ut.get_date_string(notice.created_at),
+#                         'text': text.format(pk=notice.id)
+#                     }
+#                 )
+#         return json.dumps(self.notice_list)
