@@ -39,10 +39,10 @@ urlpatterns = [
     path('cur_index_3', curator.cur_index_3, name='cur_index_3'),
 
     path('admin/', admin.site.urls),
-#    path('ckeditor/', include('ckeditor_uploader.urls')),
 
     path('order-data/<int:order_id>/', com.get_order_data, name='order_data'),
     path("ckeditor5/", include('django_ckeditor_5.urls'))
+
 ]
 
 if settings.DEBUG:

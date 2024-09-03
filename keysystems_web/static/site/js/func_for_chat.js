@@ -19,11 +19,15 @@ function modalTitle(title) {
 }
 
 // создает список ПО для кураторской панели
-function selectPO(selector, arr) {
+function selectPO(selector, arr, selSoft) {
     for (let i = 0; i < arr.length; i++) {
         let optionPO = document.createElement('option')
         optionPO.setAttribute('value', arr[i]['id'])
         optionPO.innerHTML = arr[i]['title']
+
+        if (arr[i]['title'] == selSoft) {
+            optionPO.selected = true;
+        } 
         document.querySelector(selector).appendChild(optionPO)
     }
 }
