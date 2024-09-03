@@ -86,6 +86,15 @@ class OrderCuratorSerializer(serializers.ModelSerializer):
         fields = ['id', 'user']
 
 
+# заказы самая минимальная версия
+class JustOrderSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = cm.Order
+        fields = ['id', 'text']
+
+
+
 # заказы минимальная версия
 class SimpleOrderSerializer(serializers.ModelSerializer):
     soft = SoftSerializer()
@@ -166,6 +175,29 @@ class MessageSerializer(serializers.ModelSerializer):
         else:
             return None
 
+
+# кураторы
+# class NoticeSerializer(serializers.ModelSerializer):
+#     order_id = serializers.SerializerMethodField()
+#     num_push = serializers.SerializerMethodField()
+#     date = serializers.SerializerMethodField()
+#     text = serializers.SerializerMethodField()
+#
+#     class Meta:
+#         model = cm.Notice
+#         fields = ['order_id', 'num_push', 'date', 'text']
+#
+#     def get_order_id(self, obj):
+#         return 13
+#
+#     def get_num_push(self, obj):
+#         return obj.id
+#
+#     def get_date(self, obj):
+#         return ut.get_date_string(obj.created_at)
+#
+#     def get_text(self, obj):
+#         return obj.type_notice
 
 # уведомления
 class NoticeSerializer:
