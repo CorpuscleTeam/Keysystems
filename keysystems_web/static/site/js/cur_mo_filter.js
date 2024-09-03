@@ -45,11 +45,17 @@ sort.appendChild(selectSort)
 let optionSort1 = document.createElement('option')
 optionSort1.setAttribute('value', 'optionSort1')
 optionSort1.innerHTML = 'Сначала новые'
+if (filter.sort == 'optionSort1') {
+    optionSort1 = true
+}
 selectSort.appendChild(optionSort1)
 
 let optionSort2 = document.createElement('option')
 optionSort2.setAttribute('value', 'optionSort2')
 optionSort2.innerHTML = 'Сначала старые'
+if (filter.sort == 'optionSort1') {
+    optionSort2 = true
+}
 selectSort.appendChild(optionSort2)
 
 // ИНН
@@ -67,10 +73,15 @@ selectInnFilter.setAttribute('id', 'inn_filter')
 innFilter.appendChild(selectInnFilter)
 
     // добавить объект
-for(let i=0; i<Arr.length; i++) {
+for(let i=0; i<filter['inn_list'].length; i++) {
     let optionInnFilter = document.createElement('option')
-    optionInnFilter.setAttribute('value', 'Arr[i]') 
-    optionInnFilter.innerHTML = Arr[i]
+    optionInnFilter.setAttribute('value', filter['inn_list'][i]) 
+    optionInnFilter.innerHTML = filter['inn_list'][i]
+
+    if(filter['inn_list'][i] == filter['inn_selected']) {
+        optionInnFilter.selected = true
+    }
+
     selectInnFilter.appendChild(optionInnFilter)
 }
 
@@ -89,10 +100,15 @@ selectCuratorFilter.setAttribute('id', 'curator_filter')
 curatorFilter.appendChild(selectCuratorFilter)
 
     // добавить объект
-for(let i=0; i<Arr.length; i++) {
+for(let i=0; i<filter['cur_list'].length; i++) {
     let optionCuratorFilter = document.createElement('option')
-    optionCuratorFilter.setAttribute('value', 'Arr[i]')
-    optionCuratorFilter.innerHTML = Arr[i]
+    optionCuratorFilter.setAttribute('value', filter['cur_list'][i])
+    optionCuratorFilter.innerHTML = filter['cur_list'][i]
+
+    if (filter['cur_list'][i] == filter['cur_selected']) {
+        optionCuratorFilter.selected = true
+    }
+
     selectCuratorFilter.appendChild(optionCuratorFilter)
 }
 
@@ -111,10 +127,15 @@ selectDistrictFilter.setAttribute('id', 'district_filter')
 districtFilter.appendChild(selectDistrictFilter)
 
     // добавить объект
-for(let i=0; i<Arr.length; i++) {
+for(let i=0; i<filter['dist_list'].length; i++) {
     let optionDistrictFilter = document.createElement('option')
-    optionDistrictFilter.setAttribute('value', 'Arr[i]')
-    optionDistrictFilter.innerHTML = Arr[i]
+    optionDistrictFilter.setAttribute('value', filter['dist_list'])
+    optionDistrictFilter.innerHTML = filter['dist_list']
+
+    if (filter['dist_list'][i] == filter['dist_selected']) {
+        optionDistrictFilter.selected = true
+    }
+
     selectDistrictFilter.appendChild(optionDistrictFilter)
 }
 
@@ -133,10 +154,15 @@ selectSoftFilter.setAttribute('id', 'soft_filter')
 softFilter.appendChild(selectSoftFilter)
 
     // добавить объект
-for(let i=0; i<Arr.length; i++) {
+for(let i=0; i<filter['soft_list'].length; i++) {
     let optionSoftFilter = document.createElement('option')
-    optionSoftFilter.setAttribute('value', 'Arr[i]')
-    optionSoftFilter.innerHTML = Arr[i]
+    optionSoftFilter.setAttribute('value', filter['soft_list'][i])
+    optionSoftFilter.innerHTML = filter['soft_list'][i]
+
+    if (filter['soft_list'][i] == filter['soft_selected']) {
+        optionSoftFilter.selected = true
+    }
+
     selectSoftFilter.appendChild(optionSoftFilter)
 }
 

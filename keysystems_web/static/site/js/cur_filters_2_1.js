@@ -1,8 +1,9 @@
 // на странице 2_1 кураторской панели
 
 let filter_flex_link = document.createElement('a')
-filter_flex_link.setAttribute('src', '#modalFilter') // добавить ссылку на модальное окно
+filter_flex_link.setAttribute('href', '#modalFilter') // добавить ссылку на модальное окно
 filter_flex_link.classList.add('page_body_right')
+filter_flex_link.classList.add('modal-trigger')
 document.querySelector('.page_flex_body_title').appendChild(filter_flex_link)
 
 let filter_flex = document.createElement('div')
