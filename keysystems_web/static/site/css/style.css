@@ -543,7 +543,7 @@ input[placeholder] {
 }
 /* для моб версии */
 .mobile_tabs_request {
-    /* display: none; */
+    display: none;
 }
 
 

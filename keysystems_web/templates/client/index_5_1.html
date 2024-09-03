@@ -212,6 +212,34 @@
                 <div class="page_flex_body">
                     <h2 class="page_body_h2">Заявки</h2>
 
+                    <div class="mobile_tabs_request">
+                        <ul class="tabs">
+                            <!-- вкладки -->
+                            <li class="tab">
+                                <a href="#tab1_mob">
+                                    <div class="order_tab">Задачи</div>
+
+                                </a>
+                            </li>
+                            <li class="tab">
+                                <a href="#tab2_mob">
+                                    <div class="order_tab">В работе</div>
+
+                                </a>
+                            </li>
+                            <li class="tab">
+                                <a href="#tab3_mob">
+                                    <div class="order_tab">Выполнено</div>
+                                    
+                                </a>
+                            </li>
+                        </ul>
+
+                        <!-- содержимое вкладок -->
+                        <div id="tab1_mob" class="tab-content active"></div>
+                        <div id="tab2_mob" class="tab-content"></div>
+                        <div id="tab3_mob" class="tab-content"></div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -294,7 +322,7 @@
     <script type="text/javascript" src="{% static 'site/js/cur_main_5_3.js' %}"></script>
     <script type="text/javascript" src="{% static 'site/js/inn_institution.js' %}"></script>
     <!-- <script type="text/javascript" src="{% static 'site/js/test_soket.js' %}"></script> -->
-
+    <script type="text/javascript" src="{% static 'site/js/mob_card_req.js' %}"></script>
 
 
 </body>

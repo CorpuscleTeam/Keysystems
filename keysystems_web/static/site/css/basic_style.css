@@ -26,3 +26,6 @@ a {
     text-decoration: none;
     color: var(--color_dark);
 }
+input, textarea {
+    font-size: 16px;
+}

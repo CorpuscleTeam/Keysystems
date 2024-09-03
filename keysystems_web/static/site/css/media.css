@@ -97,7 +97,18 @@
     .groups_orders {
         display: none;
     }
+    .page_body_right {
+        display: none;
+    }
     .mobile_tabs_request {
         display: flex;
+        flex-direction: column;
+    }
+    .mob_orders_grid {
+        display: grid;
+        grid-template-columns: repeat(1, 1fr);
+        gap: 10px;
+        padding: 10px;
+        background-color: rgba(238, 238, 238, 1);
     }
 }
