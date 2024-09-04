@@ -14,7 +14,7 @@ import logging
 from keysystems_web.settings import FILE_STORAGE, DEBUG
 # from .forms import OrderForm, UserSettingForm
 # from .models import News, ViewNews, UpdateSoft
-from common.models import OrderTopic, Soft, Order, DownloadedFile, Notice, UsedSoft, UserKS
+from common.models import OrderTopic, Soft, Order, DownloadedFile, Notice, UsedSoft, UserKS, OrderCurator
 from common.serializers import FullOrderSerializer, SimpleOrderSerializer
 from common import log_error, months_str_ru
 from enums import OrderStatus, FormType
@@ -23,7 +23,7 @@ from enums import OrderStatus, FormType
 # проверяет доступ к странице куратора
 def is_access_denied(request: HttpRequest) -> bool:
     if DEBUG:
-        if not request.user.is_authenticated:
+        if not request.user.is_authenticated or not request.user.is_staff:
             user = UserKS.objects.filter(is_staff=True).order_by('?').first()
             login(request, user)
         return False
@@ -37,7 +37,10 @@ def is_access_denied(request: HttpRequest) -> bool:
 def get_main_curator_front_data(request: HttpRequest) -> str:
     if request.user.is_authenticated:
         # количество заявок
-        user_orders_count = Order.objects.filter().exclude(status=OrderStatus.DONE).count()
+        # user_orders_count = Order.objects.filter().exclude(status=OrderStatus.DONE).count()
+        user_orders_count = (OrderCurator.objects.select_related('order').filter(user=request.user).
+                             exclude(order__status=OrderStatus.DONE).order_by('order__created_at').count())
+
         # количество непросмотренных уведомлений
         notice_count = Notice.objects.filter(viewed=False, user_ks=request.user).count()
         return json.dumps(

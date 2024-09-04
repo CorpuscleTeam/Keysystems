@@ -40,6 +40,7 @@ def get_order_data(request: HttpRequest, order_id):
             curator_unviewed_message = 2
             user_id = 3
 
+        log_error('send all', wt=False)
         return JsonResponse(
             {
                 'order': FullOrderSerializer(order).data,
@@ -54,6 +55,7 @@ def get_order_data(request: HttpRequest, order_id):
             },
             safe=False
         )
+        
     except Exception as ex:
         log_error(ex)
         return JsonResponse({'error': 'not found'}, status=404)

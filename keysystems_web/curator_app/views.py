@@ -11,7 +11,7 @@ import json
 
 from . import curator_utils as utils
 from common.models import OrderTopic, Notice, Order, Soft, UserKS, OrderCurator
-from common.serializers import NoticeSerializer, SimpleOrderSerializer, FullOrderSerializer, UserKSSerializer
+from common.serializers import NoticeSerializer, SimpleOrderSerializer, SimpleWithCurOrderSerializer, UserKSSerializer
 import common as ut
 from enums import RequestMethod, OrderStatus, notices_dict, ChatType
 
@@ -25,6 +25,7 @@ def cur_index_1_1(request: HttpRequest):
 
     orders = OrderCurator.objects.select_related('order').filter(user=request.user).order_by('order__created_at').all()
     order_list = [order_curator.order for order_curator in orders]
+    logging.warning(f'order_list: {len(order_list)}')
 
     curator_data = utils.get_main_curator_front_data(request)
     context = {
@@ -65,8 +66,8 @@ def cur_index_2_1(request: HttpRequest):
     context = {
         'filters': json.dumps(filters),
         'main_data': curator_data,
-        'orders': json.dumps(SimpleOrderSerializer(orders, many=True).data),
-        # 'orders': json.dumps(FullOrderSerializer(orders, many=True).data),
+        # 'orders': json.dumps(SimpleOrderSerializer(orders, many=True).data),
+        'orders': json.dumps(SimpleWithCurOrderSerializer(orders, many=True).data),
         'order_all_data': 1
     }
     return render(request, 'curator/cur_index_2_1.html', context)

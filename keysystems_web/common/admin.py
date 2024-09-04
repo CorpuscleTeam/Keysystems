@@ -2,6 +2,7 @@ from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from django.contrib.auth.forms import UserCreationForm, UserChangeForm
 
+from keysystems_web.settings import DEBUG
 from .models import Soft, Customer, OrderTopic, UserKS, Order, District, Notice, OrderCurator, Message, DownloadedFile
 # from .forms import CustomUserChangeForm
 
@@ -100,13 +101,15 @@ class ViewAdminNews(admin.ModelAdmin):
     list_display = ['title']
 
 
-# # админка новости
-@admin.register(Notice)
-class ViewAdminNews(admin.ModelAdmin):
-    list_display = ['type_notice']
+# # админка уведомления
+if DEBUG:
+    @admin.register(Notice)
+    class ViewAdminNews(admin.ModelAdmin):
+        list_display = ['type_notice']
 
 
 # сообщения
-@admin.register(Message)
-class ViewAdminNews(admin.ModelAdmin):
-    list_display = ['created_at', 'from_user', 'chat', 'text']
+if DEBUG:
+    @admin.register(Message)
+    class ViewAdminNews(admin.ModelAdmin):
+        list_display = ['created_at', 'from_user', 'chat', 'text']

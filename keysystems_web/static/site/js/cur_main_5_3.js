@@ -14,7 +14,7 @@ modalApplicationStatusContent.classList.add('modal-content')
 modalApplicationStatus.appendChild(modalApplicationStatusContent)
 
 document.body.append(modalApplicationStatus)
-console.log('должно создатьс модальное окно')
+console.log('должно создаться модальное окно 1')
 
 // МО добавить новых кураторов
 
@@ -35,7 +35,7 @@ document.body.append(moBackToWork)
 // обработчик событий данные с бэка
 
 document.querySelectorAll('.modal_cr_order').forEach(link => {
-
+    // console.log('должно')
     link.addEventListener('click', function () {
         let orderId = this.getAttribute('data-order-id');
 

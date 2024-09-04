@@ -23,7 +23,7 @@ from enums import OrderStatus, FormType, order_topic_dict, MsgType, ChatType
 # проверяет доступ к странице
 def is_access_denied(request: HttpRequest) -> bool:
     if DEBUG:
-        if not request.user.is_authenticated:
+        if not request.user.is_authenticated or request.user.is_staff:
             user = m.UserKS.objects.filter(is_staff=False).order_by('?').first()
             login(request, user)
         return False
