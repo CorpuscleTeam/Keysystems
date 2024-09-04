@@ -40,6 +40,7 @@ class ChatConsumer(WebsocketConsumer):
 
     # Receive message from WebSocket
     def receive(self, text_data):
+        # {'event': 'edit_curator', 'add': '5', 'del': 4, 'order_id': '23', 'room_name': 'order23'}
         data_json: dict = json.loads(text_data)
         log_error(wt=False, message=f'receive\n{data_json}\n')
 
@@ -101,7 +102,7 @@ class ChatConsumer(WebsocketConsumer):
             # если есть кого удалить
             if data_json.get('del'):
                 del_user_id = int(data_json.get('del'))
-                OrderCurator.objects.create(order_id=order_id, user_id=del_user_id)
+                OrderCurator.objects.filter(order_id=order_id, user_id=del_user_id).delete()
 
             async_to_sync(self.channel_layer.group_send)(
                 self.room_group_name, {"type": "curator.list", 'order_id': order_id}

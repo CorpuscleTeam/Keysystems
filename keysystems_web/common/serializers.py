@@ -132,7 +132,6 @@ class SimpleWithCurOrderSerializer(serializers.ModelSerializer):
     def get_curators(self, obj) -> str:
         curators = cm.OrderCurator.objects.select_related('user').filter(order=obj).all()
         curators_names = [curator.user.full_name for curator in curators]
-        log_error(f'curators_names: {curators_names}', wt=False)
         return ', '.join(curators_names) if curators_names else '...'
 
 

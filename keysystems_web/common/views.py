@@ -11,6 +11,7 @@ from .logs import log_error
 from enums import ChatType, RequestMethod, EditOrderAction
 
 
+# полные данные по заказу
 def get_order_data(request: HttpRequest, order_id):
     log_error('>>>>>>>>>>>>', wt=False)
     try:
@@ -122,10 +123,10 @@ def get_curator_view(request: HttpRequest):
     # log_error(f'fdata: {type(data)} {data}', wt=False)
     try:
         order_id = int(data.get('order_id', 0))
-        curators = UserKS.objects.filter(is_staff=True).all()
-        # curators = UserKS.objects.filter(is_staff=True).exclude(
-        #     id__in=OrderCurator.objects.filter(order_id=order_id).values('user_id')
-        # )
+        # curators = UserKS.objects.filter(is_staff=True).all()
+        curators = UserKS.objects.filter(is_staff=True).exclude(
+            id__in=OrderCurator.objects.filter(order_id=order_id).values('user_id')
+        )
 
         return JsonResponse(UserKSSerializer(curators, many=True).data, status=200, safe=False)
 
