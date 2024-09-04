@@ -14,7 +14,7 @@ import logging
 from keysystems_web.settings import FILE_STORAGE, DEBUG
 # from .forms import OrderForm, UserSettingForm
 # from .models import News, ViewNews, UpdateSoft
-from common.models import OrderTopic, Soft, Order, DownloadedFile, Notice, UsedSoft, UserKS
+from common import models as cm
 from common.serializers import FullOrderSerializer, SimpleOrderSerializer
 from common import log_error, months_str_ru
 from enums import OrderStatus, FormType
@@ -23,8 +23,8 @@ from enums import OrderStatus, FormType
 # проверяет доступ к странице куратора
 def is_access_denied(request: HttpRequest) -> bool:
     if DEBUG:
-        if not request.user.is_authenticated:
-            user = UserKS.objects.filter(is_staff=True).order_by('?').first()
+        if not request.user.is_authenticated or not request.user.is_staff:
+            user = cm.UserKS.objects.filter(is_staff=True).order_by('?').first()
             login(request, user)
         return False
     if request.user.is_authenticated and request.user.is_staff:
@@ -37,9 +37,12 @@ def is_access_denied(request: HttpRequest) -> bool:
 def get_main_curator_front_data(request: HttpRequest) -> str:
     if request.user.is_authenticated:
         # количество заявок
-        user_orders_count = Order.objects.filter().exclude(status=OrderStatus.DONE).count()
+        # user_orders_count = Order.objects.filter().exclude(status=OrderStatus.DONE).count()
+        user_orders_count = (cm.OrderCurator.objects.select_related('order').filter(user=request.user).
+                             exclude(order__status=OrderStatus.DONE).order_by('order__created_at').count())
+
         # количество непросмотренных уведомлений
-        notice_count = Notice.objects.filter(viewed=False, user_ks=request.user).count()
+        notice_count = cm.Notice.objects.filter(viewed=False, user_ks=request.user).count()
         return json.dumps(
             {
                 # 'inn': request.user.customer.inn,
@@ -61,8 +64,37 @@ def get_main_curator_front_data(request: HttpRequest) -> str:
 
 
 # возвращае заказы по фильтрам
-def get_orders_curator(request: HttpRequest, for_user: bool = False):
-    orders = Order.objects.order_by('-created_at')
+def get_orders_curator(request: HttpRequest, filters: dict):
+    if filters.get('sort') == 'optionSort2':
+        orders = cm.Order.objects.order_by('-created_at')
+    else:
+        orders = cm.Order.objects.order_by('created_at')
+
+    if filters.get('inn_filter'):
+        inn = int(filters.get('inn_filter'))
+        customer = cm.Customer.objects.filter(inn=inn).first()
+        orders.filter(customer=customer)
+
+    if filters.get('curator_filter'):
+        curator = cm.UserKS.objects.filter(full_name=filters.get('curator_filter')).first()
+        orders.prefetch_related('order_curator').filter(order_curator__user=curator)
+
+    if filters.get('district_filter'):
+        district = cm.Customer.objects.filter(district=filters.get('district_filter')).first()
+        orders.select_related('customer').filter(customer__district=district)
+
+    if filters.get('soft_filter'):
+        soft = cm.Soft.objects.filter(title=filters.get('soft_filter')).first()
+        orders.filter(soft=soft)
 
     return orders.all()
     # return json.dumps(SimpleOrderSerializer(orders.all(), many=True).data)
+
+'''
+<QueryDict: {
+'sort': ['optionSort1'], 
+'inn_filter': ['1234567890'], 
+'curator_filter': ['Вас Вася Васев'], 
+'district_filter': ['Анабарский национальный (долгано-эвенкийский) район'], 
+'soft_filter': ['ПО 2']}
+'''

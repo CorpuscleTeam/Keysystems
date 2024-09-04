@@ -135,32 +135,39 @@ def index_3_1(request: HttpRequest):
     if request.user.is_authenticated and not DEBUG:
         return redirect('redirect')
 
+    error_msg = ''
+
     if request.method == RequestMethod.POST:
         # log_error(request.POST, wt=False)
         reg_form = RegistrationForm(request.POST)
         inn = Customer.objects.filter(inn=reg_form.data.get('inn', 0))
         if reg_form.is_valid() and inn:
-
-            password = pass_gen()
-            #  тут пароль отправляем на почту
             email = reg_form.cleaned_data['email']
             email = email[len('mailto:'):] if email.startswith('mailto:') else email
-            send_pass_email(email=email, password=password)
+            user = UserKS.objects.filter(username=email).first()
+            if user:
+                error_msg = f'Почта {email} уже зарегистрирована'
 
-            new_user = UserKS(
-                username=email,
-                customer=Customer.objects.get(inn=reg_form.cleaned_data['inn']),
-                full_name=reg_form.cleaned_data['fio'],
-                phone=reg_form.cleaned_data['tel'],
-                password=make_password(password)
-            )
-            new_user.save()
+            else:
+                password = pass_gen()
+                #  тут пароль отправляем на почту
+                send_pass_email(email=email, password=password)
 
-            used_soft = Soft.objects.get(id=reg_form.cleaned_data['reg_progr'])
-            UsedSoft.objects.create(user=new_user, soft=used_soft)
-            return redirect(reverse('index_2_2') + f'?user={new_user.pk}')
+                new_user = UserKS(
+                    username=email,
+                    customer=Customer.objects.get(inn=reg_form.cleaned_data['inn']),
+                    full_name=reg_form.cleaned_data['fio'],
+                    phone=reg_form.cleaned_data['tel'],
+                    password=make_password(password)
+                )
+                new_user.save()
+
+                used_soft = Soft.objects.get(id=reg_form.cleaned_data['reg_progr'])
+                UsedSoft.objects.create(user=new_user, soft=used_soft)
+                return redirect(reverse('index_2_2') + f'?user={new_user.pk}')
 
     context = {
+        'error_msg': error_msg,
         'soft': serialize(format='json', queryset=Soft.objects.filter(is_active=True).all()),
         'inn': request.GET.get('inn', '')
     }

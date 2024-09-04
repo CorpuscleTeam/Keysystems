@@ -99,10 +99,15 @@ function isMyOrder(arr) {
 // функция для списка кураторов
 function createCuratorsList(selector, arr, status) {
     let myOrder = false
+    let curatorContainer = document.querySelector(selector)
+    curatorContainer.innerHTML = ''
     for (let i = 0; i < arr.length; i++) {
         let curatorForRequest = document.createElement('div')
         curatorForRequest.classList.add('curator_item')
-        document.querySelector(selector).appendChild(curatorForRequest)
+
+        // let curatorContainer = document.querySelector(selector)
+        // curatorContainer.innerHTML = ''
+        curatorContainer.appendChild(curatorForRequest)
 
         let curatorItemLeft = document.createElement('div')
         curatorItemLeft.classList.add('curator_item_left')

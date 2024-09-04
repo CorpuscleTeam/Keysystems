@@ -3,6 +3,9 @@ document.addEventListener('DOMContentLoaded', function() {
     var instances = M.Modal.init(elems);
   });
 
+// просмотр элемента
+console.log(filter)
+
   // МО Фильтр
 
 let modalFilter = document.createElement('div')
@@ -72,6 +75,12 @@ selectInnFilter.setAttribute('name', 'inn_filter')
 selectInnFilter.setAttribute('id', 'inn_filter')
 innFilter.appendChild(selectInnFilter)
 
+// добавил пустой выбор
+if (filter['inn_selected'] === null) {
+    const optionInnFilter = new Option('Все', '', true, true);
+    selectInnFilter.appendChild(optionInnFilter);
+}
+
     // добавить объект
 for(let i=0; i<filter['inn_list'].length; i++) {
     let optionInnFilter = document.createElement('option')
@@ -98,6 +107,12 @@ let selectCuratorFilter = document.createElement('select')
 selectCuratorFilter.setAttribute('name', 'curator_filter')
 selectCuratorFilter.setAttribute('id', 'curator_filter')
 curatorFilter.appendChild(selectCuratorFilter)
+
+// добавил пустой выбор
+if (filter['cur_selected'] === null) {
+    const optionCuratorFilter = new Option('Все', '', true, true);
+    selectCuratorFilter.appendChild(optionCuratorFilter);
+}
 
     // добавить объект
 for(let i=0; i<filter['cur_list'].length; i++) {
@@ -126,6 +141,13 @@ selectDistrictFilter.setAttribute('name', 'district_filter')
 selectDistrictFilter.setAttribute('id', 'district_filter')
 districtFilter.appendChild(selectDistrictFilter)
 
+// добавил пустой выбор
+if (filter['dist_selected'] === null) {
+    const optionDistrictFilter = new Option('Все', '', true, true);
+    selectDistrictFilter.appendChild(optionDistrictFilter);
+}
+
+
     // добавить объект
 for(let i=0; i<filter['dist_list'].length; i++) {
     let optionDistrictFilter = document.createElement('option')
@@ -152,6 +174,14 @@ let selectSoftFilter = document.createElement('select')
 selectSoftFilter.setAttribute('name', 'soft_filter')
 selectSoftFilter.setAttribute('id', 'soft_filter')
 softFilter.appendChild(selectSoftFilter)
+
+
+// добавил пустой выбор
+if (filter['soft_selected'] === null) {
+    const optionSoftFilter = new Option('Все', '', true, true);
+    selectSoftFilter.appendChild(optionSoftFilter);
+}
+
 
     // добавить объект
 for(let i=0; i<filter['soft_list'].length; i++) {
