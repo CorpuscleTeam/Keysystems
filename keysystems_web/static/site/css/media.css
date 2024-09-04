@@ -12,29 +12,43 @@
         flex-direction: column;
     } */
 }
+
+@media screen and (max-width: 940px) {
+    .footer_flex {
+        margin: 0;
+    }
+}
+
 @media screen and (max-width: 850px) {
     .page_flex_menu {
         padding: 10px;
     }
+
     .page_flex_body {
         padding: 10px;
     }
+
     .page_news_header {
         flex-direction: column;
     }
+
     .page_menu_li_flex {
         padding-left: 15px;
         padding-right: 15px;
     }
 }
+
 @media screen and (max-width: 600px) {
+
     /* Авторизация */
     .header_start {
         display: none;
     }
-   .header_mobile {
-    display: block;
-   }
+
+    .header_mobile {
+        display: block;
+    }
+
     .header_mobile_logo {
         display: flex;
         justify-content: left;
@@ -45,23 +59,26 @@
         box-shadow: 0px 2px 5px 0px rgba(50, 50, 50, 0.15);
         margin-bottom: 15px;
     }
+
     .header_mobile_logo img {
         padding-left: 15px;
         max-width: 277px;
         width: 100%;
     }
+
     .btn_back {
         padding-left: 15px;
     }
-    
+
     /* Клиентская панель */
     .header_start_client {
         display: none;
     }
+
     .header_client {
         display: none;
     }
-    
+
     .header_mobile_client {
         display: flex;
         justify-content: space-between;
@@ -72,14 +89,19 @@
         box-shadow: 0px 2px 5px 0px rgba(50, 50, 50, 0.15);
         margin-bottom: 15px;
     }
+
     .header_mobile_client_logo img {
         padding-left: 15px;
         max-width: 277px;
         width: 100%;
     }
+
     .header_mobile_client_burger {
         border-left: rgba(231, 231, 231, 1) solid 1px;
         height: 54px;
+    }
+    .footer_flex {
+        margin-bottom: 0;
     }
 
     /* Тело страницы */
@@ -87,23 +109,34 @@
         display: grid;
         grid-template-columns: 1fr;
     }
+
     .page_flex_menu {
         display: none;
     }
+
     .page_flex_body {
         padding: 12px;
     }
-/* вкладки для мобильных */
+
+    /* вкладки для мобильных */
+
+    .tabs .tab a {
+        justify-content: flex-start;
+    }
+
     .groups_orders {
         display: none;
     }
+
     .page_body_right {
         display: none;
     }
+
     .mobile_tabs_request {
         display: flex;
         flex-direction: column;
     }
+
     .mob_orders_grid {
         display: grid;
         grid-template-columns: repeat(1, 1fr);

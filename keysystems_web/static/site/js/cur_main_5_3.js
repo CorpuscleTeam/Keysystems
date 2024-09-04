@@ -77,13 +77,13 @@ document.querySelectorAll('.modal_cr_order').forEach(link => {
                     <ul class="tabs">
                         <li class="tab"><a href="#tab1">Описание</a></li>
                         <li class="tab">
-                            <a href="#tab2">
+                            <a href="#tab2" id="id_client_chat">
                                 <div class="order_tab">Комментарии</div>
 
                             </a>
                         </li>
                         <li class="tab">
-                            <a href="#tab3">
+                            <a href="#tab3"  id="id_curator_chat">
                                 <div class="order_tab">Чат кураторов</div>
 
                             </a>
@@ -180,7 +180,7 @@ document.querySelectorAll('.modal_cr_order').forEach(link => {
                     textPOClientTab.classList.add('text_in_modal')
                     textPOClientTab.innerHTML = data['order']['soft']['title']
                     document.querySelector('.select_PO').appendChild(textPOClientTab)
-                } else {                    
+                } else {
                     selectPO('#soft_in_chat', data['soft'], data.order.soft.title)
                 }
 
@@ -236,7 +236,8 @@ document.querySelectorAll('.modal_cr_order').forEach(link => {
                     });
                 });
 
-
+                notice('id_client_chat', mainData['unv_msg_client'])
+                notice('id_curator_chat', mainData['unv_msg_curator'])
 
 
 
