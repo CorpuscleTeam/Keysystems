@@ -279,12 +279,14 @@ function modalAddCurators(selector) {
 
                     let btnAddCuratorCancel = document.createElement('a')
                     btnAddCuratorCancel.classList.add('btn_support_cancel')
+                    btnAddCuratorCancel.classList.add('modal-close')
                     btnAddCuratorCancel.innerHTML = `Отмена`
                     footerAddCurator.appendChild(btnAddCuratorCancel)
 
                     let btnAddCuratorSubmit = document.createElement('button')
                     btnAddCuratorSubmit.setAttribute('id', 'btnAddCurator')
                     btnAddCuratorSubmit.classList.add('btn_support_submit')
+                    btnAddCuratorSubmit.classList.add('modal-close')
                     // btnAddCuratorSubmit.innerHTML = `Добавить`
 
                     let delUser = null
