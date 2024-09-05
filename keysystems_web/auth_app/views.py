@@ -62,7 +62,6 @@ def index_2(request: HttpRequest):
 
             else:
                 return redirect('index_2_2')
-        else:
 
     context = {**error_msg}
     return render(request, 'auth/index_2.html', context)
