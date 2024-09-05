@@ -239,7 +239,17 @@ document.querySelectorAll('.modal_cr_order').forEach(link => {
                 notice('id_client_chat', data['unv_msg_client'])
                 notice('id_curator_chat', data['unv_msg_curator'])
 
+                if (!window.mgtOrder) {
+                    let withoutFooter = document.querySelector('#tab2 .footer_message')
+                    withoutFooter.style.display = 'none'
+                }
 
+                document.querySelector('#tab1 select').addEventListener('change', function () {
+                    let selectedOption = this.options[this.selectedIndex].value
+                    console.log(`Вы выбрали вариант ${selectedOption}`)
+                    // console.log(`Вы выбрали вариант &&&`)
+                })
+                
 
                 // btn_mark_status (data['order']['status'])
 
