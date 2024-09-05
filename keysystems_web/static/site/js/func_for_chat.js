@@ -602,23 +602,23 @@ function getCSFRT() {
 
 
 // удаление кнопки для клиентской МО статус заявки
-function noBtnNewReq() {
-    let btnNewReq = document.querySelector('.btn_new_req')
-    btnNewReq.remove()
-}
+// function noBtnNewReq() {
+//     let btnNewReq = document.querySelector('.btn_new_req')
+//     btnNewReq.remove()
+// }
 // кнопка "вернуть в работу"
-function btnBackReq() {
-    let linkBackReq = document.createElement('a')
-    linkBackReq.classList.add('modal-trigger')
-    linkBackReq.setAttribute('href', '#modalBackToWork')
-    document.querySelector('#tab1').appendChild(linkBackReq)
+// function btnBackReq() {
+//     let linkBackReq = document.createElement('a')
+//     linkBackReq.classList.add('modal-trigger')
+//     linkBackReq.setAttribute('href', '#modalBackToWork')
+//     document.querySelector('#tab1').appendChild(linkBackReq)
 
-    let btnBackReq = document.createElement('button')
-    btnBackReq.classList.add('status_work_req')
-    btnBackReq.classList.add('btn_req_p')
-    btnBackReq.innerHTML = 'Вернуть в работу'
-    linkBackReq.appendChild(btnBackReq)
-}
+//     let btnBackReq = document.createElement('button')
+//     btnBackReq.classList.add('status_work_req')
+//     btnBackReq.classList.add('btn_req_p')
+//     btnBackReq.innerHTML = 'Вернуть в работу'
+//     linkBackReq.appendChild(btnBackReq)
+// }
 
 
 // МО "вернуть в работу"
