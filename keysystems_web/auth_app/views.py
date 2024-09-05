@@ -5,10 +5,14 @@ from django.urls import reverse
 from django.contrib.auth.hashers import make_password, check_password
 from django.core.serializers import serialize
 
+import logging
+
 from keysystems_web.settings import DEBUG
 from .forms import AuthBaseForm, RegistrationForm, PasswordForm, AuthUserForm
+from .models import Password
 from common.models import UserKS, Soft, Customer, District, UsedSoft
-from common import log_error, pass_gen, send_pass_email, yakutia_districts
+from common.logs import log_error
+from common import log_error, pass_gen, send_password_email, get_current_url
 from enums import RequestMethod
 
 
@@ -30,18 +34,12 @@ def logout_view(request):
     return redirect('redirect')
 
 
-# заглушка
-def indev_view(request):
-    context = {}
-    return render(request, 'in_dev.html', context)
-
-
 # первая клиентская страница. Просит инн
 def index_2(request: HttpRequest):
     if request.user.is_authenticated and not DEBUG:
         return redirect('redirect')
 
-    error_msg = ''
+    error_msg = {'text_error': '', 'type_error': ''}
     if request.method == RequestMethod.POST:
         form = AuthBaseForm(request.POST)
         if form.is_valid():
@@ -54,7 +52,7 @@ def index_2(request: HttpRequest):
                 if costumer:
                     return redirect(reverse('index_3_1') + f'?inn={input_inn}')
                 else:
-                    error_msg = 'ИНН не зарегистрирован'
+                    error_msg = {'text_error': 'ИНН не зарегистрирован', 'type_error': 'inn'}
 
             elif len(users_inn) == 1:
                 return redirect(reverse('index_2_2') + f'?user={users_inn[0].pk}')
@@ -65,10 +63,8 @@ def index_2(request: HttpRequest):
             else:
                 return redirect('index_2_2')
         else:
-            error_msg = 'Ошибка ввода'
-    error_msg = 'Ошибка ввода'
-    # context = {'error_msg': error_msg}
-    context = {'text_error': error_msg, 'type_error': 'inn'}
+
+    context = {**error_msg}
     return render(request, 'auth/index_2.html', context)
 
 
@@ -77,7 +73,9 @@ def index_2_1(request: HttpRequest):
     if request.user.is_authenticated and not DEBUG:
         return redirect('redirect')
 
-    error_msg = ''
+    error_msg = {'text_error': '', 'type_error': ''}
+    input_inn = request.GET.get('inn', '')
+    input_email = request.POST.get('email')
     if request.method == RequestMethod.POST:
         auth_form = AuthUserForm(request.POST)
         if auth_form.is_valid():
@@ -87,16 +85,28 @@ def index_2_1(request: HttpRequest):
                 username=auth_form.cleaned_data['email']
             ).first()
             if user:
+                password = pass_gen()
+                new_pass = Password(password=password, user=user)
+                new_pass.save()
+                #  тут пароль отправляем на почту
+                login_url = f'http://{request.get_host()}/index_2_2?pass={new_pass.pk}'
+
+                send_password_email(user_email=user.username, password=password, login_url=login_url)
                 return redirect(reverse('index_2_2') + f'?user={user.pk}')
 
             else:
                 return redirect('index_3_1')
 
         else:
-            error_msg = 'Ошибка ввода'
+            error_data = auth_form.errors.as_data()
+            if error_data.get('inn'):
+                error_msg = {'text_error': 'Неправильный формат ИНН', 'type_error': 'inn'}
+            elif error_data.get('email'):
+                error_msg = {'text_error': 'Некорректный email', 'type_error': 'email'}
+            else:
+                error_msg = {'text_error': 'Ошибка ввода', 'type_error': 'inn'}
 
-    inn = request.GET.get('inn', '')
-    context = {'inn': inn, 'error_msg': error_msg}
+    context = {**error_msg, 'inn': input_inn, 'email': input_email}
     return render(request, 'auth/index_2_1.html', context)
 
 
@@ -106,27 +116,35 @@ def index_2_2(request: HttpRequest):
     if request.user.is_authenticated and not DEBUG:
         return redirect('redirect')
 
-    error_msg = None
+    error_msg = {'text_error': '', 'type_error': ''}
+    pass_id = request.GET.get('pass', 0)
+
     if request.method == RequestMethod.POST:
         pass_form = PasswordForm(request.POST)
         if pass_form.is_valid():
-            user_id = request.POST.get('user_id', 0)
-            user = UserKS.objects.filter(id=user_id).first()
+            # user_id = request.POST.get('pass', 0)
+            # user = UserKS.objects.filter(id=user_id).first()
+            user_info = Password.objects.select_related('user').filter(
+                password=pass_form.cleaned_data['password'],
+                id=int(pass_id)
+            ).first()
 
-            if user and check_password(pass_form.cleaned_data['password'], user.password):
-                login(request, user)
+            if user_info:
+                login(request, user_info.user)
                 if not pass_form.cleaned_data['checkbox']:
                     request.session.set_expiry(0)
 
+                user_info.delete()  # удаляем использованный пароль
                 return redirect('redirect')
 
             else:
-                error_msg = 'Неверный пароль'
+                error_msg = {'text_error': 'Неверный пароль', 'type_error': 'password'}
+        else:
+            error_msg = {'text_error': 'Пароль не найден', 'type_error': 'password'}
 
-    user_id = request.GET.get('user')
     context = {
-        'error_msg': error_msg,
-        'user_id': user_id
+        **error_msg,
+        'pass_id': pass_id
     }
     return render(request, 'auth/index_2_2.html', context)
 
@@ -136,7 +154,7 @@ def index_3_1(request: HttpRequest):
     if request.user.is_authenticated and not DEBUG:
         return redirect('redirect')
 
-    error_msg = ''
+    error_msg = {'text_error': '', 'type_error': ''}
 
     if request.method == RequestMethod.POST:
         # log_error(request.POST, wt=False)
@@ -150,25 +168,42 @@ def index_3_1(request: HttpRequest):
                 error_msg = f'Почта {email} уже зарегистрирована'
 
             else:
-                password = pass_gen()
-                #  тут пароль отправляем на почту
-                send_pass_email(email=email, password=password)
-
                 new_user = UserKS(
                     username=email,
                     customer=Customer.objects.get(inn=reg_form.cleaned_data['inn']),
                     full_name=reg_form.cleaned_data['fio'],
-                    phone=reg_form.cleaned_data['tel'],
-                    password=make_password(password)
+                    phone=reg_form.cleaned_data['tel']
                 )
                 new_user.save()
 
+                #  тут пароль отправляем на почту
+                password = pass_gen()
+                new_pass = Password(password=password, user=new_user)
+                new_pass.save()
+                login_url = f'http://{request.get_host()}/index_2_2?pass={new_pass.pk}'
+                send_password_email(user_email=email, password=password, login_url=login_url)
+                # send_pass_email(email=email, password=password)
+
                 used_soft = Soft.objects.get(id=reg_form.cleaned_data['reg_progr'])
                 UsedSoft.objects.create(user=new_user, soft=used_soft)
-                return redirect(reverse('index_2_2') + f'?user={new_user.pk}')
+                return redirect(reverse('index_2_2') + f'?pass={new_pass.pk}')
+                # return redirect(reverse('index_2_2') + f'?user={new_user.pk}')
+
+        else:
+            error_data = reg_form.errors.as_data()
+            if error_data.get('inn'):
+                error_msg = {'text_error': 'Неправильный формат ИНН', 'type_error': 'inn'}
+            elif error_data.get('email'):
+                error_msg = {'text_error': 'Некорректный email', 'type_error': 'email'}
+            elif error_data.get('fio'):
+                error_msg = {'text_error': 'Имя не может быть пустым', 'type_error': 'fio'}
+            elif error_data.get('tel'):
+                error_msg = {'text_error': 'Телефон не может быть пустым', 'type_error': 'tel'}
+            else:
+                error_msg = {'text_error': 'Ошибка ввода', 'type_error': 'inn'}
 
     context = {
-        'error_msg': error_msg,
+        **error_msg,
         'soft': serialize(format='json', queryset=Soft.objects.filter(is_active=True).all()),
         'inn': request.GET.get('inn', '')
     }

@@ -105,7 +105,7 @@ class ViewAdminNews(admin.ModelAdmin):
 if DEBUG:
     @admin.register(Notice)
     class ViewAdminNews(admin.ModelAdmin):
-        list_display = ['type_notice']
+        list_display = ['text']
 
 
 # сообщения

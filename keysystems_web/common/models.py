@@ -171,13 +171,13 @@ class Notice(models.Model):
     updated_at = models.DateTimeField('Обновлена', auto_now=True)
     order = models.ForeignKey(Order, on_delete=models.CASCADE, related_name='notice')
     user_ks = models.ForeignKey(UserKS, on_delete=models.CASCADE, related_name='notice')
-    type_notice = models.CharField('Текст', max_length=255)
+    text = models.CharField('Текст', max_length=255)
     viewed = models.BooleanField(default=False)
 
     objects: models.Manager = models.Manager()
 
     def __str__(self):
-        return f"Notice {self.type_notice}"
+        return f"Notice {self.text}"
 
     class Meta:
         verbose_name = 'Уведомление'

@@ -18,8 +18,7 @@ def get_order_data(request: HttpRequest, order_id):
         log_error(f'{order_id}', wt=False)
 
         order = Order.objects.filter(id=order_id).first()
-        messages = Message.objects.filter(order=order).order_by('created_at')
-        # messages = Message.objects.order_by('created_at')
+        messages = Message.objects.prefetch_related('view_message').filter(order=order).order_by('created_at')
 
         # разделяем чаты на клиентский и кураторский
         client_messages = messages.filter(chat=ChatType.CLIENT.value)

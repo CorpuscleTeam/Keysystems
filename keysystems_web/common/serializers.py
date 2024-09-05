@@ -212,4 +212,4 @@ class NoticeSerializer(serializers.ModelSerializer):
         return ut.get_date_string(obj.created_at)
 
     def get_text(self, obj):
-        return obj.type_notice
+        return obj.text

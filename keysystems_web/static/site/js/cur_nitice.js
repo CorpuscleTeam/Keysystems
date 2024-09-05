@@ -1,6 +1,9 @@
 function notice(selector, num) {
     // console.log(`${selector} найден`)
     let parentElem = document.getElementById(selector)
+    if (!parentElem) {
+        return
+    }
 
     if (parentElem) {
         let countNum = parentElem.querySelector('.page_menu_li_right')
