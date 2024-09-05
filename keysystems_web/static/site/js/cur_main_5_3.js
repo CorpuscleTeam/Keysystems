@@ -114,18 +114,18 @@ document.querySelectorAll('.modal_cr_order').forEach(link => {
                                 <div id="client_chat" cols="100" rows="20" class="chat_area"></div>
                             <div class="footer_message">
                                 <input id="client-msg-input" class="chat-message-input" type="text" size="100">
-                                <p>
+                                <div>
                                     <input id="client-msg-file" name="client-msg-file" class="chat_add_file" type="file" multiple style="display: none;">
                                         <label for="client-msg-file" class="chat_add_file">
                                         <img src="${addFile2}" alt="">
                                     </label>
-                                </p>
-                                <p>
+                                </div>
+                                <div>
                                     <input id="client-msg-submit" name="client-msg-submit" class="chat_submit" type="button" value="Send" style="display: none;">
                                         <label for="client-msg-submit" class="chat_submit">
                                         <img src="${sentMsg}" alt="">
                                     </label>
-                                </p>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -135,18 +135,18 @@ document.querySelectorAll('.modal_cr_order').forEach(link => {
                             <div id="curator_chat" cols="100" rows="20" class="chat_area"></div>
                             <div class="footer_message">
                                 <input id="curator-msg-input" name="curator-msg-input" class="chat-message-input" type="text" size="100">
-                                <p>
+                                <div>
                                     <input id="curator-msg-file" name="curator-msg-file" class="chat_add_file" type="file" multiple style="display: none;">
                                     <label for="curator-msg-file" class="chat_add_file">
                                         <img src="${addFile2}" alt="">
                                     </label>
-                                </p>
-                                <p>
+                                </div>
+                                <div>
                                     <input id="curator-msg-submit" name="curator-msg-submit" class="chat_submit" type="button" value="Send" style="display: none;">
                                         <label for="curator-msg-submit" class="chat_submit">
                                         <img src="${sentMsg}" alt="">
                                     </label>
-                                </p>
+                                </div>
                             </div>
                         </div>
                     </div>
