@@ -63,7 +63,6 @@ def index_2(request: HttpRequest):
             else:
                 return redirect('index_2_2')
         else:
-            error_msg = {'text_error': 'Ошибка ввода', 'type_error': 'inn'}
 
     context = {**error_msg}
     return render(request, 'auth/index_2.html', context)
