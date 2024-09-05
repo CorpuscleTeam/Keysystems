@@ -213,6 +213,9 @@ document.querySelectorAll('.modal_cr_order').forEach(link => {
                 // !!_проперить надо ли?
                 let curator_chat = createChat('#curator_chat', data.curator_chat, data.user_id, BASE.CURATOR)
 
+                notice('id_client_chat', data['unv_msg_client'])
+                notice('id_curator_chat', data['unv_msg_curator'])
+
                 // вкладки
                 document.querySelectorAll('.tabs .tab a').forEach(tabLink => {
                     tabLink.addEventListener('click', function (event) {
@@ -223,18 +226,30 @@ document.querySelectorAll('.modal_cr_order').forEach(link => {
                         window.selectedTab = selectedTab
 
                         // вернуться позже сюда!!!
-                        if (selectedTab == '#tab2') {
-                            let chat = document.querySelector('#client_chat_item')
-                            if (chat) {
-                                chat.scrollTop = chat.scrollHeight
-                            }
-
+                        if (window.selectedTab != '#tab1') {
+                            window.chatSocket.send(JSON.stringify({
+                                'event': 'view_tab',
+                                'tab': window.selectedTab,
+                                'order_id': window.orderId,
+                                'user_id': window.userId
+                            }));
+                        
+                        // удаляем циферку
+                        if (window.selectedTab == '#tab2') {
+                            notice('id_client_chat', 0)
+                            chat.scrollTop = chat.scrollHeight
+                            } 
+                        else if (window.selectedTab == '#tab3') {
+                            notice('id_curator_chat', 0)
+                            chat.scrollTop = chat.scrollHeight
+                                }
                         }
 
                         // Логируем ID открытой вкладки
                         console.log('Открыта вкладка:', selectedTab);
                     });
                 });
+
 
                 notice('id_client_chat', data['unv_msg_client'])
                 notice('id_curator_chat', data['unv_msg_curator'])
@@ -250,6 +265,7 @@ document.querySelectorAll('.modal_cr_order').forEach(link => {
                     // console.log(`Вы выбрали вариант &&&`)
                 })
                 
+
 
                 // btn_mark_status (data['order']['status'])
 

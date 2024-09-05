@@ -14,7 +14,7 @@ class AuthUserForm(forms.Form):
 
 # проверка пароля
 class PasswordForm(forms.Form):
-    checkbox = forms.BooleanField()
+    checkbox = forms.BooleanField(required=False)
     password = forms.CharField()
 
 

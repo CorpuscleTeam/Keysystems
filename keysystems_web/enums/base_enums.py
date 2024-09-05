@@ -68,9 +68,18 @@ class EditOrderAction(str, Enum):
     EDIT_SOFT = 'edit_soft'
     EDIT_CURATOR = 'edit_curator'
     EDIT_STATUS = 'edit_status'
+    VIEW_TAB = 'view_tab'
 
     ADD_CURATOR = 'add_curator'
     DEL_CURATOR = 'del_curator'
+
+
+# вкладки
+class TAB(str, Enum):
+    TAB1 = 'tab1'
+    TAB2 = 'tab2'
+    TAB3 = 'tab3'
+
 
 
 # темы обращения

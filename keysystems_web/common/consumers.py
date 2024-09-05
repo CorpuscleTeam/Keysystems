@@ -8,9 +8,9 @@ import random
 from . import utils as ut
 from . import redis_utils as ru
 from .logs import log_error
-from .models import Message, UserKS, Order, OrderCurator, Notice
+from .models import Message, UserKS, Order, OrderCurator, Notice, ViewMessage
 from .serializers import MessageSerializer, UserKSSerializer
-from enums import ChatType, NoticeType, MsgType, notices_dict, EditOrderAction
+from enums import ChatType, NoticeType, MsgType, notices_dict, EditOrderAction, TAB
 
 
 class ChatConsumer(WebsocketConsumer):
@@ -134,6 +134,27 @@ class ChatConsumer(WebsocketConsumer):
             async_to_sync(self.channel_layer.group_send)(
                 self.room_group_name, {"type": "select.status", 'status': data_json['status']}
             )
+
+        # отмечает сообщения просмотренными
+        elif data_json['event'] == EditOrderAction.VIEW_TAB:
+            order_id = int(data_json['order_id'])
+            user_id = int(data_json['user_id'])
+            tab = data_json['tab'][1:]
+            chat = ChatType.CLIENT.value if tab == TAB.TAB2 else ChatType.CURATOR.value
+
+            log_error(f'tab: {tab}\norder_id: {order_id}\nuser_id: {user_id}\n', wt=False)
+
+            viewed_msgs = Message.objects.filter(chat=chat, order_id=order_id).all()
+            log_error(f'viewed_msgs: {len(viewed_msgs)}', wt=False)
+            for msg in viewed_msgs:
+                ViewMessage.objects.create(message=msg, user_ks_id=user_id)
+
+    '''
+    'event': 'view_tab',
+    'tab': window.selectedTab,
+    'order_id': window.orderId,
+    'user_id': window.userId
+    '''
 
     # обновляет сообщения в чате
     def chat_message(self, event):
