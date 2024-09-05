@@ -35,6 +35,8 @@ def get_order_data(request: HttpRequest, order_id):
             client_unviewed_message = client_messages.filter(~Q(view_message__user_ks=request.user)).distinct().count()
             curator_unviewed_message = curator_messages.filter(~Q(view_message__user_ks=request.user)).distinct().count()
             user_id = request.user.id
+            client_unviewed_message = 1
+            curator_unviewed_message = 2
 
         else:
             client_unviewed_message = 1
