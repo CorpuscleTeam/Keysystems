@@ -1,24 +1,29 @@
 function notice(selector, num) {
+    // console.log(`${selector} найден`)
     let parentElem = document.getElementById(selector)
 
-    let countNum = parentElem.querySelector('.page_menu_li_right')
-    countNum.classList.add('orders_count')
+    if (parentElem) {
+        let countNum = parentElem.querySelector('.page_menu_li_right')
+        // countNum.classList.add('orders_count')
 
-    if (num == 0 && countNum) {
-        countNum.remove()
-    }
-    else if (num > 0 && !countNum) {
-        let countNum = document.createAttribute('div')
-        countNum.classList.add('page_menu_li_right')
-        countNum.classList.add('orders_count')
-        countNum.innerHTML = num
+        if (num == 0 && countNum) {
+            countNum.remove()
+        }
+        else if (num > 0 && !countNum) {
+            let countNum = document.createElement('div')
+            countNum.classList.add('page_menu_li_right')
+            countNum.classList.add('orders_count')
+            countNum.innerHTML = num
 
-        parentElem.appendChild(countNum)
-    }
-    else if (num > 0 && countNum) {
-        let newNum = parseInt(countNum.textContent)
-        newNum += num
-        countNum.innerHTML = newNum
+            parentElem.appendChild(countNum)
+        }
+        else if (num > 0 && countNum) {
+            let newNum = parseInt(countNum.textContent)
+            newNum += num
+            countNum.innerHTML = newNum
+        }
+    } else {
+        console.log(`${selector} не найден`)
     }
 }
 
@@ -28,8 +33,11 @@ notice('id_menu_request_mob', mainData['orders_count'])
 notice('id_menu_push', mainData['notice'])
 notice('id_menu_push_mob', mainData['notice'])
 
+
 notice('id_menu_updatePO', mainData['update_count'])
 notice('id_menu_updatePO_mob', mainData['update_count'])
+
+
 
 // для чатов
 

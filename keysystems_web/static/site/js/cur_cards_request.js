@@ -85,7 +85,7 @@ titleOfNewOrders.innerHTML = 'Задачи'
 headerOfNewOrders.appendChild(titleOfNewOrders)
 
 // let countOfNewOrders = document.createElement('p')
-// countOfNewOrders.innerHTML = new_orders.length
+// countOfNewOrders = 0
 // headerOfNewOrders.appendChild(countOfNewOrders)
 
 // карточки с заявками
@@ -154,6 +154,7 @@ for (let i = 0; i < card_orders.length; i++) {
 
     if (card_orders[i]['status'] == 'new') {
         newOrderFlex.appendChild(card)
+
     }
     if (card_orders[i]['status'] == 'active') {
         activeOrderFlex.appendChild(card)
@@ -163,5 +164,22 @@ for (let i = 0; i < card_orders.length; i++) {
     }
 }
 
+let countOfNewOrders = document.createElement('p')
+countOfNewOrders.classList.add('count_orders')
+let quantityNewOrders = newOrderFlex.querySelectorAll('.modal_cr_order').length
+countOfNewOrders.innerHTML = quantityNewOrders
+headerOfNewOrders.appendChild(countOfNewOrders)
+
+let countOfActiveOrders = document.createElement('p')
+countOfActiveOrders.classList.add('count_orders')
+let quantityActiveOrders = activeOrderFlex.querySelectorAll('.modal_cr_order').length
+countOfActiveOrders.innerHTML = quantityActiveOrders
+headerOfActiveOrders.appendChild(countOfActiveOrders)
+
+let countOfDoneOrders = document.createElement('p')
+countOfDoneOrders.classList.add('count_orders')
+let quantityDoneOrders = doneOrderFlex.querySelectorAll('.modal_cr_order').length
+countOfDoneOrders.innerHTML = quantityDoneOrders
+headerOfDoneOrders.appendChild(countOfDoneOrders)
 
 

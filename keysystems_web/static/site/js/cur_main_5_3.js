@@ -78,13 +78,13 @@ document.querySelectorAll('.modal_cr_order').forEach(link => {
                         <li class="tab"><a href="#tab1">Описание</a></li>
                         <li class="tab">
                             <a href="#tab2" id="id_client_chat">
-                                <div class="order_tab">Комментарии</div>
+                                <div class="order_tab chat_tab">Комментарии</div>
 
                             </a>
                         </li>
                         <li class="tab">
                             <a href="#tab3"  id="id_curator_chat">
-                                <div class="order_tab">Чат кураторов</div>
+                                <div class="order_tab chat_tab">Чат кураторов</div>
 
                             </a>
                         </li>
@@ -110,7 +110,7 @@ document.querySelectorAll('.modal_cr_order').forEach(link => {
                     </div>
                     
                     <div id="tab2" class="tab-content">
-                        <div class="client_chat">
+                        <div class="client_chat chat_flex">
                                 <div id="client_chat" cols="100" rows="20" class="chat_area"></div>
                             <div class="footer_message">
                                 <input id="client-msg-input" class="chat-message-input" type="text" size="100">
@@ -131,7 +131,7 @@ document.querySelectorAll('.modal_cr_order').forEach(link => {
                     </div>
                     
                     <div id="tab3" class="tab-content">
-                        <div class="curator_chat">
+                        <div class="curator_chat chat_flex">
                             <div id="curator_chat" cols="100" rows="20" class="chat_area"></div>
                             <div class="footer_message">
                                 <input id="curator-msg-input" name="curator-msg-input" class="chat-message-input" type="text" size="100">
@@ -236,8 +236,8 @@ document.querySelectorAll('.modal_cr_order').forEach(link => {
                     });
                 });
 
-                notice('id_client_chat', mainData['unv_msg_client'])
-                notice('id_curator_chat', mainData['unv_msg_curator'])
+                notice('id_client_chat', data['unv_msg_client'])
+                notice('id_curator_chat', data['unv_msg_curator'])
 
 
 
