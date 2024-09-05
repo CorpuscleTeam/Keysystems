@@ -13,7 +13,6 @@ from common import views as com
 urlpatterns = [
     path('', reg.start_page_redirect, name='redirect'),
     path('logout', reg.logout_view, name='logout'),
-    path('in_dev', reg.indev_view, name='in_dev'),
 
     path("edit-order", com.edit_order_view),
     path("tab-action", com.viewed_msg_view),

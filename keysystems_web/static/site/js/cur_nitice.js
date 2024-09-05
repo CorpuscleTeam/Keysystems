@@ -1,14 +1,17 @@
 function notice(selector, num) {
     let parentElem = document.getElementById(selector)
+    if (!parentElem) {
+        return
+    }
 
     let countNum = parentElem.querySelector('.page_menu_li_right')
-    countNum.classList.add('orders_count')
+    // countNum.classList.add('orders_count')
 
     if (num == 0 && countNum) {
         countNum.remove()
     }
     else if (num > 0 && !countNum) {
-        let countNum = document.createAttribute('div')
+        let countNum = document.createElement('div')
         countNum.classList.add('page_menu_li_right')
         countNum.classList.add('orders_count')
         countNum.innerHTML = num
