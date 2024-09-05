@@ -65,11 +65,11 @@
                         </p>
                         <p>
                             <label for="fio">ФИО ответственного</label>
-                            <input type="text" name="fio" id="fio">
+                            <input type="text" name="fio" id="fio" value="{{ fio }}">
                         </p>
                         <p>
                             <label for="tel">Телефон</label>
-                            <input type="tel" name="tel" id="tel">
+                            <input type="tel" name="tel" id="tel" value="{{ tel }}">
                         </p>
                         <a class="waves-effect waves-light btn modal-trigger enter_button" href="#modalConfirm">Отправить запрос</a>
                         <div class="confirm">
@@ -113,11 +113,15 @@
     <!-- переменная ПО -->
     <script>
         let optionPO = JSON.parse('{{ soft|escapejs }}')
+
+        let text_error = '{{ text_error }}'
+        let type_error = '{{ type_error }}'
     </script>
 
     <script type="text/javascript" src="{% static 'site/js/materialize.min.js' %}"></script>
     <script type="text/javascript" src="{% static 'site/js/main_modal.js' %}"></script>
     <script type="text/javascript" src="{% static 'site/js/main_reg_3_1.js' %}"></script>
+    <script type="text/javascript" src="{% static 'site/js/reg_error.js' %}"></script>
 
 </body>
 
