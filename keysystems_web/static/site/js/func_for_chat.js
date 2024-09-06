@@ -708,7 +708,6 @@ function initOrderSocket(roomName, userId) {
         let withHeader = true
 
         if (data.type == 'msg') {
-            console.log(BASE.CLIENT)
             if (data.message.chat == BASE.CLIENT) {
                 if (data.message.from_user.id == window.lastMsgForClientChat) {
                     withHeader = false
@@ -720,6 +719,11 @@ function initOrderSocket(roomName, userId) {
                 // Прокрутка вниз при получении нового сообщения
                 chat_message.scrollTop = chat_message.scrollHeight;
                 window.lastMsgForClientChat = data.message.from_user.id
+
+                // меняем цифорку сообщений 
+                if (window.selectedTab != '#tab2') {
+                    notice('id_client_chat', 1)
+                    } 
             } else {
                 if (data.message.from_user.id == window.lastMsgForCuratorChat) {
                     withHeader = false
@@ -731,7 +735,11 @@ function initOrderSocket(roomName, userId) {
                 // Прокрутка вниз при получении нового сообщения
                 chat_message.scrollTop = chat_message.scrollHeight;
                 window.lastMsgForCuratorChat = data.message.from_user.id
-                console.log('end')
+
+                // меняем цифорку сообщений 
+                if (window.selectedTab != '#tab3') {
+                    notice('id_curator_chat', 1)
+                    } 
             }
         }
         else if (data.type == 'edit_curator') {

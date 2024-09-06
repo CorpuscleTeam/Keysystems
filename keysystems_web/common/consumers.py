@@ -13,6 +13,7 @@ from .serializers import MessageSerializer, UserKSSerializer
 from enums import ChatType, NoticeType, MsgType, notices_dict, EditOrderAction, TAB
 
 
+# окошко заявки
 class ChatConsumer(WebsocketConsumer):
     def connect(self):
         self.room_name = self.scope["url_route"]["kwargs"]["room_name"]
@@ -74,7 +75,7 @@ class ChatConsumer(WebsocketConsumer):
                     new_notice = Notice(
                         order=order,
                         user_ks_id=user_id,
-                        type_notice=notice_text
+                        text=notice_text
                     )
                     new_notice.save()
 
@@ -124,7 +125,6 @@ class ChatConsumer(WebsocketConsumer):
                 new_message = Message(
                     type_msg=MsgType.MSG.value,
                     from_user_id=int(data_json.get('user_id', 0)),
-                    # chat=ChatType.CLIENT.value if data_json['chat'] == '#tab2' else ChatType.CURATOR.value,
                     chat=ChatType.CLIENT.value,
                     order_id=int(data_json['order_id']),
                     text=comment
@@ -139,7 +139,7 @@ class ChatConsumer(WebsocketConsumer):
         elif data_json['event'] == EditOrderAction.VIEW_TAB:
             order_id = int(data_json['order_id'])
             user_id = int(data_json['user_id'])
-            tab = data_json['tab'][1:]
+            tab = data_json['tab']
             chat = ChatType.CLIENT.value if tab == TAB.TAB2 else ChatType.CURATOR.value
 
             log_error(f'tab: {tab}\norder_id: {order_id}\nuser_id: {user_id}\n', wt=False)
@@ -202,4 +202,28 @@ class ChatConsumer(WebsocketConsumer):
         self.send(text_data=json.dumps(context))
 
 
+# оживление страницы
+class UserConsumer(WebsocketConsumer):
+    def connect(self):
+        self.room_name = self.scope["url_route"]["kwargs"]["room_name"]
+        self.room_group_name = f"chat_{self.room_name}"
 
+        user_id = self.scope["user"].id
+
+        log_error(wt=False, message=f'connect\n'
+                                    f'{self.scope["url_route"]}\n'
+                                    f'{self.scope["user"]}\n'
+                                    f'self.channel_name: {self.channel_name}')
+
+        # Join room group
+        async_to_sync(self.channel_layer.group_add)(
+            self.room_group_name, self.channel_name
+        )
+
+        self.accept()
+
+    def disconnect(self, close_code):
+        # Leave room group
+        async_to_sync(self.channel_layer.group_discard)(
+            self.room_group_name, self.channel_name
+        )
