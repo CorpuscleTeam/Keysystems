@@ -174,13 +174,13 @@ description.appendChild(textareaConteiner)
 let textareaDescription = document.createElement('textarea')
 textareaDescription.setAttribute('name', 'description')
 textareaDescription.setAttribute('id', 'description')
-textareaDescription.setAttribute('maxlength', '120')
+textareaDescription.setAttribute('maxlength', '100')
 textareaConteiner.appendChild(textareaDescription)
 
 // элемент для отображения количества символов
 let charCount = document.createElement('div');
 charCount.id = 'charCount'
-charCount.textContent = '0/120'
+charCount.textContent = '0/100'
 textareaConteiner.appendChild(charCount)
 
 // обработчик событий input для обновления счетсика
@@ -189,6 +189,8 @@ textareaDescription.addEventListener('input', () => {
     const maxLength = textareaDescription.getAttribute('maxlength')
     charCount.textContent = `${currentLength}/${maxLength}`
 })
+
+// 
 
 // приложить файл
 let addFile = document.createElement('p')
