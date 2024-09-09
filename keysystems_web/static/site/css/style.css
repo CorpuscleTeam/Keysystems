@@ -669,10 +669,19 @@ select option:hover {
 }
 
 /* CSS для textarea и счетчика символов внутри */
-textarea {
-    padding-bottom: 20px; /* Добавляем отступ для счетчика символов */
+.textarea_description {
+    padding-bottom: 20px; 
     width: 100%;
     height: 60px;
+    resize: none;
+    border: rgba(204, 204, 204, 1) 1px solid;
+    font-family: "Oswald", sans-serif;
+    padding-left: 10px;
+}
+.textarea_full_description {
+    padding-bottom: 20px; 
+    width: 100%;
+    height: 164px;
     resize: none;
     border: rgba(204, 204, 204, 1) 1px solid;
     font-family: "Oswald", sans-serif;

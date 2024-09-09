@@ -172,6 +172,7 @@ description.appendChild(textareaConteiner)
 // textareaConteiner.appendChild(textareaDescription)
 
 let textareaDescription = document.createElement('textarea')
+textareaDescription.classList.add('textarea_description')
 textareaDescription.setAttribute('name', 'description')
 textareaDescription.setAttribute('id', 'description')
 textareaDescription.setAttribute('maxlength', '100')
@@ -190,7 +191,21 @@ textareaDescription.addEventListener('input', () => {
     charCount.textContent = `${currentLength}/${maxLength}`
 })
 
-// 
+// полное описание 
+let fullDescription = document.createElement('p')
+form.appendChild(fullDescription)
+
+let labelFullDescription = document.createElement('label')
+labelFullDescription.setAttribute('for', 'fullDescription')
+labelFullDescription.classList.add('required')
+labelFullDescription.innerHTML = `Полное описание`
+fullDescription.appendChild(labelFullDescription)
+
+let textareaFullDescription = document.createElement('textarea')
+textareaFullDescription.classList.add('textarea_full_description')
+textareaFullDescription.setAttribute('name', 'fullDescription')
+textareaFullDescription.setAttribute('id', 'fullDescription')
+fullDescription.appendChild(textareaFullDescription)
 
 // приложить файл
 let addFile = document.createElement('p')
@@ -222,8 +237,25 @@ let fileList = []
 // Элемент для отображения названия загруженного файла
 let fileNameDisplay = document.createElement('div');
 fileNameDisplay.classList.add('file_name_display');
-fileNameDisplay.style.marginTop = '10px';
+// fileNameDisplay.style.marginTop = '10px';
 addFile.appendChild(fileNameDisplay);
+
+        // !!!_внешний вид загруженный файл
+// let fileNameItem = document.createElement('div')
+// fileNameItem.classList.add('file_item')
+// fileNameDisplay.appendChild(fileNameItem)
+
+// // картинка слева
+// let FileLeft = document.createElement('div')
+// FileLeft.classList.add('update_file_img')
+// fileNameItem.appendChild(FileLeft)
+
+// let FileImg = document.createElement('img')
+// // проверить объект!
+// FileImg.setAttribute('src', updateSoft72['update_files'][i]['icon'])
+// FileLeft.appendChild(FileImg)
+
+
 
 // Обработчик события изменения файла
 inputAddFile.addEventListener('change', (event) => {
