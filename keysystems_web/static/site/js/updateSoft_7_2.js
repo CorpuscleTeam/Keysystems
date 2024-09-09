@@ -18,8 +18,9 @@ let updateFiles_grid = document.createElement('div')
 updateFiles_grid.classList.add('update_files_grid')
 document.querySelector('.page_flex_body').appendChild(updateFiles_grid)
 
+// загрузить файл
 for (let i = 0; i < updateSoft72['update_files'].length; i++) {
-    // загрузить файл
+    
     let updateFile = document.createElement('button')
     updateFile.classList.add('update_file_btn')
     updateFiles_grid.appendChild(updateFile)
