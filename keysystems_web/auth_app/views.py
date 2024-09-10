@@ -55,13 +55,23 @@ def index_2(request: HttpRequest):
                     error_msg = {'text_error': 'ИНН не зарегистрирован', 'type_error': 'inn'}
 
             elif len(users_inn) == 1:
-                return redirect(reverse('index_2_2') + f'?user={users_inn[0].pk}')
+                password = pass_gen()
+                new_pass = Password(password=password, user_ks=users_inn[0])
+                new_pass.save()
+                #  тут пароль отправляем на почту
+                login_url = f'http://{request.get_host()}/index_2_2?pass={new_pass.pk}'
+
+                send_password_email(user_email=users_inn[0].username, password=password, login_url=login_url)
+
+                return redirect(reverse('index_2_2') + f'?pass={new_pass.id}')
 
             elif len(users_inn) > 1:
                 return redirect(reverse('index_2_1') + f'?inn={input_inn}')
 
             else:
                 return redirect('index_2_2')
+        else:
+            error_msg = {'text_error': 'Некорректный ИНН', 'type_error': 'inn'}
 
     context = {**error_msg}
     return render(request, 'auth/index_2.html', context)
@@ -85,13 +95,13 @@ def index_2_1(request: HttpRequest):
             ).first()
             if user:
                 password = pass_gen()
-                new_pass = Password(password=password, user=user)
+                new_pass = Password(password=password, user_ks=user)
                 new_pass.save()
                 #  тут пароль отправляем на почту
-                login_url = f'http://{request.get_host()}/index_2_2?pass={new_pass.pk}'
+                login_url = f'http://{request.get_host()}/index_2_2?pass={new_pass.id}'
 
                 send_password_email(user_email=user.username, password=password, login_url=login_url)
-                return redirect(reverse('index_2_2') + f'?user={user.pk}')
+                return redirect(reverse('index_2_2') + f'?pass={new_pass.pk}')
 
             else:
                 return redirect('index_3_1')
@@ -123,13 +133,14 @@ def index_2_2(request: HttpRequest):
         if pass_form.is_valid():
             # user_id = request.POST.get('pass', 0)
             # user = UserKS.objects.filter(id=user_id).first()
-            user_info = Password.objects.select_related('user').filter(
+            log_error(f'{pass_form.cleaned_data["password"]} {int(pass_id)}', wt=False)
+            user_info = Password.objects.select_related('user_ks').filter(
                 password=pass_form.cleaned_data['password'],
                 id=int(pass_id)
             ).first()
 
             if user_info:
-                login(request, user_info.user)
+                login(request, user_info.user_ks)
                 if not pass_form.cleaned_data['checkbox']:
                     request.session.set_expiry(0)
 
@@ -177,7 +188,7 @@ def index_3_1(request: HttpRequest):
 
                 #  тут пароль отправляем на почту
                 password = pass_gen()
-                new_pass = Password(password=password, user=new_user)
+                new_pass = Password(password=password, user_ks=new_user)
                 new_pass.save()
                 login_url = f'http://{request.get_host()}/index_2_2?pass={new_pass.pk}'
                 send_password_email(user_email=email, password=password, login_url=login_url)
@@ -201,9 +212,13 @@ def index_3_1(request: HttpRequest):
             else:
                 error_msg = {'text_error': 'Ошибка ввода', 'type_error': 'inn'}
 
+    input_inn = request.POST.get('inn', '') if request.POST.get('inn', '') else request.GET.get('inn', '')
     context = {
         **error_msg,
         'soft': serialize(format='json', queryset=Soft.objects.filter(is_active=True).all()),
-        'inn': request.GET.get('inn', '')
+        'inn': input_inn,
+        'email': request.POST.get('email', ''),
+        'fio': request.POST.get('fio', ''),
+        'tel': request.POST.get('tel', ''),
     }
     return render(request, 'auth/index_3_1.html', context)
