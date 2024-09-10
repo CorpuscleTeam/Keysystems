@@ -249,32 +249,25 @@ document.querySelectorAll('.modal_cr_order').forEach(link => {
                     console.log(`Вы выбрали вариант ${selectedOption}`)
                     // console.log(`Вы выбрали вариант &&&`)
                 })
-                
 
-                // btn_mark_status (data['order']['status'])
+                // добавить файл в чат
+                document.querySelector('#client-msg-file').addEventListener('change', (event) => {
+                    const files = event.target.files;
 
-                // !!_вернуться к этому!!
-                // if (curatorUser == true) {
-                //     if (data['order']['status'] == 'new') {
-                //         // changeStatusNewToWork()
-                //         // data['order']['status'] = 'active'
-                //     } else if (data['order']['status'] == 'active') {
-                //         let btnElem = document.querySelector('.btn_work_req')
-                //         let statusElem = document.querySelector('.status_work_req')
-                //         btnElem.addEventListener('click', function () {
-                //             changeStatusWorkToEnd(btnElem, statusElem)
-                //         })
-                //     }
-                // } else {
-                //     noBtnNewReq ()
-                //     if (data['order']['status'] == 'done') {
-                //         btnBackReq ()
-                //         modalBackToWork ()
-                //     }
+                    if (files.length > 0) {
+                        for (let i = 0; i < files.length; i++) {
 
-                // }
-                // modalBackToWork ()
-
+                            window.chatSocket.send(JSON.stringify({
+                                'event': 'file',
+                                'chat': 'client',
+                                'tab': window.selectedTab,
+                                'order_id': window.orderId,
+                                'user_id': window.userId,
+                                'file': file[i]
+                            }))
+                        }
+                    }
+                })
 
                 // сокет. оставляем последним
                 initOrderSocket(data.room, data.user_id)

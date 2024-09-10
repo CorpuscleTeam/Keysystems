@@ -236,36 +236,19 @@ let fileList = []
 // загруженный файл
 // Элемент для отображения названия загруженного файла
 let fileNameDisplay = document.createElement('div');
-fileNameDisplay.classList.add('file_name_display');
+fileNameDisplay.classList.add('file_name_grid');
 // fileNameDisplay.style.marginTop = '10px';
 addFile.appendChild(fileNameDisplay);
-
-        // !!!_внешний вид загруженный файл
-// let fileNameItem = document.createElement('div')
-// fileNameItem.classList.add('file_item')
-// fileNameDisplay.appendChild(fileNameItem)
-
-// // картинка слева
-// let FileLeft = document.createElement('div')
-// FileLeft.classList.add('update_file_img')
-// fileNameItem.appendChild(FileLeft)
-
-// let FileImg = document.createElement('img')
-// // проверить объект!
-// FileImg.setAttribute('src', updateSoft72['update_files'][i]['icon'])
-// FileLeft.appendChild(FileImg)
-
 
 
 // Обработчик события изменения файла
 inputAddFile.addEventListener('change', (event) => {
     const files = event.target.files;
+    // console.log(files)
     if (files.length > 0) {
         for (let i = 0; i < files.length; i++) {
-            const file = files[i]
-            const fileItem = document.createElement('div')
-            fileItem.textContent = file.name
-            fileNameDisplay.appendChild(fileItem)
+
+            dnlFile(fileNameDisplay, files[i]) 
         }
     }
 });

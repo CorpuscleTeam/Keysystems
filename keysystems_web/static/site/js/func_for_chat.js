@@ -27,7 +27,7 @@ function selectPO(selector, arr, selSoft) {
 
         if (arr[i]['title'] == selSoft) {
             optionPO.selected = true;
-        } 
+        }
         document.querySelector(selector).appendChild(optionPO)
     }
 }
@@ -138,7 +138,7 @@ function createCuratorsList(selector, arr, status) {
             curItemImgClose.setAttribute('src', link)
             curatorItemRight.appendChild(curItemImgClose)
 
-            
+
         }
     }
     if (myOrder) {
@@ -179,7 +179,7 @@ function clickAddCurator(delUser = null) {
 
 // создает модальное окно с выбором исполнителей
 function modalAddCurators(selector) {
-    let  modalAddCurator = document.querySelector('#modal_add_curator')
+    let modalAddCurator = document.querySelector('#modal_add_curator')
     // обработчик событий для открытия второго окна
     const target = document.querySelector(`#statusOrder ${selector}`)
     if (target) {
@@ -333,7 +333,7 @@ function status_btn(status) {
     link_status.appendChild(btn_status)
 
     // строка "статус"
-    if(status == 'new') {
+    if (status == 'new') {
         text_status.classList.add('status_new_req')
         text_status.innerHTML = 'Задача'
     } else if (status == 'active') {
@@ -391,7 +391,7 @@ function status_btn(status) {
         } else {
             sendChangeStatus(newStatus)
         }
-            
+
     })
 }
 
@@ -403,14 +403,14 @@ function eventReturnWork(newStatus) {
         if (commentBack) {
             comment = commentBack.value
         }
-        sendChangeStatus(newStatus, comment=comment)
+        sendChangeStatus(newStatus, comment = comment)
         // перезагружает страницу
         window.location.reload()
-})
+    })
 }
 
 // сокет - отправяется новый статус на бэк (долбавил параметр comment для возврата в работу)
-function sendChangeStatus(newStatus, comment=null) {
+function sendChangeStatus(newStatus, comment = null) {
     window.chatSocket.send(JSON.stringify({
         'event': 'edit_status',
         'room_name': window.roomName,
@@ -614,6 +614,9 @@ function initOrderSocket(roomName, userId) {
                 console.log('end')
             }
         }
+        else if (data.type == 'file') {
+            
+        }
         else if (data.type == 'edit_curator') {
             createCuratorsList('.curators_of_request', data.curators)
         }
@@ -669,4 +672,3 @@ function initOrderSocket(roomName, userId) {
         messageInputDom.value = '';
     };
 }
-
