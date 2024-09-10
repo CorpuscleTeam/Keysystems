@@ -1,4 +1,4 @@
-function notice(selector, num) {
+function cur_notice(selector, num) {
     // console.log(`${selector} найден`)
     let parentElem = document.getElementById(selector)
     if (!parentElem) {
@@ -30,15 +30,15 @@ function notice(selector, num) {
     }
 }
 
-notice('id_menu_request', mainData['orders_count'])
-notice('id_menu_request_mob', mainData['orders_count'])
+cur_notice('id_menu_request', mainData['orders_count'])
+cur_notice('id_menu_request_mob', mainData['orders_count'])
 
-notice('id_menu_push', mainData['notice'])
-notice('id_menu_push_mob', mainData['notice'])
+cur_notice('id_menu_push', mainData['notice'])
+cur_notice('id_menu_push_mob', mainData['notice'])
 
 
-notice('id_menu_updatePO', mainData['update_count'])
-notice('id_menu_updatePO_mob', mainData['update_count'])
+cur_notice('id_menu_updatePO', mainData['update_count'])
+cur_notice('id_menu_updatePO_mob', mainData['update_count'])
 
 
 
