@@ -68,9 +68,18 @@ class EditOrderAction(str, Enum):
     EDIT_SOFT = 'edit_soft'
     EDIT_CURATOR = 'edit_curator'
     EDIT_STATUS = 'edit_status'
+    VIEW_TAB = 'view_tab'
 
     ADD_CURATOR = 'add_curator'
     DEL_CURATOR = 'del_curator'
+
+
+# вкладки
+class TAB(str, Enum):
+    TAB1 = '#tab1'
+    TAB2 = '#tab2'
+    TAB3 = '#tab3'
+
 
 
 # темы обращения
@@ -83,3 +92,12 @@ order_topic_dict = {
     1: {OrderTopic.TECH.value: 'Техническая проблема'},
     2: {OrderTopic.CONTRACT.value: 'Договорной отдел'},
 }
+
+
+# вкладки
+class CountSelector(str, Enum):
+    REQUEST = 'id_menu_request'
+    NEWS = 'id_menu_news'
+    PUSH = 'id_menu_push'
+    CLIENT = 'id_client_chat'
+    CURATOR = 'id_curator_chat'
