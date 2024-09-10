@@ -236,8 +236,8 @@ document.querySelectorAll('.modal_cr_order').forEach(link => {
                     });
                 });
 
-                notice('id_client_chat', data['unv_msg_client'])
-                notice('id_curator_chat', data['unv_msg_curator'])
+                cur_notice('id_client_chat', data['unv_msg_client'])
+                cur_notice('id_curator_chat', data['unv_msg_curator'])
 
                 if (!window.mgtOrder) {
                     let withoutFooter = document.querySelector('#tab2 .footer_message')
