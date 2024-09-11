@@ -161,10 +161,12 @@ document.querySelectorAll('.modal_cr_order').forEach(link => {
                 // M.Modal.getInstance(modalAddCurator).open();
 
 
-
+                console.log(`curatorUser ${curatorUser}`)
                 // отображение вкладки "чат кураторов"
                 if (curatorUser == false) {
-                    let tabCuratorChat = document.querySelector('.tabs>li:nth-child(3)')
+                    // поменял поиск вкладки, чтоб скрывалась у клиента
+                    // let tabCuratorChat = document.querySelector('.tabs>li:nth-child(3)')
+                    let tabCuratorChat = document.getElementById('id_curator_chat')
 
                     if (tabCuratorChat) {
                         tabCuratorChat.style.display = "none"
@@ -275,35 +277,32 @@ document.querySelectorAll('.modal_cr_order').forEach(link => {
                 // добавить файл в чат клиентский
                 document.querySelector('#client-msg-file').addEventListener('change', (event) => {
                     const files = event.target.files;
-                    console.log('>>>>>>>')
-                    console.log(event)
 
                     if (files.length > 0) {
                         for (let i = 0; i < files.length; i++) {
+                            const reader = new FileReader();
+                            reader.onload = function (evt) {
+                                if (evt.target.readyState === FileReader.DONE) {
+                                    // Отправляем файл в формате Base64 вместе с метаинформацией
+                                    window.chatSocket.send(JSON.stringify({
+                                        'event': 'file',
+                                        'chat': 'client',
+                                        'tab': window.selectedTab,
+                                        'order_id': window.orderId,
+                                        'user_id': window.userId,
+                                        'file_name': files[i].name,
+                                        'file_size': files[i].size,
+                                        'file_type': files[i].type,
+                                        'file_data': evt.target.result.split(',')[1] // Base64 строка (удаляем "data:" префикс)
+                                    }));
+                                }
+                            };
+                            reader.readAsDataURL(files[i]);
 
-                            window.chatSocket.send(JSON.stringify({
-                                'event': 'file',
-                                'chat': 'client',
-                                'tab': window.selectedTab,
-                                'order_id': window.orderId,
-                                'user_id': window.userId,
-                                'file_name': files[i].name,
-                                'file_size': files[i].size,
-                                'file_type': files[i].type
-                            }))
-
-                            // Затем отправляем сам файл в бинарном виде
-                            // const reader = new FileReader();
-                            // reader.onload = function (evt) {
-                            //     if (evt.target.readyState === FileReader.DONE) {
-                            //         window.chatSocket.send(evt.target.result); // Отправляем бинарные данные файла
-                            //     }
-                            // };
-                            // reader.readAsArrayBuffer(files[i]);  // Прочитываем файл как ArrayBuffer (бинарные данные)
                         }
                     }
                 })
-                
+
 
                 // сокет. оставляем последним
                 initOrderSocket(data.room, data.user_id)

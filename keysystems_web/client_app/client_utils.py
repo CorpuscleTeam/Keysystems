@@ -122,9 +122,7 @@ def form_processing(request: HttpRequest) -> None:
         form = OrderForm(request.POST, request.FILES)
         # log_error(f'>>>> form.is_valid(): {form.is_valid()}\n{form.errors}\n{form.data}', wt=False)
         if form.is_valid():
-            log_error(f'>>>> form.cleaned_data: {form.cleaned_data}\n\n{order_topic_dict.get(1)}', wt=False)
-            # soft = m.Soft.objects.get(pk=form.cleaned_data['type_soft'])
-            # topic = m.OrderTopic.objects.get(pk=form.cleaned_data['type_soft'])
+            # log_error(f'>>>> form.cleaned_data: {form.cleaned_data}\n\n{order_topic_dict.get(1)}', wt=False)
             # создаёт заказ
             new_order = m.Order(
                 from_user=request.user,
@@ -144,13 +142,15 @@ def form_processing(request: HttpRequest) -> None:
             )
 
             # Запись коммента
-            m.Message.objects.create(
-                type_msg=MsgType.MSG.value,
-                from_user=request.user,
-                chat=ChatType.CLIENT.value,
-                order=new_order,
-                text='Подробное описание проблемы'
-            )
+            full_description = form.cleaned_data.get('fullDescription')
+            if full_description:
+                m.Message.objects.create(
+                    type_msg=MsgType.MSG.value,
+                    from_user=request.user,
+                    chat=ChatType.CLIENT.value,
+                    order=new_order,
+                    text=full_description
+                )
 
             # order_curators = m.CuratorDist.objects.filter(soft=soft, district=request.user.customer.district).all()
             # for curator in order_curators:
