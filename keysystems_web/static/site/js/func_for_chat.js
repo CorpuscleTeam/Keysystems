@@ -450,8 +450,20 @@ function createMsg(ObjMsg, userId, withHeader = true) {
     }
 
     let contextMsg = document.createElement('div')
-    contextMsg.classList.add('context_msg')
-    contextMsg.innerHTML = ObjMsg['text']
+
+    console.log('>>>>>>>>>')
+    if (ObjMsg['type_msg'] == 'msg') {
+        contextMsg.classList.add('context_msg')
+        contextMsg.innerHTML = ObjMsg['text']
+    }
+    else {
+        // let contextMsg = document.createElement('div')
+        // url, 
+        addUpdateFile (contextMsg, ObjMsg)
+        // contextMsg.classList.add('context_msg')
+        // contextMsg.innerHTML = ObjMsg['filename']
+    }
+    console.log(contextMsg)
     newMsg.appendChild(contextMsg)
 
     return newMsg
@@ -568,6 +580,43 @@ function modalBackToWork() {
     M.Modal.init(modalBackToWork);
 }
 
+// функция добавляет сообщения в чат
+function addMsgChat (data, userId) {
+    let withHeader = true
+    if (data.message.chat == BASE.CLIENT) {
+        if (data.message.from_user.id == window.lastMsgForClientChat) {
+            withHeader = false
+        }
+        let newMsg = createMsg(data.message, userId, withHeader)
+        let chat_message = document.querySelector('#client_chat_item')
+        chat_message.appendChild(newMsg)
+
+        // Прокрутка вниз при получении нового сообщения
+        chat_message.scrollTop = chat_message.scrollHeight;
+        window.lastMsgForClientChat = data.message.from_user.id
+
+        // меняем цифорку сообщений 
+        if (window.selectedTab != '#tab2') {
+            cur_notice('id_client_chat', 1)
+            } 
+    } else {
+        if (data.message.from_user.id == window.lastMsgForCuratorChat) {
+            withHeader = false
+        }
+        let newMsg = createMsg(data.message, userId, withHeader)
+        let chat_message = document.querySelector('#curator_chat_item')
+        chat_message.appendChild(newMsg)
+
+        // Прокрутка вниз при получении нового сообщения
+        chat_message.scrollTop = chat_message.scrollHeight;
+        window.lastMsgForCuratorChat = data.message.from_user.id
+
+        // меняем цифорку сообщений 
+        if (window.selectedTab != '#tab3') {
+            cur_notice('id_curator_chat', 1)
+            } 
+    }
+}
 
 // создание сокета и все с ним функции
 function initOrderSocket(roomName, userId) {
@@ -588,42 +637,11 @@ function initOrderSocket(roomName, userId) {
         let withHeader = true
 
         if (data.type == 'msg') {
-            if (data.message.chat == BASE.CLIENT) {
-                if (data.message.from_user.id == window.lastMsgForClientChat) {
-                    withHeader = false
-                }
-                let newMsg = createMsg(data.message, userId, withHeader)
-                let chat_message = document.querySelector('#client_chat_item')
-                chat_message.appendChild(newMsg)
-
-                // Прокрутка вниз при получении нового сообщения
-                chat_message.scrollTop = chat_message.scrollHeight;
-                window.lastMsgForClientChat = data.message.from_user.id
-
-                // меняем цифорку сообщений 
-                if (window.selectedTab != '#tab2') {
-                    cur_notice('id_client_chat', 1)
-                    } 
-            } else {
-                if (data.message.from_user.id == window.lastMsgForCuratorChat) {
-                    withHeader = false
-                }
-                let newMsg = createMsg(data.message, userId, withHeader)
-                let chat_message = document.querySelector('#curator_chat_item')
-                chat_message.appendChild(newMsg)
-
-                // Прокрутка вниз при получении нового сообщения
-                chat_message.scrollTop = chat_message.scrollHeight;
-                window.lastMsgForCuratorChat = data.message.from_user.id
-
-                // меняем цифорку сообщений 
-                if (window.selectedTab != '#tab3') {
-                    cur_notice('id_curator_chat', 1)
-                    } 
-            }
+            addMsgChat (data, userId)
         }
         else if (data.type == 'file') {
             console.log('Пришёл файл')
+
         }
         else if (data.type == 'edit_curator') {
             createCuratorsList('.curators_of_request', data.curators)

@@ -198,7 +198,7 @@ class ChatConsumer(WebsocketConsumer):
             self.send(text_data=json.dumps({'type': 'msg', "message": message}))
 
         else:
-            self.send(text_data=json.dumps({'type': event['data']['type_msg'], "message": event['data']}))
+            self.send(text_data=json.dumps({'type': 'msg', "message": event['data']}))
 
     # отправляет новый список кураторов
     def curator_list(self, event):
