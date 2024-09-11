@@ -213,8 +213,8 @@ document.querySelectorAll('.modal_cr_order').forEach(link => {
                 // !!_проперить надо ли?
                 let curator_chat = createChat('#curator_chat', data.curator_chat, data.user_id, BASE.CURATOR)
 
-                notice('id_client_chat', data['unv_msg_client'])
-                notice('id_curator_chat', data['unv_msg_curator'])
+                count_notice('id_client_chat', data['unv_msg_client'])
+                count_notice('id_curator_chat', data['unv_msg_curator'])
 
                 // вкладки
                 document.querySelectorAll('.tabs .tab a').forEach(tabLink => {
@@ -236,11 +236,11 @@ document.querySelectorAll('.modal_cr_order').forEach(link => {
                         
                         // удаляем циферку
                         if (window.selectedTab == '#tab2') {
-                            notice('id_client_chat', 0)
+                            count_notice('id_client_chat', 0)
                             chat.scrollTop = chat.scrollHeight
                             } 
                         else if (window.selectedTab == '#tab3') {
-                            notice('id_curator_chat', 0)
+                            count_notice('id_curator_chat', 0)
                             chat.scrollTop = chat.scrollHeight
                                 }
                         }
@@ -249,12 +249,6 @@ document.querySelectorAll('.modal_cr_order').forEach(link => {
                         console.log('Открыта вкладка:', selectedTab);
                     });
                 });
-
-
-                cur_notice('id_client_chat', data['unv_msg_client'])
-                cur_notice('id_curator_chat', data['unv_msg_curator'])
-
-
 
                 if (!window.mgtOrder) {
                     let withoutFooter = document.querySelector('#tab2 .footer_message')
@@ -268,7 +262,7 @@ document.querySelectorAll('.modal_cr_order').forEach(link => {
                 })
 
 
-                // добавить файл в чат
+                // добавить файл в чат клиентский
                 document.querySelector('#client-msg-file').addEventListener('change', (event) => {
                     const files = event.target.files;
 
