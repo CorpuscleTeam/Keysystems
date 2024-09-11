@@ -602,7 +602,7 @@ function initOrderSocket(roomName, userId) {
 
                 // меняем цифорку сообщений 
                 if (window.selectedTab != '#tab2') {
-                    notice('id_client_chat', 1)
+                    cur_notice('id_client_chat', 1)
                     } 
             } else {
                 if (data.message.from_user.id == window.lastMsgForCuratorChat) {
@@ -618,12 +618,12 @@ function initOrderSocket(roomName, userId) {
 
                 // меняем цифорку сообщений 
                 if (window.selectedTab != '#tab3') {
-                    notice('id_curator_chat', 1)
+                    cur_notice('id_curator_chat', 1)
                     } 
             }
         }
         else if (data.type == 'file') {
-            
+            console.log('Пришёл файл')
         }
         else if (data.type == 'edit_curator') {
             createCuratorsList('.curators_of_request', data.curators)

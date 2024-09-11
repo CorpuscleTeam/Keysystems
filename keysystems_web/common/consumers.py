@@ -4,6 +4,7 @@ from datetime import datetime
 
 import json
 import random
+import os
 
 from . import utils as ut
 from . import redis_utils as ru
@@ -45,7 +46,7 @@ class ChatConsumer(WebsocketConsumer):
         data_json: dict = json.loads(text_data)
         log_error(wt=False, message=f'receive\n{data_json}\n')
 
-        if data_json['event'] == EditOrderAction.MSG:
+        if data_json['event'] == EditOrderAction.MSG or data_json['event'] == EditOrderAction.FILE:
             user = UserKS.objects.filter(id=data_json['user_id']).first()
             log_error(wt=False, message=f'user: {user}\n')
             if user:
@@ -53,15 +54,27 @@ class ChatConsumer(WebsocketConsumer):
                 curators = OrderCurator.objects.select_related('user').filter(order=order).all()
 
                 # сохраняем сообщение
-                new_message = Message(
-                    type_msg=MsgType.MSG.value,
-                    from_user=user,
-                    # chat=ChatType.CLIENT.value if data_json['chat'] == '#tab2' else ChatType.CURATOR.value,
-                    chat=data_json['chat'],
-                    order_id=int(data_json['order_id']),
-                    text=data_json['message']
-                )
-                new_message.save()
+                if data_json['event'] == EditOrderAction.MSG:
+                    new_message = Message(
+                        type_msg=MsgType.MSG.value,
+                        from_user=user,
+                        chat=data_json['chat'],
+                        order_id=int(data_json['order_id']),
+                        text=data_json['message']
+                    )
+                    new_message.save()
+                else:
+                    file_name = data_json['file_name']
+                    file_type = file_name[-3:] if file_name[-3:] in ut.upload_file_type else 'file'
+                    new_message = Message(
+                        type_msg=MsgType.FILE.value,
+                        from_user=user,
+                        chat=data_json['chat'],
+                        order_id=int(data_json['order_id']),
+                        file_path=f"../{os.path.join('static', 'site', 'img', 'files', f'{file_type}.svg')}",
+                        file_size=data_json['file_size']
+                    )
+                    new_message.save()
 
                 # рассылаем уведомления
                 notice_list = [curator.user.id for curator in curators] + [order.from_user.id]
@@ -175,7 +188,7 @@ class ChatConsumer(WebsocketConsumer):
             self.send(text_data=json.dumps({'type': 'msg', "message": message}))
 
         else:
-            self.send(text_data=json.dumps({'type': 'msg', "message": event['data']}))
+            self.send(text_data=json.dumps({'type': event['data']['type_msg'], "message": event['data']}))
 
     # отправляет новый список кураторов
     def curator_list(self, event):
