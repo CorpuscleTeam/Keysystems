@@ -213,8 +213,8 @@ document.querySelectorAll('.modal_cr_order').forEach(link => {
                 // !!_проперить надо ли?
                 let curator_chat = createChat('#curator_chat', data.curator_chat, data.user_id, BASE.CURATOR)
 
-                notice('id_client_chat', data['unv_msg_client'])
-                notice('id_curator_chat', data['unv_msg_curator'])
+                count_notice('id_client_chat', data['unv_msg_client'])
+                count_notice('id_curator_chat', data['unv_msg_curator'])
 
                 // вкладки
                 document.querySelectorAll('.tabs .tab a').forEach(tabLink => {
@@ -233,26 +233,30 @@ document.querySelectorAll('.modal_cr_order').forEach(link => {
                                 'order_id': window.orderId,
                                 'user_id': window.userId
                             }));
-                        
-                        // удаляем циферку
-                        if (window.selectedTab == '#tab2') {
-                            notice('id_client_chat', 0)
-                            chat.scrollTop = chat.scrollHeight
-                            } 
-                        else if (window.selectedTab == '#tab3') {
-                            notice('id_curator_chat', 0)
-                            chat.scrollTop = chat.scrollHeight
-                                }
+
+                            // удаляем циферку
+                            if (window.selectedTab == '#tab2') {
+                                count_notice('id_client_chat', 0)
+
+                                // chat.scrollTop = chat.scrollHeight
+                            }
+                            else if (window.selectedTab == '#tab3') {
+                                count_notice('id_curator_chat', 0)
+                                // let chat_cur = document.getElementById('client_chat_item')
+                                // let chat_cur = document.getElementById('curator_chat')
+                                // console.log('>>>>>>>')
+                                // console.log(chat_cur)
+                                // if (chat_cur) {
+                                //     console.log(chat_cur.scrollHeight)
+                                //     chat_cur.scrollTop = 100
+                                // }
+                            }
                         }
 
                         // Логируем ID открытой вкладки
                         console.log('Открыта вкладка:', selectedTab);
                     });
                 });
-
-
-                cur_notice('id_client_chat', data['unv_msg_client'])
-                cur_notice('id_curator_chat', data['unv_msg_curator'])
 
 
 
@@ -271,6 +275,8 @@ document.querySelectorAll('.modal_cr_order').forEach(link => {
                 // добавить файл в чат
                 document.querySelector('#client-msg-file').addEventListener('change', (event) => {
                     const files = event.target.files;
+                    console.log('>>>>>>>')
+                    console.log(event)
 
                     if (files.length > 0) {
                         for (let i = 0; i < files.length; i++) {
@@ -281,17 +287,30 @@ document.querySelectorAll('.modal_cr_order').forEach(link => {
                                 'tab': window.selectedTab,
                                 'order_id': window.orderId,
                                 'user_id': window.userId,
-                                'file': file[i]
+                                'file_name': files[i].name,
+                                'file_size': files[i].size,
+                                'file_type': files[i].type
                             }))
+
+                            // Затем отправляем сам файл в бинарном виде
+                            // const reader = new FileReader();
+                            // reader.onload = function (evt) {
+                            //     if (evt.target.readyState === FileReader.DONE) {
+                            //         window.chatSocket.send(evt.target.result); // Отправляем бинарные данные файла
+                            //     }
+                            // };
+                            // reader.readAsArrayBuffer(files[i]);  // Прочитываем файл как ArrayBuffer (бинарные данные)
                         }
                     }
                 })
+                
 
                 // сокет. оставляем последним
                 initOrderSocket(data.room, data.user_id)
             })
             .catch(error => console.error('Error:', error));
     });
+
 });
 
 
