@@ -251,13 +251,13 @@ document.querySelectorAll('.modal_cr_order').forEach(link => {
                                 //     chat_cur.scrollTop = 100
                                 // }
                             }
+
                         }
 
                         // Логируем ID открытой вкладки
                         console.log('Открыта вкладка:', selectedTab);
                     });
                 });
-
 
 
                 if (!window.mgtOrder) {
@@ -272,7 +272,7 @@ document.querySelectorAll('.modal_cr_order').forEach(link => {
                 })
 
 
-                // добавить файл в чат
+                // добавить файл в чат клиентский
                 document.querySelector('#client-msg-file').addEventListener('change', (event) => {
                     const files = event.target.files;
                     console.log('>>>>>>>')
