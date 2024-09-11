@@ -654,6 +654,12 @@ select option:hover {
     margin-right: 8px;
 }
 
+.file_name_grid {
+    display: grid;
+    grid-template-columns: repeat(1, 1fr);
+    gap: 4px;
+}
+
 .submit_request {
     width: 100%;
     background-color: var(--color_green);
