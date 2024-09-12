@@ -132,7 +132,12 @@ class SimpleWithCurOrderSerializer(serializers.ModelSerializer):
     def get_curators(self, obj) -> str:
         curators = cm.OrderCurator.objects.select_related('user').filter(order=obj).all()
         curators_names = [curator.user.full_name for curator in curators]
-        return ', '.join(curators_names) if curators_names else '...'
+        if len(curators_names) == 1:
+            return str(curators_names[0])
+        elif len(curators_names) > 1:
+            return ', '.join(curators_names)
+        else:
+            '...'
 
 
 # заказы полные данные
@@ -178,7 +183,7 @@ class MessageSerializer(serializers.ModelSerializer):
         return ut.get_time_string(obj.created_at)
 
     def get_file_url(self, obj):
-        return f'..{obj.file_path}' if obj.file_path else None
+        return f'{obj.file_path}' if obj.file_path else None
 
     def get_file_size(self, obj):
         if obj.file_size:

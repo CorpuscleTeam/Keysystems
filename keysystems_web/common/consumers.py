@@ -5,6 +5,7 @@ from datetime import datetime
 import json
 import random
 import os
+import base64
 
 from . import utils as ut
 from . import redis_utils as ru
@@ -41,14 +42,14 @@ class ChatConsumer(WebsocketConsumer):
         )
 
     # Receive message from WebSocket
-    def receive(self, text_data):
+    def receive(self, text_data=None, bytes_data=None):
         # {'event': 'edit_curator', 'add': '5', 'del': 4, 'order_id': '23', 'room_name': 'order23'}
-        data_json: dict = json.loads(text_data)
-        log_error(wt=False, message=f'receive\n{data_json}\n')
+        data_json: dict = json.loads(text_data) if text_data else {'event': 'file_', 'text_data': str(text_data)}
+        # log_error(wt=False, message=f'receive\n{data_json}')
 
         if data_json['event'] == EditOrderAction.MSG or data_json['event'] == EditOrderAction.FILE:
             user = UserKS.objects.filter(id=data_json['user_id']).first()
-            log_error(wt=False, message=f'user: {user}\n')
+            # log_error(wt=False, message=f'user: {user}\n')
             if user:
                 order = Order.objects.select_related('from_user').filter(id=int(data_json['order_id'])).first()
                 curators = OrderCurator.objects.select_related('user').filter(order=order).all()
@@ -64,17 +65,26 @@ class ChatConsumer(WebsocketConsumer):
                     )
                     new_message.save()
                 else:
-                    file_name = data_json['file_name']
-                    file_type = file_name[-3:] if file_name[-3:] in ut.upload_file_type else 'file'
+                    # создаём путь к папке и саму папку
+                    folder_path = os.path.join('media', 'msg_files', str(data_json['order_id']), str(data_json['user_id']))
+                    if not os.path.exists(folder_path):
+                        os.makedirs(folder_path)
+
+                    file_path = os.path.join(folder_path, data_json['file_name'])
                     new_message = Message(
                         type_msg=MsgType.FILE.value,
                         from_user=user,
                         chat=data_json['chat'],
                         order_id=int(data_json['order_id']),
-                        file_path=f"../{os.path.join('static', 'site', 'img', 'files', f'{file_type}.svg')}",
-                        file_size=data_json['file_size']
+                        file_path=file_path,
+                        file_size=data_json['file_size'],
+
                     )
                     new_message.save()
+                    # сохраняем файл
+                    file_data = base64.b64decode(data_json['file_data'])
+                    with open(file_path, 'wb') as f:
+                        f.write(file_data)
 
                 # рассылаем уведомления
                 notice_list = [curator.user.id for curator in curators] + [order.from_user.id]
@@ -173,7 +183,7 @@ class ChatConsumer(WebsocketConsumer):
     def chat_message(self, event):
         # {'type': 'chat.message', 'message': 'рррр', 'tab': '#tab2', 'order_id': '18'}
 
-        log_error(wt=False, message=f'chat_message\n{event}\n')
+        # log_error(wt=False, message=f'chat_message\n{event}\n')
 
         if event.get('tab'):
             now = datetime.now()

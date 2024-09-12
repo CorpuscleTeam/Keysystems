@@ -7,6 +7,7 @@ class OrderForm(forms.Form):
     type_appeal = forms.IntegerField()
     type_soft = forms.IntegerField()
     description = forms.CharField()
+    fullDescription = forms.CharField()
     addfile = forms.FileField(required=False)
 
 
