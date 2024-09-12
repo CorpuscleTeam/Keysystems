@@ -134,3 +134,20 @@ def get_curator_view(request: HttpRequest):
     except Exception as ex:
         log_error(ex)
         return JsonResponse({'error': str(ex)}, status=401, safe=False)
+
+
+def edit_order_soft_view(request: HttpRequest):
+    log_error('edit_order_soft', wt=False)
+    # Получаем параметры из GET-запроса
+    selected_option = request.GET.get('option')
+    order_id = request.GET.get('order_id')
+
+    # Логика обработки данных (например, можно обновить объект или вернуть данные)
+    # Пример: Обрабатываем данные или сохраняем изменения в базе данных
+
+    # Возвращаем JSON-ответ
+    response_data = {
+        'status': 'success',
+        'message': f'Вы выбрали вариант {selected_option} для заказа {order_id}'
+    }
+    return JsonResponse(response_data)

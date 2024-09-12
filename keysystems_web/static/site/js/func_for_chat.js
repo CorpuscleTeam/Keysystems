@@ -163,9 +163,6 @@ function clickAddCurator(delUser = null) {
         // Получаем выбранный элемент
         const selectedOption = document.getElementById('add_curator_1').value;
 
-        // Выполняем нужную функцию
-        console.log(selectedOption);
-        console.log(window.chatSocket);
         // Отправляем данные на бэкэнд через WebSocket
         window.chatSocket.send(JSON.stringify({
             'event': 'edit_curator',
@@ -176,7 +173,7 @@ function clickAddCurator(delUser = null) {
         }));
     });
 }
-
+{/* <a href="#modal_add_curator" class="modal-trigger curator_item_right"><img src="/static/site/img/close-large.svg"></a> */}
 // создает модальное окно с выбором исполнителей
 function modalAddCurators(selector) {
     let modalAddCurator = document.querySelector('#modal_add_curator')
@@ -188,6 +185,20 @@ function modalAddCurators(selector) {
             // let modalInstance = M.Modal.getInstance(document.querySelector('#modal_add_curator'));
             // console.log(modalInstance)
             // modalInstance.open();
+
+            // тут удаляем если он один
+            let curatorsList = document.querySelectorAll('.curator_item').length
+            if (curatorsList > 1) {
+                window.chatSocket.send(JSON.stringify({
+                    'event': 'edit_curator',
+                    'del': window.userId,
+                    'order_id': window.orderId,
+                    'room_name': window.roomName
+                }));
+                return
+
+            }
+            
 
 
             // Выполняем запрос к бэку
@@ -451,7 +462,6 @@ function createMsg(ObjMsg, userId, withHeader = true) {
 
     let contextMsg = document.createElement('div')
 
-    console.log('>>>>>>>>>')
     if (ObjMsg['type_msg'] == 'msg') {
         contextMsg.classList.add('context_msg')
         contextMsg.innerHTML = ObjMsg['text']

@@ -9,7 +9,6 @@ from curator_app import views as curator
 from common import views as com
 
 
-# 8, 5_1, 6 7_1, 7_2
 urlpatterns = [
     path('', reg.start_page_redirect, name='redirect'),
     path('logout', reg.logout_view, name='logout'),
@@ -17,8 +16,7 @@ urlpatterns = [
     path("edit-order", com.edit_order_view),
     path("tab-action", com.viewed_msg_view),
     path("get-curators", com.get_curator_view),
-    # path("room/<str:room_name>/", com.room, name="room"),
-    # path("room/", com.room, name="room"),
+    path("order-soft", com.edit_order_soft_view),
 
     path('index_2', reg.index_2, name='index_2'),
     path('index_2_1', reg.index_2_1, name='index_2_1'),

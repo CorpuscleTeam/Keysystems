@@ -1,4 +1,4 @@
-function create_icon_path (ext) {
+function create_icon_path(ext) {
     const upload_file_type = ['avi', 'doc', 'gif', 'jpg', 'mov', 'mp3', 'mp4', 'pdf', 'png', 'xls', 'zip']
     let file_name
     if (upload_file_type.includes(ext)) {
@@ -8,6 +8,45 @@ function create_icon_path (ext) {
     }
     return `../static/site/img/files/${file_name}.svg`
 }
+
+// создаём строку с размером
+function getSizeFileStr(size) {
+    let sizeInt = parseInt(size)
+    const units = ['байт', 'КБ', 'МБ', 'ГБ'];
+    for (let i = 0; i < units.length; i++) {
+        if (sizeInt < 1024) {
+            return sizeInt.toFixed(2) + ' ' + units[i];
+        }
+        sizeInt /= 1024;
+    }
+}
+
+
+// эта функция должна нам прогрес-бар оживлять
+function uploadForm(formElement, progressBar) {
+    let xhr = new XMLHttpRequest();
+    let formData = new FormData(formElement); // Собираем все данные формы
+
+    xhr.open('POST', formElement.action, true);
+
+    xhr.upload.onprogress = function (event) {
+        if (event.lengthComputable) {
+            let percentComplete = (event.loaded / event.total) * 100;
+            progressBar.style.width = percentComplete + '%';
+        }
+    };
+
+    xhr.onload = function () {
+        if (xhr.status == 200) {
+            progressBar.style.backgroundColor = 'green'; // успешная загрузка
+        } else {
+            progressBar.style.backgroundColor = 'red'; // ошибка
+        }
+    };
+
+    xhr.send(formData); // Отправляем данные формы
+}
+
 
 // функция для div загруженного файла в заявке
 function dnlFile(selector, data) {
@@ -25,7 +64,7 @@ function dnlFile(selector, data) {
     btnFileItem.appendChild(FileLeft)
 
     let FileImg = document.createElement('img')
-    FileImg.setAttribute('src', create_icon_path (data.name.slice(-3)))
+    FileImg.setAttribute('src', create_icon_path(data.name.slice(-3)))
     FileLeft.appendChild(FileImg)
 
     // центр - название файла, размер
@@ -41,8 +80,19 @@ function dnlFile(selector, data) {
 
     let FileSize = document.createElement('p')
     FileSize.classList.add('update_file_size')
-    FileSize.innerHTML = data['size']
+    // заменил на функцию
+    FileSize.innerHTML = getSizeFileStr(data['size'])
+    // FileSize.innerHTML = data['size']
     FileCenter.appendChild(FileSize)
+
+    // прогресс-бар
+    let progressBarContainer = document.createElement('div')
+    progressBarContainer.classList.add('progress-bar-container')
+    FileCenter.appendChild(progressBarContainer)
+
+    let progressBar = document.createElement('div')
+    progressBar.classList.add('progress-bar')
+    progressBarContainer.appendChild(progressBar)
 
     // картинка справа
     let FileRight = document.createElement('button')
@@ -57,11 +107,12 @@ function dnlFile(selector, data) {
     FileRight.addEventListener('click', (event) => {
         btnFile.remove()
     })
+
 }
 
 // кнопка скачать файл
 
-function addUpdateFile (parent, arr) {
+function addUpdateFile(parent, arr) {
     let fileUrl = arr['url'] || arr['file_url'];
     let fileName = arr['name'] || arr['filename'];
     let filSize = arr['size'] || arr['file_size'];
@@ -72,7 +123,7 @@ function addUpdateFile (parent, arr) {
 
     // ссылка на скачивание файла
     let updateFileLink = document.createElement('a')
-   
+
     updateFileLink.setAttribute('href', fileUrl)
     updateFileLink.setAttribute('download', fileName);
     updateFile.appendChild(updateFileLink)
@@ -101,7 +152,7 @@ function addUpdateFile (parent, arr) {
     updateFileName.innerHTML = fileName
     // updateFileName.innerHTML = arr['name']
     updateFileCenter.appendChild(updateFileName)
-    
+
     let updateFileSize = document.createElement('p')
     updateFileSize.classList.add('update_file_size')
     updateFileSize.innerHTML = filSize
@@ -117,3 +168,5 @@ function addUpdateFile (parent, arr) {
     updateFileDnl.setAttribute('src', fileDnl)
     updateFileRight.appendChild(updateFileDnl)
 }
+
+

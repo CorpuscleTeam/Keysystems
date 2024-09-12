@@ -269,8 +269,20 @@ document.querySelectorAll('.modal_cr_order').forEach(link => {
 
                 document.querySelector('#tab1 select').addEventListener('change', function () {
                     let selectedOption = this.options[this.selectedIndex].value
-                    console.log(`Вы выбрали вариант ${selectedOption}`)
-                    // console.log(`Вы выбрали вариант &&&`)
+                    console.log(`Вы выбрали вариант ${selectedOption} ${data.order.id}`)
+                    // Формируем URL с параметрами
+                    let url = `/order-soft/?option=${selectedOption}&order_id=${data.order.id}`;
+
+                    // Отправляем GET-запрос
+                    fetch(url)
+                        .then(response => response.json())
+                        .then(data => {
+                            // Обрабатываем ответ от сервера (например, выводим его в консоль)
+                            console.log('Ответ сервера:', data);
+                        })
+                        .catch(error => {
+                            console.error('Ошибка:', error);
+                        });
                 })
 
 
