@@ -14,7 +14,7 @@
     background-color: rgba(255, 255, 255, 1);
     padding: 30px 40px;
     /* min-height: 228px; */
-    height: 80vh;
+    max-height: 80vh;
     /* max-height: 1000px; */
     width: 460px;
     margin: auto;
