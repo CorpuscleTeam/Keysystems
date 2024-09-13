@@ -47,6 +47,101 @@ function uploadForm(formElement, progressBar) {
     xhr.send(formData); // Отправляем данные формы
 }
 
+// прогрессбар
+function uploadFilesWithProgressBar(inputElement, progressBarFill) {
+    const files = inputElement.files; // Получаем загруженные файлы
+
+    if (!files.length) {
+        // alert('Выберите файл для загрузки');
+        return;
+    }
+
+    const formData = new FormData();
+    for (let i = 0; i < files.length; i++) {
+        formData.append('files[]', files[i]);
+    }
+
+    const xhr = new XMLHttpRequest();
+
+    // Отслеживаем прогресс загрузки
+    xhr.upload.addEventListener('progress', function(e) {
+        if (e.lengthComputable) {
+            const percentComplete = (e.loaded / e.total) * 100;
+            progressBarFill.style.width = percentComplete + '%';
+        }
+    });
+
+    // Когда загрузка завершена
+    xhr.addEventListener('load', function() {
+        if (xhr.status === 200) {
+            progressBarFill.style.width = '100%';
+            // alert('Файлы успешно загружены');
+        } else {
+            alert('Ошибка при загрузке файла');
+        }
+    });
+
+    xhr.open('POST', '/upload-url-here', true); // Укажи реальный URL для загрузки
+    xhr.send(formData);
+}
+
+
+// загрузка файла + прогресс бар загрузка файла
+function inDnl(parent) {
+    let inDnlFile = document.createElement('div')
+    inDnlFile.classList.add('update_file_btn')
+    parent.appendChild(inDnlFile)
+
+    let inDnlFileItem = document.createElement('div')
+    inDnlFileItem.classList.add('update_file_item')
+    inDnlFile.appendChild(inDnlFileItem)
+
+    // картинка слева
+    let inDnlLeft = document.createElement('div')
+    inDnlLeft.classList.add('update_file_img')
+    inDnlFileItem.appendChild(inDnlLeft)
+
+    let FileImg = document.createElement('img')
+    FileImg.setAttribute('src', create_icon_path(data.name.slice(-3)))
+    inDnlLeft.appendChild(FileImg)
+
+    // центр - название файла, размер
+    let FileCenter = document.createElement('div')
+    FileCenter.classList.add('update_file_center')
+    inDnlFileItem.appendChild(FileCenter)
+
+    let FileName = document.createElement('p')
+    FileName.classList.add('file_in_dnl')
+    FileName.innerHTML = data['name']
+    FileCenter.appendChild(FileName)
+
+    // прогресс-бар
+    let progressBar = document.createElement('div')
+    progressBar.classList.add('progress_bar')
+    FileCenter.appendChild(progressBar)
+
+    let progressBarFill = document.createElement('div')
+    progressBarFill.classList.add('progress_fill')
+    progressBar.appendChild(progressBarFill)
+
+    let progressBarEmpty = document.createElement('div')
+    progressBarEmpty.classList.add('progress_empty')
+    progressBar.appendChild(progressBarEmpty)
+
+    // картинка справа
+    let FileRight = document.createElement('button')
+    FileRight.classList.add('update_file_del')
+    inDnlFileItem.appendChild(FileRight)
+
+    let FileDnl = document.createElement('img')
+    FileDnl.setAttribute('src', link)
+    FileRight.appendChild(FileDnl)
+
+    // удаление всего
+    FileRight.addEventListener('click', (event) => {
+        btnFile.remove()
+    })
+}
 
 // функция для div загруженного файла в заявке
 function dnlFile(selector, data) {
@@ -168,5 +263,3 @@ function addUpdateFile(parent, arr) {
     updateFileDnl.setAttribute('src', fileDnl)
     updateFileRight.appendChild(updateFileDnl)
 }
-
-
