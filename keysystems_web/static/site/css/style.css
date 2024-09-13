@@ -607,7 +607,7 @@ input[placeholder] {
 }
 
 /* Модальное окно "Создать заявку", "Настройки" */
-.mod_request_form p, .mod_settings_form p, .select_PO p {
+.mod_request_form p, .mod_settings_form p, .select_PO p, .enter_form p {
     display: flex;
     flex-direction: column;
 }
