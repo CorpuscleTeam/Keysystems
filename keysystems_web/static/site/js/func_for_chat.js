@@ -128,20 +128,31 @@ function createCuratorsList(selector, arr, status) {
             userMe.innerHTML = ` (Я)`
             curatorUser.append(userMe)
 
-            let curatorItemRight = document.createElement('a')
-            curatorItemRight.setAttribute('href', '#modal_add_curator')
-            curatorItemRight.classList.add('modal-trigger')
-            curatorItemRight.classList.add('curator_item_right')
-            curatorForRequest.appendChild(curatorItemRight)
+            // let curatorItemRight = document.createElement('a')
+            // curatorItemRight.setAttribute('href', '#modal_add_curator')
+            // curatorItemRight.classList.add('modal-trigger')
+            // curatorItemRight.classList.add('curator_item_right')
+            // curatorForRequest.appendChild(curatorItemRight)
 
-            let curItemImgClose = document.createElement('img')
-            curItemImgClose.setAttribute('src', link)
-            curatorItemRight.appendChild(curItemImgClose)
+            // let curItemImgClose = document.createElement('img')
+            // curItemImgClose.setAttribute('src', link)
+            // curatorItemRight.appendChild(curItemImgClose)
 
 
         }
+        
+        let curatorItemRight = document.createElement('a')
+        curatorItemRight.setAttribute('href', '#modal_add_curator')
+        curatorItemRight.classList.add('modal-trigger')
+        curatorItemRight.classList.add('curator_item_right')
+        curatorForRequest.appendChild(curatorItemRight)
+
+        let curItemImgClose = document.createElement('img')
+        curItemImgClose.setAttribute('src', link)
+        curatorItemRight.appendChild(curItemImgClose)
+
     }
-    if (myOrder) {
+    // if (myOrder) {
         // кнопка добавить испольнителей
         let addCurator = document.createElement('a')
         addCurator.setAttribute('href', '#modal_add_curator')
@@ -153,7 +164,7 @@ function createCuratorsList(selector, arr, status) {
         let addCuratorImg = document.createElement('img')
         addCuratorImg.setAttribute('src', imgPlus)
         addCurator.appendChild(addCuratorImg)
-    }
+    // }
 }
 
 // изменяет список кураторов
