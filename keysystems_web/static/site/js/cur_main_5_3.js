@@ -180,6 +180,7 @@ document.querySelectorAll('.modal_cr_order').forEach(link => {
 
                     let textPOClientTab = document.createElement('p')
                     textPOClientTab.classList.add('text_in_modal')
+                    textPOClientTab.setAttribute('id', 'soft_title')
                     textPOClientTab.innerHTML = data['order']['soft']['title']
                     document.querySelector('.select_PO').appendChild(textPOClientTab)
                 } else {
@@ -268,21 +269,14 @@ document.querySelectorAll('.modal_cr_order').forEach(link => {
                 }
 
                 document.querySelector('#tab1 select').addEventListener('change', function () {
-                    let selectedOption = this.options[this.selectedIndex].value
-                    console.log(`Вы выбрали вариант ${selectedOption} ${data.order.id}`)
-                    // Формируем URL с параметрами
-                    let url = `/order-soft/?option=${selectedOption}&order_id=${data.order.id}`;
-
-                    // Отправляем GET-запрос
-                    fetch(url)
-                        .then(response => response.json())
-                        .then(data => {
-                            // Обрабатываем ответ от сервера (например, выводим его в консоль)
-                            console.log('Ответ сервера:', data);
-                        })
-                        .catch(error => {
-                            console.error('Ошибка:', error);
-                        });
+                    let selectedOption = this.options[this.selectedIndex]
+                    window.chatSocket.send(JSON.stringify({
+                        'event': 'edit_soft',
+                        'order_id': window.orderId,
+                        'soft_id': selectedOption.value,
+                        'soft_name': selectedOption.text
+                    }));
+                    
                 })
 
 

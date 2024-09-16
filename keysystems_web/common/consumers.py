@@ -165,19 +165,28 @@ class ChatConsumer(WebsocketConsumer):
             tab = data_json['tab']
             chat = ChatType.CLIENT.value if tab == TAB.TAB2 else ChatType.CURATOR.value
 
-            log_error(f'tab: {tab}\norder_id: {order_id}\nuser_id: {user_id}\n', wt=False)
+            # log_error(f'tab: {tab}\norder_id: {order_id}\nuser_id: {user_id}\n', wt=False)
 
             viewed_msgs = Message.objects.filter(chat=chat, order_id=order_id).all()
-            log_error(f'viewed_msgs: {len(viewed_msgs)}', wt=False)
+            # log_error(f'viewed_msgs: {len(viewed_msgs)}', wt=False)
             for msg in viewed_msgs:
                 ViewMessage.objects.create(message=msg, user_ks_id=user_id)
 
-    '''
-    'event': 'view_tab',
-    'tab': window.selectedTab,
-    'order_id': window.orderId,
-    'user_id': window.userId
-    '''
+        # меняет софт
+        elif data_json['event'] == EditOrderAction.EDIT_SOFT:
+            order_id = int(data_json['order_id'])
+            soft_id = int(data_json['soft_id'])
+
+            order = Order.objects.filter(id=order_id).first()
+            order.soft_id = soft_id
+            order.save()
+
+            async_to_sync(self.channel_layer.group_send)(
+                self.room_group_name, {"type": "edit.soft", 'soft_id': soft_id, 'soft_name': data_json['soft_name']}
+            )
+
+
+
 
     # обновляет сообщения в чате
     def chat_message(self, event):
@@ -220,6 +229,17 @@ class ChatConsumer(WebsocketConsumer):
         context = {
             'type': EditOrderAction.EDIT_STATUS.value,
             'status': event['status'],
+        }
+
+        self.send(text_data=json.dumps(context))
+
+    # отправляет новый список кураторов
+    def edit_soft(self, event):
+        log_error(wt=False, message=f'edit_soft\n{event}\n')
+        context = {
+            'type': EditOrderAction.EDIT_SOFT.value,
+            'soft_id': event['soft_id'],
+            'soft_name': event['soft_name'],
         }
 
         self.send(text_data=json.dumps(context))

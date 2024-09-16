@@ -409,6 +409,7 @@ function status_btn(status) {
     })
 }
 
+
 // принимает возврат в работу
 function eventReturnWork(newStatus) {
     document.querySelector('#btnDescriptionSubmit').addEventListener('click', function () {
@@ -630,6 +631,27 @@ function addMsgChat (data, userId) {
     }
 }
 
+
+// заменяет софт
+function changeSoft (soft_id, soft_name) {
+    if (curatorUser) {
+        selectorSoft = document.querySelector('#tab1 select')
+        let optionToSelect = selectorSoft.querySelector(`option[value="${soft_id}"]`);
+        
+        if (optionToSelect) {
+            selectorSoft.value = soft_id;  // Устанавливаем значение select
+        }
+    }
+    else {
+        soft_title
+        titleSoft = document.getElementById('soft_title')
+        if (titleSoft) {
+            titleSoft.innerHTML = soft_name
+        }
+    }
+}
+
+
 // создание сокета и все с ним функции
 function initOrderSocket(roomName, userId) {
     window.chatSocket = new WebSocket(
@@ -660,6 +682,9 @@ function initOrderSocket(roomName, userId) {
         }
         else if (data.type == 'edit_status') {
             status_btn(data.status)
+        }
+        else if (data.type == 'edit_soft') {
+            changeSoft(data.soft_id, data.soft_name)
         }
     };
     window.chatSocket.onclose = function (e) {
