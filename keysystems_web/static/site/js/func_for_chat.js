@@ -128,20 +128,31 @@ function createCuratorsList(selector, arr, status) {
             userMe.innerHTML = ` (Я)`
             curatorUser.append(userMe)
 
-            let curatorItemRight = document.createElement('a')
-            curatorItemRight.setAttribute('href', '#modal_add_curator')
-            curatorItemRight.classList.add('modal-trigger')
-            curatorItemRight.classList.add('curator_item_right')
-            curatorForRequest.appendChild(curatorItemRight)
+            // let curatorItemRight = document.createElement('a')
+            // curatorItemRight.setAttribute('href', '#modal_add_curator')
+            // curatorItemRight.classList.add('modal-trigger')
+            // curatorItemRight.classList.add('curator_item_right')
+            // curatorForRequest.appendChild(curatorItemRight)
 
-            let curItemImgClose = document.createElement('img')
-            curItemImgClose.setAttribute('src', link)
-            curatorItemRight.appendChild(curItemImgClose)
+            // let curItemImgClose = document.createElement('img')
+            // curItemImgClose.setAttribute('src', link)
+            // curatorItemRight.appendChild(curItemImgClose)
 
 
         }
+        
+        let curatorItemRight = document.createElement('a')
+        curatorItemRight.setAttribute('href', '#modal_add_curator')
+        curatorItemRight.classList.add('modal-trigger')
+        curatorItemRight.classList.add('curator_item_right')
+        curatorForRequest.appendChild(curatorItemRight)
+
+        let curItemImgClose = document.createElement('img')
+        curItemImgClose.setAttribute('src', link)
+        curatorItemRight.appendChild(curItemImgClose)
+
     }
-    if (myOrder) {
+    // if (myOrder) {
         // кнопка добавить испольнителей
         let addCurator = document.createElement('a')
         addCurator.setAttribute('href', '#modal_add_curator')
@@ -153,7 +164,7 @@ function createCuratorsList(selector, arr, status) {
         let addCuratorImg = document.createElement('img')
         addCuratorImg.setAttribute('src', imgPlus)
         addCurator.appendChild(addCuratorImg)
-    }
+    // }
 }
 
 // изменяет список кураторов
@@ -180,15 +191,19 @@ function modalAddCurators(selector) {
     // обработчик событий для открытия второго окна
     const target = document.querySelector(`#statusOrder ${selector}`)
     if (target) {
-        target.addEventListener('click', function () {
+        // target.addEventListener('click', function () {
+        target.addEventListener('click', (event) => {
             // Открываем второе модальное окно
             // let modalInstance = M.Modal.getInstance(document.querySelector('#modal_add_curator'));
             // console.log(modalInstance)
             // modalInstance.open();
 
+           
             // тут удаляем если он один
             let curatorsList = document.querySelectorAll('.curator_item').length
-            if (curatorsList > 1) {
+            if (curatorsList > 1 && selector == '.curator_item_right') {
+                event.preventDefault()
+                console.log('preventDefault')
                 window.chatSocket.send(JSON.stringify({
                     'event': 'edit_curator',
                     'del': window.userId,
@@ -198,7 +213,6 @@ function modalAddCurators(selector) {
                 return
 
             }
-            
 
 
             // Выполняем запрос к бэку
@@ -214,8 +228,8 @@ function modalAddCurators(selector) {
             })
                 .then(response => response.json())
                 .then(data => {
-                    console.log('data')
-                    console.log(data)
+                    // console.log('data')
+                    // console.log(data)
 
                     // console.log(modalInstance)
 
@@ -278,10 +292,10 @@ function modalAddCurators(selector) {
                     addCurator.appendChild(selectAddCurator)
 
                     // добавить цикл с вариантами выбора
-                    console.log('data.length')
-                    console.log(data.length)
+                    // console.log('data.length')
+                    // console.log(data.length)
                     for (let i = 0; i < data.length; i++) {
-                        console.log(data[i])
+                        // console.log(data[i])
                         let optionAddCurator = document.createElement('option')
                         optionAddCurator.setAttribute('value', data[i]['id'])
                         optionAddCurator.innerHTML = data[i]['full_name']
@@ -406,6 +420,7 @@ function status_btn(status) {
     })
 }
 
+
 // принимает возврат в работу
 function eventReturnWork(newStatus) {
     document.querySelector('#btnDescriptionSubmit').addEventListener('click', function () {
@@ -473,7 +488,6 @@ function createMsg(ObjMsg, userId, withHeader = true) {
         // contextMsg.classList.add('context_msg')
         // contextMsg.innerHTML = ObjMsg['filename']
     }
-    console.log(contextMsg)
     newMsg.appendChild(contextMsg)
 
     return newMsg
@@ -628,6 +642,27 @@ function addMsgChat (data, userId) {
     }
 }
 
+
+// заменяет софт
+function changeSoft (soft_id, soft_name) {
+    if (curatorUser) {
+        selectorSoft = document.querySelector('#tab1 select')
+        let optionToSelect = selectorSoft.querySelector(`option[value="${soft_id}"]`);
+        
+        if (optionToSelect) {
+            selectorSoft.value = soft_id;  // Устанавливаем значение select
+        }
+    }
+    else {
+        soft_title
+        titleSoft = document.getElementById('soft_title')
+        if (titleSoft) {
+            titleSoft.innerHTML = soft_name
+        }
+    }
+}
+
+
 // создание сокета и все с ним функции
 function initOrderSocket(roomName, userId) {
     window.chatSocket = new WebSocket(
@@ -658,6 +693,9 @@ function initOrderSocket(roomName, userId) {
         }
         else if (data.type == 'edit_status') {
             status_btn(data.status)
+        }
+        else if (data.type == 'edit_soft') {
+            changeSoft(data.soft_id, data.soft_name)
         }
     };
     window.chatSocket.onclose = function (e) {

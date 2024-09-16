@@ -1,5 +1,5 @@
 function count_notice(selector, num) {
-    // console.log(`${selector} найден`)
+    console.log(`${selector} ${num}`)
     let parentElem = document.getElementById(selector)
     if (!parentElem) {
         return
@@ -40,9 +40,6 @@ if (window.matchMedia('(min-width: 600px)').matches) {
     count_notice('id_menu_push_mob', mainData['notice']) 
     count_notice('id_menu_updatePO_mob', mainData['update_count'])
 }
-
-
-
 
 
 // для чатов

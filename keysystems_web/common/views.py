@@ -63,7 +63,7 @@ def get_order_data(request: HttpRequest, order_id):
         return JsonResponse({'error': 'not found'}, status=404)
 
 
-# изменяет заказ
+# изменяет заказ (скорее всего удалить)
 def edit_order_view(request: HttpRequest):
     if request.method != RequestMethod.POST:
         return JsonResponse({'error': 'request method must be POST'}, status=404)
@@ -71,12 +71,12 @@ def edit_order_view(request: HttpRequest):
     data = request.POST
 
     try:
-        if data['type'] == EditOrderAction.EDIT_SOFT:
-            order = Order.objects.filter(id=data['order_id'])
-            order(soft_id=data['soft_id'])
-            order.save()
+        # if data['type'] == EditOrderAction.EDIT_SOFT:
+        #     order = Order.objects.filter(id=data['order_id'])
+        #     order(soft_id=data['soft_id'])
+        #     order.save()
 
-        elif data['type'] == EditOrderAction.ADD_CURATOR:
+        if data['type'] == EditOrderAction.ADD_CURATOR:
             OrderCurator.objects.create(user_id=data['user_id'], order_id=data['order_id'])
 
         elif data['type'] == EditOrderAction.EDIT_SOFT:
