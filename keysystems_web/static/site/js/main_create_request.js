@@ -231,6 +231,8 @@ let labelAddFileImg = document.createElement('img')
 labelAddFileImg.setAttribute('src', linkAddFile)
 labelAddFile.prepend(labelAddFileImg)
 
+
+
 let fileList = []
 
 // загруженный файл
@@ -240,7 +242,6 @@ fileNameDisplay.classList.add('file_name_grid');
 // fileNameDisplay.style.marginTop = '10px';
 addFile.appendChild(fileNameDisplay);
 
-
 // Обработчик события изменения файла
 inputAddFile.addEventListener('change', (event) => {
     const files = event.target.files;
@@ -248,6 +249,7 @@ inputAddFile.addEventListener('change', (event) => {
     if (files.length > 0) {
         for (let i = 0; i < files.length; i++) {
 
+            inDnl(fileNameDisplay, files[i])
             dnlFile(fileNameDisplay, files[i]) 
         }
     }

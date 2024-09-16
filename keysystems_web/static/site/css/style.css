@@ -1440,3 +1440,17 @@ select option:hover {
 .btn_end_req {
     display: none;
 }
+
+/* прогресс-бар */
+.timer-progresbar {
+    display: flex;
+  }
+  .timer-progresbar > div {
+    padding: 5px;
+  }
+  .timer-progressbar__fill {
+    background-color: springgreen;
+  }
+  .timer-progressbar__empty {
+    background-color: tomato;
+  }
