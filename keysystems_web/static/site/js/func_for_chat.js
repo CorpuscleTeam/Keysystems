@@ -180,15 +180,19 @@ function modalAddCurators(selector) {
     // обработчик событий для открытия второго окна
     const target = document.querySelector(`#statusOrder ${selector}`)
     if (target) {
-        target.addEventListener('click', function () {
+        // target.addEventListener('click', function () {
+        target.addEventListener('click', (event) => {
             // Открываем второе модальное окно
             // let modalInstance = M.Modal.getInstance(document.querySelector('#modal_add_curator'));
             // console.log(modalInstance)
             // modalInstance.open();
 
+           
             // тут удаляем если он один
             let curatorsList = document.querySelectorAll('.curator_item').length
-            if (curatorsList > 1) {
+            if (curatorsList > 1 && selector == '.curator_item_right') {
+                event.preventDefault()
+                console.log('preventDefault')
                 window.chatSocket.send(JSON.stringify({
                     'event': 'edit_curator',
                     'del': window.userId,
@@ -198,7 +202,6 @@ function modalAddCurators(selector) {
                 return
 
             }
-            
 
 
             // Выполняем запрос к бэку
@@ -214,8 +217,8 @@ function modalAddCurators(selector) {
             })
                 .then(response => response.json())
                 .then(data => {
-                    console.log('data')
-                    console.log(data)
+                    // console.log('data')
+                    // console.log(data)
 
                     // console.log(modalInstance)
 
@@ -278,10 +281,10 @@ function modalAddCurators(selector) {
                     addCurator.appendChild(selectAddCurator)
 
                     // добавить цикл с вариантами выбора
-                    console.log('data.length')
-                    console.log(data.length)
+                    // console.log('data.length')
+                    // console.log(data.length)
                     for (let i = 0; i < data.length; i++) {
-                        console.log(data[i])
+                        // console.log(data[i])
                         let optionAddCurator = document.createElement('option')
                         optionAddCurator.setAttribute('value', data[i]['id'])
                         optionAddCurator.innerHTML = data[i]['full_name']
@@ -473,7 +476,6 @@ function createMsg(ObjMsg, userId, withHeader = true) {
         // contextMsg.classList.add('context_msg')
         // contextMsg.innerHTML = ObjMsg['filename']
     }
-    console.log(contextMsg)
     newMsg.appendChild(contextMsg)
 
     return newMsg
