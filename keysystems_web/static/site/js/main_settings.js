@@ -160,6 +160,7 @@ formSettingsPhone.appendChild(inputSettingsPhone)
 
 let btnSubmitSettings = document.createElement('button')
 btnSubmitSettings.classList.add('enter_button')
+btnSubmitSettings.classList.add('modal-close')
 btnSubmitSettings.innerHTML = `Сохранить изменения`
 formSettings.appendChild(btnSubmitSettings)
 

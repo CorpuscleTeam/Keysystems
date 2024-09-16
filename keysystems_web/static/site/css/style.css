@@ -785,17 +785,23 @@ select option:hover {
     margin-bottom: 20px;
 }
 .news_link_read {
+    /* border: 2px solid var(--color_dark);
+    text-decoration: none;
+    color: var(--color_dark);
+    cursor: pointer;
+    padding: 12px 24px;
+    width: 90px; */
+}
+.news_link_read a {
     border: 2px solid var(--color_dark);
     text-decoration: none;
     color: var(--color_dark);
     cursor: pointer;
     padding: 12px 24px;
     width: 90px;
-}
-.news_link_read a {
     color: var(--color_dark);
 }
-.news_link_read:hover {
+.news_link_read a:hover {
     border: 2px solid var(--color_green);
     color: var(--color_green);
 }
@@ -1449,8 +1455,8 @@ select option:hover {
     padding: 5px;
   }
   .timer-progressbar__fill {
-    background-color: springgreen;
+    background-color: rgba(122, 184, 14, 1);
   }
   .timer-progressbar__empty {
-    background-color: tomato;
+    background-color: rgba(217, 217, 217, 1);
   }
