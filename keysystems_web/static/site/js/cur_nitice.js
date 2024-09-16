@@ -6,7 +6,8 @@ function count_notice(selector, num) {
     }
 
     if (parentElem) {
-        let countNum = parentElem.querySelector('.page_menu_li_right')
+        // let countNum = parentElem.querySelector('.page_menu_li_right')
+        let countNum = parentElem.querySelector('.orders_count')
         // countNum.classList.add('orders_count')
 
         if (num == 0 && countNum) {
@@ -39,18 +40,6 @@ if (window.matchMedia('(min-width: 600px)').matches) {
     count_notice('id_menu_push_mob', mainData['notice']) 
     count_notice('id_menu_updatePO_mob', mainData['update_count'])
 }
-
-
-// count_notice('id_menu_request', mainData['orders_count'])
-// count_notice('id_menu_request_mob', mainData['orders_count'])
-
-// count_notice('id_menu_push', mainData['notice'])
-// count_notice('id_menu_push_mob', mainData['notice'])
-
-
-// count_notice('id_menu_updatePO', mainData['update_count'])
-// count_notice('id_menu_updatePO_mob', mainData['update_count'])
-
 
 
 // для чатов

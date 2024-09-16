@@ -64,7 +64,9 @@ function createOrderCard(order) {
 }
 
 // Создать div_grid со всеми заявками
-let all_orders = document.createElement('div')
+
+function ordersArea() {
+    let all_orders = document.createElement('div')
 all_orders.classList.add('page_body_orders')
 // создать серку grid со всеми заявками
 document.querySelector('.page_flex_body').appendChild(all_orders)
@@ -181,5 +183,6 @@ countOfDoneOrders.classList.add('count_orders')
 let quantityDoneOrders = doneOrderFlex.querySelectorAll('.modal_cr_order').length
 countOfDoneOrders.innerHTML = quantityDoneOrders
 headerOfDoneOrders.appendChild(countOfDoneOrders)
+}
 
-
+ordersArea()
