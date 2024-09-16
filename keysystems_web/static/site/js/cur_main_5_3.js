@@ -262,7 +262,7 @@ document.querySelectorAll('.modal_cr_order').forEach(link => {
                 });
 
 
-                if (!window.mgtOrder) {
+                if (!window.mgtOrder && curatorUser) {
                     let withoutFooter = document.querySelector('#tab2 .footer_message')
                     withoutFooter.style.display = 'none'
                 }

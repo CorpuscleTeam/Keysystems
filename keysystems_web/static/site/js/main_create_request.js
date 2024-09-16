@@ -328,12 +328,14 @@ modRequestConfirmContent.appendChild(footerRequestConfirm)
 
 let btnRequestConfirCancel = document.createElement('a')
 btnRequestConfirCancel.classList.add('btn_support_cancel')
+btnRequestConfirCancel.classList.add('modal-close')
 btnRequestConfirCancel.innerHTML = `Отмена`
 footerRequestConfirm.appendChild(btnRequestConfirCancel)
 
 let btnRequestConfirSubmit = document.createElement('button')
 btnRequestConfirSubmit.setAttribute('id', 'btnRequestConfirm')
 btnRequestConfirSubmit.classList.add('btn_support_submit')
+btnRequestConfirSubmit.classList.add('modal-close')
 btnRequestConfirSubmit.innerHTML = `Да`
 footerRequestConfirm.appendChild(btnRequestConfirSubmit)
 
