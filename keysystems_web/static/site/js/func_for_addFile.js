@@ -22,72 +22,60 @@ function getSizeFileStr(size) {
 }
 
 
-// эта функция должна нам прогрес-бар оживлять
-function uploadForm(formElement, progressBar) {
-    let xhr = new XMLHttpRequest();
-    let formData = new FormData(formElement); // Собираем все данные формы
+// // эта функция должна нам прогрес-бар оживлять
+// function uploadForm(formElement, progressBar) {
+//     let xhr = new XMLHttpRequest();
+//     let formData = new FormData(formElement); // Собираем все данные формы
 
-    xhr.open('POST', formElement.action, true);
+//     xhr.open('POST', formElement.action, true);
 
-    xhr.upload.onprogress = function (event) {
-        if (event.lengthComputable) {
-            let percentComplete = (event.loaded / event.total) * 100;
-            progressBar.style.width = percentComplete + '%';
-        }
-    };
+//     xhr.upload.onprogress = function (event) {
+//         if (event.lengthComputable) {
+//             let percentComplete = (event.loaded / event.total) * 100;
+//             progressBar.style.width = percentComplete + '%';
+//         }
+//     };
 
-    xhr.onload = function () {
-        if (xhr.status == 200) {
-            progressBar.style.backgroundColor = 'green'; // успешная загрузка
-        } else {
-            progressBar.style.backgroundColor = 'red'; // ошибка
-        }
-    };
+//     xhr.onload = function () {
+//         if (xhr.status == 200) {
+//             progressBar.style.backgroundColor = 'green'; // успешная загрузка
+//         } else {
+//             progressBar.style.backgroundColor = 'red'; // ошибка
+//         }
+//     };
 
-    xhr.send(formData); // Отправляем данные формы
-}
+//     xhr.send(formData); // Отправляем данные формы
+// }
 
 // прогрессбар
-function uploadFilesWithProgressBar(inputElement, progressBarFill) {
-    const files = inputElement.files; // Получаем загруженные файлы
+function myTimer(seconds, callback) {
+    let startDate = new Date();
+    let endDate = new Date();
+    endDate = endDate.setSeconds(endDate.getSeconds() + seconds);
+    
+    let interval = setInterval(() => {
+        let currentDate = new Date();
+        let leftPercent = Math.trunc((endDate - currentDate) / (endDate - startDate) * 100);
+        let passedPercent = +(100 - leftPercent);
 
-    if (!files.length) {
-        // alert('Выберите файл для загрузки');
-        return;
-    }
+        document.querySelector('.progress_fill').style.width = passedPercent + '%';
+        document.querySelector('.progress_empty').style.width = leftPercent + '%';
 
-    const formData = new FormData();
-    for (let i = 0; i < files.length; i++) {
-        formData.append('files[]', files[i]);
-    }
-
-    const xhr = new XMLHttpRequest();
-
-    // Отслеживаем прогресс загрузки
-    xhr.upload.addEventListener('progress', function(e) {
-        if (e.lengthComputable) {
-            const percentComplete = (e.loaded / e.total) * 100;
-            progressBarFill.style.width = percentComplete + '%';
+        if (leftPercent <= 0) {
+            clearInterval(interval);
+            document.querySelector('.progress_empty').style.display = 'none';
+            
+            // Вызываем колбэк после завершения таймера
+            if (typeof callback === 'function') {
+                callback();
+            }
         }
-    });
-
-    // Когда загрузка завершена
-    xhr.addEventListener('load', function() {
-        if (xhr.status === 200) {
-            progressBarFill.style.width = '100%';
-            // alert('Файлы успешно загружены');
-        } else {
-            alert('Ошибка при загрузке файла');
-        }
-    });
-
-    xhr.open('POST', '/upload-url-here', true); // Укажи реальный URL для загрузки
-    xhr.send(formData);
+    }, 1000);
 }
 
 
 // загрузка файла + прогресс бар загрузка файла
-function inDnl(parent) {
+function inDnl(parent, data) {
     let inDnlFile = document.createElement('div')
     inDnlFile.classList.add('update_file_btn')
     parent.appendChild(inDnlFile)
@@ -140,6 +128,10 @@ function inDnl(parent) {
     // удаление всего
     FileRight.addEventListener('click', (event) => {
         btnFile.remove()
+    })
+
+    myTimer(2, () => {
+        inDnlFile.remove();
     })
 }
 
