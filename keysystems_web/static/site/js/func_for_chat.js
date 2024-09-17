@@ -188,6 +188,7 @@ function clickAddCurator(delUser = null) {
 // создает модальное окно с выбором исполнителей
 function modalAddCurators(selector) {
     let modalAddCurator = document.querySelector('#modal_add_curator')
+  
     // обработчик событий для открытия второго окна
     const target = document.querySelector(`#statusOrder ${selector}`)
     if (target) {
@@ -211,7 +212,6 @@ function modalAddCurators(selector) {
                     'room_name': window.roomName
                 }));
                 return
-
             }
 
 
@@ -237,7 +237,10 @@ function modalAddCurators(selector) {
 
 
                     let oldModal = document.querySelector('#modal_add_curator')
-                    oldModal.innerHTML = ''
+                    if (oldModal) {
+                        oldModal.innerHTML = ''
+                    }
+                    
 
                     // if (oldModal) {
                     //     // Если модальное окно существует, удаляем его

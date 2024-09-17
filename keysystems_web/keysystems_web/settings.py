@@ -84,8 +84,6 @@ DATABASES = {
 REDIS_DB = redis.Redis(host=os.getenv('DB_HOST'), port=6379, db=0)
 REDIS_TTL: int = 60 * 60  # один час
 
-
-
 AUTH_PASSWORD_VALIDATORS = [
     {
         'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
@@ -218,10 +216,8 @@ CKEDITOR_5_CONFIGS = {
             '|',
             'blockQuote',
         ],
-        'toolbar': ['heading', '|', 'outdent', 'indent', '|', 'bold', 'italic', 'link', 'underline', 'strikethrough',
-                    'code', 'subscript', 'superscript', 'highlight', '|', 'codeBlock', 'sourceEditing',
-                    'bulletedList', 'numberedList', 'todoList', '|',  'blockQuote', '|',
-                    'fontSize', 'fontFamily', 'fontColor', 'fontBackgroundColor', 'mediaEmbed', 'removeFormat',
+        'toolbar': ['bold', 'italic', 'link', 'underline', 'strikethrough',
+                    'code', 'subscript', 'superscript', 'highlight'
                     ],
     },
     'list': {
