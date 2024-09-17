@@ -18,11 +18,11 @@ console.log('должно создаться модальное окно 1')
 
 // МО добавить новых кураторов
 
-// let modalAddCurator = document.createElement('div')
-// modalAddCurator.setAttribute('id', 'modal_add_curator')
-// modalAddCurator.classList.add('modal')
-// // все что в МО заполняется через function modalAddCurators()
-// document.body.append(modalAddCurator)
+let modalAddCurator = document.createElement('div')
+modalAddCurator.setAttribute('id', 'modal_add_curator')
+modalAddCurator.classList.add('modal')
+// все что в МО заполняется через function modalAddCurators()
+document.body.append(modalAddCurator)
 
 // МО вернуть в работу (клиент)
 
