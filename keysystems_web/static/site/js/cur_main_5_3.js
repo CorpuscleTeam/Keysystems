@@ -43,7 +43,7 @@ document.querySelectorAll('.modal_cr_order').forEach(link => {
             .then(response => response.json())
             .then(data => {
 
-                console.log(data)
+                // console.log(data)
                 if (data.client_chat.length > 0) {
                     window.lastMsgForClientChat = data.client_chat[data.client_chat.length - 1].from_user.id;
                 } else {
@@ -160,7 +160,7 @@ document.querySelectorAll('.modal_cr_order').forEach(link => {
                 // M.Modal.getInstance(modalAddCurator).open();
 
 
-                console.log(`curatorUser ${curatorUser}`)
+                // console.log(`curatorUser ${curatorUser}`)
                 // отображение вкладки "чат кураторов"
                 if (curatorUser == false) {
                     // поменял поиск вкладки, чтоб скрывалась у клиента
@@ -257,7 +257,7 @@ document.querySelectorAll('.modal_cr_order').forEach(link => {
                         }
 
                         // Логируем ID открытой вкладки
-                        console.log('Открыта вкладка:', selectedTab);
+                        // console.log('Открыта вкладка:', selectedTab);
                     });
                 });
 

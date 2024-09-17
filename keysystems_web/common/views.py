@@ -13,9 +13,9 @@ from enums import ChatType, RequestMethod, EditOrderAction
 
 # полные данные по заказу
 def get_order_data(request: HttpRequest, order_id):
-    log_error('>>>>>>>>>>>>', wt=False)
+    # log_error('>>>>>>>>>>>>', wt=False)
     try:
-        log_error(f'{order_id}', wt=False)
+        # log_error(f'{order_id}', wt=False)
 
         order = Order.objects.filter(id=order_id).first()
         messages = Message.objects.prefetch_related('view_message').filter(order=order).order_by('created_at')
@@ -121,13 +121,19 @@ def get_curator_view(request: HttpRequest):
         return JsonResponse({'error': 'request method must be POST'}, status=404)
 
     data: dict = json.loads(request.body)
-    # log_error(f'fdata: {type(data)} {data}', wt=False)
+    log_error(f'fdata: {type(data)} {data}', wt=False)
     try:
         order_id = int(data.get('order_id', 0))
         # curators = UserKS.objects.filter(is_staff=True).all()
+        # log_error(f'len(curators): {len(curators)} ', wt=False)
         curators = UserKS.objects.filter(is_staff=True).exclude(
             id__in=OrderCurator.objects.filter(order_id=order_id).values('user_id')
         )
+
+        # order_curators = OrderCurator.objects.filter(order_id=order_id).select_related('user').all()
+        # logging.warning('order_curators')
+        # for cur in order_curators:
+        #     logging.warning(cur.user.full_name)
 
         return JsonResponse(UserKSSerializer(curators, many=True).data, status=200, safe=False)
 

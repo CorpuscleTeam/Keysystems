@@ -24,9 +24,10 @@ def cur_index_1_1(request: HttpRequest):
 
     # orders = utils.get_orders_curator(request)
 
+    logging.warning(f'request.user: {request.user.full_name} {request.user.id}')
     orders = OrderCurator.objects.select_related('order').filter(user=request.user).order_by('order__created_at').all()
     order_list = [order_curator.order for order_curator in orders]
-    logging.warning(f'order_list: {len(order_list)}')
+    # logging.warning(f'order_list: {len(order_list)}')
 
     curator_data = utils.get_main_curator_front_data(request)
     context = {

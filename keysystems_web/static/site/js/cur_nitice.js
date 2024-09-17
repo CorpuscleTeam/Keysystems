@@ -1,5 +1,5 @@
 function count_notice(selector, num) {
-    console.log(`${selector} ${num}`)
+    // console.log(`${selector} ${num}`)
     let parentElem = document.getElementById(selector)
     if (!parentElem) {
         return
