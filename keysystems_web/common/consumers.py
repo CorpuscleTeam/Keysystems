@@ -185,9 +185,6 @@ class ChatConsumer(WebsocketConsumer):
                 self.room_group_name, {"type": "edit.soft", 'soft_id': soft_id, 'soft_name': data_json['soft_name']}
             )
 
-
-
-
     # обновляет сообщения в чате
     def chat_message(self, event):
         # {'type': 'chat.message', 'message': 'рррр', 'tab': '#tab2', 'order_id': '18'}
@@ -251,13 +248,6 @@ class UserConsumer(WebsocketConsumer):
         self.room_name = self.scope["url_route"]["kwargs"]["room_name"]
         self.room_group_name = f"chat_{self.room_name}"
 
-        user_id = self.scope["user"].id
-
-        log_error(wt=False, message=f'connect\n'
-                                    f'{self.scope["url_route"]}\n'
-                                    f'{self.scope["user"]}\n'
-                                    f'self.channel_name: {self.channel_name}')
-
         # Join room group
         async_to_sync(self.channel_layer.group_add)(
             self.room_group_name, self.channel_name
@@ -270,3 +260,12 @@ class UserConsumer(WebsocketConsumer):
         async_to_sync(self.channel_layer.group_discard)(
             self.room_group_name, self.channel_name
         )
+
+    def receive(self, text_data=None, bytes_data=None):
+        pass
+
+    # обновляет счётчик сообщений
+    def counter(self, selector: str, room_name: str):
+        room_name = ''
+        self.send(text_data=json.dumps({'selector': selector}))
+
