@@ -184,7 +184,7 @@ function clickAddCurator(delUser = null) {
         }));
     });
 }
-{/* <a href="#modal_add_curator" class="modal-trigger curator_item_right"><img src="/static/site/img/close-large.svg"></a> */}
+
 // создает модальное окно с выбором исполнителей
 function modalAddCurators(selector) {
     let modalAddCurator = document.querySelector('#modal_add_curator')
@@ -228,7 +228,7 @@ function modalAddCurators(selector) {
             })
                 .then(response => response.json())
                 .then(data => {
-                    // console.log('data')
+                    // console.log('>>>>>>>>>>>>>data')
                     // console.log(data)
 
                     // console.log(modalInstance)
@@ -237,17 +237,15 @@ function modalAddCurators(selector) {
 
 
                     let oldModal = document.querySelector('#modal_add_curator')
+
                     if (oldModal) {
                         oldModal.innerHTML = ''
                     }
                     
 
-                    // if (oldModal) {
-                    //     // Если модальное окно существует, удаляем его
-                    //     // oldModal.remove();
-                    //     console.log('modalAddCurator1111')
-                    //     modalInstance.innerHTML = ''
-                    // }
+
+                        oldModal.innerHTML = ''
+                    }
 
                     let modalAddCuratorContent = document.createElement('div')
                     modalAddCuratorContent.classList.add('modal-content')
@@ -258,9 +256,11 @@ function modalAddCurators(selector) {
 
 
                     if (selector == '.btn_add_curator') {
+                        console.log('можно добавить испольнителя')
                         let modalAddCuratorTitle = modalTitle('Добавить исполнителя')
                         modalAddCuratorContent.appendChild(modalAddCuratorTitle)
                     } else {
+                        console.log('не хочу этого делать')
                         let modalAddCuratorTitle = modalTitle('Снять с себя задачу')
                         modalAddCuratorContent.appendChild(modalAddCuratorTitle)
 

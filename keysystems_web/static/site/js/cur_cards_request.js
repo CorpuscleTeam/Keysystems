@@ -7,7 +7,7 @@ function createOrderCard(order) {
     modalLinkCard.classList.add('modal_cr_order')
     modalLinkCard.classList.add('modal-trigger')
     modalLinkCard.setAttribute('data-order-id', order['id'])
-    modalLinkCard.setAttribute('href', '#statusOrder') // добавить ссылку на модальное окно заявки
+    modalLinkCard.setAttribute('href', '#statusOrder') // #statusOrder создается в cur_main_5_3.js
 
     let newOrder = document.createElement('div')
     newOrder.classList.add('card_order')
@@ -66,123 +66,169 @@ function createOrderCard(order) {
 // Создать div_grid со всеми заявками
 
 function ordersArea() {
-    let all_orders = document.createElement('div')
-all_orders.classList.add('page_body_orders')
-// создать серку grid со всеми заявками
-document.querySelector('.page_flex_body').appendChild(all_orders)
+    if (window.matchMedia('(min-width: 600px)').matches) {
+        let all_orders = document.createElement('div')
+        all_orders.classList.add('page_body_orders')
+        // создать серку grid со всеми заявками
+        document.querySelector('.page_flex_body').appendChild(all_orders)
 
-// колонка "Новые заявки"
-let groupOfNewOrders = document.createElement('div')
-groupOfNewOrders.classList.add('groups_orders')
-all_orders.appendChild(groupOfNewOrders)
+        // колонка "Новые заявки"
+        let groupOfNewOrders = document.createElement('div')
+        groupOfNewOrders.classList.add('groups_orders')
+        all_orders.appendChild(groupOfNewOrders)
 
-// Заголовок "Новые заявки"
-let headerOfNewOrders = document.createElement('div')
-headerOfNewOrders.classList.add('new_orders')
-headerOfNewOrders.classList.add('header_orders')
-groupOfNewOrders.appendChild(headerOfNewOrders)
+        // Заголовок "Новые заявки"
+        let headerOfNewOrders = document.createElement('div')
+        headerOfNewOrders.classList.add('new_orders')
+        headerOfNewOrders.classList.add('header_orders')
+        groupOfNewOrders.appendChild(headerOfNewOrders)
 
-let titleOfNewOrders = document.createElement('h4')
-titleOfNewOrders.innerHTML = 'Задачи'
-headerOfNewOrders.appendChild(titleOfNewOrders)
+        let titleOfNewOrders = document.createElement('h4')
+        titleOfNewOrders.innerHTML = 'Задачи'
+        headerOfNewOrders.appendChild(titleOfNewOrders)
 
-// let countOfNewOrders = document.createElement('p')
-// countOfNewOrders = 0
-// headerOfNewOrders.appendChild(countOfNewOrders)
+        // let countOfNewOrders = document.createElement('p')
+        // countOfNewOrders = 0
+        // headerOfNewOrders.appendChild(countOfNewOrders)
 
-// карточки с заявками
-let newOrderFlex = document.createElement('div')
-newOrderFlex.classList.add('order_flex')
-groupOfNewOrders.appendChild(newOrderFlex)
+        // карточки с заявками
+        let newOrderFlex = document.createElement('div')
+        newOrderFlex.classList.add('order_flex')
+        groupOfNewOrders.appendChild(newOrderFlex)
 
-// for (let i = 0; i < new_orders.length; i++) {
+        // for (let i = 0; i < new_orders.length; i++) {
 
-// }
+        // }
 
-// колонка "В работе"
-let groupOfActiveOrders = document.createElement('div')
-groupOfActiveOrders.classList.add('groups_orders')
-all_orders.appendChild(groupOfActiveOrders)
+        // колонка "В работе"
+        let groupOfActiveOrders = document.createElement('div')
+        groupOfActiveOrders.classList.add('groups_orders')
+        all_orders.appendChild(groupOfActiveOrders)
 
-// Заголовок "В работе"
-let headerOfActiveOrders = document.createElement('div')
-headerOfActiveOrders.classList.add('active_orders')
-headerOfActiveOrders.classList.add('header_orders')
-groupOfActiveOrders.appendChild(headerOfActiveOrders)
+        // Заголовок "В работе"
+        let headerOfActiveOrders = document.createElement('div')
+        headerOfActiveOrders.classList.add('active_orders')
+        headerOfActiveOrders.classList.add('header_orders')
+        groupOfActiveOrders.appendChild(headerOfActiveOrders)
 
-let titleOfActiveOrders = document.createElement('h4')
-titleOfActiveOrders.innerHTML = 'В работе'
-headerOfActiveOrders.appendChild(titleOfActiveOrders)
+        let titleOfActiveOrders = document.createElement('h4')
+        titleOfActiveOrders.innerHTML = 'В работе'
+        headerOfActiveOrders.appendChild(titleOfActiveOrders)
 
-// let countOfActiveOrders = document.createElement('p')
-// countOfActiveOrders.innerHTML = active_orders.length
-// headerOfActiveOrders.appendChild(countOfActiveOrders)
+        // let countOfActiveOrders = document.createElement('p')
+        // countOfActiveOrders.innerHTML = active_orders.length
+        // headerOfActiveOrders.appendChild(countOfActiveOrders)
 
-// карточки с заявками
-let activeOrderFlex = document.createElement('div')
-activeOrderFlex.classList.add('order_flex')
-groupOfActiveOrders.appendChild(activeOrderFlex)
+        // карточки с заявками
+        let activeOrderFlex = document.createElement('div')
+        activeOrderFlex.classList.add('order_flex')
+        groupOfActiveOrders.appendChild(activeOrderFlex)
 
-// for (let i = 0; i < active_orders.length; i++) {
+        // for (let i = 0; i < active_orders.length; i++) {
 
-// }
+        // }
 
-// колонка "Выполнено"
-let groupOfDoneOrders = document.createElement('div')
-groupOfDoneOrders.classList.add('groups_orders')
-all_orders.appendChild(groupOfDoneOrders)
+        // колонка "Выполнено"
+        let groupOfDoneOrders = document.createElement('div')
+        groupOfDoneOrders.classList.add('groups_orders')
+        all_orders.appendChild(groupOfDoneOrders)
 
-// Заголовок "В работе"
-let headerOfDoneOrders = document.createElement('div')
-headerOfDoneOrders.classList.add('done_orders')
-headerOfDoneOrders.classList.add('header_orders')
-groupOfDoneOrders.appendChild(headerOfDoneOrders)
+        // Заголовок "В работе"
+        let headerOfDoneOrders = document.createElement('div')
+        headerOfDoneOrders.classList.add('done_orders')
+        headerOfDoneOrders.classList.add('header_orders')
+        groupOfDoneOrders.appendChild(headerOfDoneOrders)
 
-let titleOfDoneOrders = document.createElement('h4')
-titleOfDoneOrders.innerHTML = 'Выполнено'
-headerOfDoneOrders.appendChild(titleOfDoneOrders)
+        let titleOfDoneOrders = document.createElement('h4')
+        titleOfDoneOrders.innerHTML = 'Выполнено'
+        headerOfDoneOrders.appendChild(titleOfDoneOrders)
 
-// let countOfDoneOrders = document.createElement('p')
-// countOfDoneOrders.innerHTML = done_orders.length
-// headerOfDoneOrders.appendChild(countOfDoneOrders)
+        // let countOfDoneOrders = document.createElement('p')
+        // countOfDoneOrders.innerHTML = done_orders.length
+        // headerOfDoneOrders.appendChild(countOfDoneOrders)
 
-// карточки с заявками
-let doneOrderFlex = document.createElement('div')
-doneOrderFlex.classList.add('order_flex')
-groupOfDoneOrders.appendChild(doneOrderFlex)
+        // карточки с заявками
+        let doneOrderFlex = document.createElement('div')
+        doneOrderFlex.classList.add('order_flex')
+        groupOfDoneOrders.appendChild(doneOrderFlex)
 
-for (let i = 0; i < card_orders.length; i++) {
-    let card = createOrderCard(card_orders[i])
+        for (let i = 0; i < card_orders.length; i++) {
+            let card = createOrderCard(card_orders[i])
 
-    if (card_orders[i]['status'] == 'new') {
-        newOrderFlex.appendChild(card)
+            if (card_orders[i]['status'] == 'new') {
+                newOrderFlex.appendChild(card)
 
+            }
+            if (card_orders[i]['status'] == 'active') {
+                activeOrderFlex.appendChild(card)
+            }
+            if (card_orders[i]['status'] == 'done') {
+                doneOrderFlex.appendChild(card)
+            }
+        }
+
+        // количество заявок по группам
+        let countOfNewOrders = document.createElement('p')
+        countOfNewOrders.classList.add('count_orders')
+        let quantityNewOrders = newOrderFlex.querySelectorAll('.modal_cr_order').length
+        countOfNewOrders.innerHTML = quantityNewOrders
+        headerOfNewOrders.appendChild(countOfNewOrders)
+
+        let countOfActiveOrders = document.createElement('p')
+        countOfActiveOrders.classList.add('count_orders')
+        let quantityActiveOrders = activeOrderFlex.querySelectorAll('.modal_cr_order').length
+        countOfActiveOrders.innerHTML = quantityActiveOrders
+        headerOfActiveOrders.appendChild(countOfActiveOrders)
+
+        let countOfDoneOrders = document.createElement('p')
+        countOfDoneOrders.classList.add('count_orders')
+        let quantityDoneOrders = doneOrderFlex.querySelectorAll('.modal_cr_order').length
+        countOfDoneOrders.innerHTML = quantityDoneOrders
+        headerOfDoneOrders.appendChild(countOfDoneOrders)
+    } else {
+        document.addEventListener('DOMContentLoaded', function () {
+            // Находим элемент с классом .tabs
+            let tabsElement = document.querySelector('.tabs');
+
+            // Инициализируем вкладки только если элемент tabsElement существует
+            if (tabsElement) {
+                let tabsInstance = M.Tabs.init(tabsElement);
+            }
+
+
+            // let tabsElement = document.querySelector('.tabs');
+            // let tabsInstance = M.Tabs.init(tabsElement);
+
+
+            let mobNewOrders = document.createElement('div')
+            mobNewOrders.classList.add('mob_orders_grid')
+            document.querySelector('#tab1_mob').appendChild(mobNewOrders)
+
+            let mobActiveOrders = document.createElement('div')
+            mobActiveOrders.classList.add('mob_orders_grid')
+            document.querySelector('#tab2_mob').appendChild(mobActiveOrders)
+
+            let mobDoneOrders = document.createElement('div')
+            mobDoneOrders.classList.add('mob_orders_grid')
+            document.querySelector('#tab3_mob').appendChild(mobDoneOrders)
+
+            // карточки с заявками
+            for (let i = 0; i < card_orders.length; i++) {
+                let mobCard = createOrderCard(card_orders[i])
+
+                if (card_orders[i]['status'] == 'new') {
+                    mobNewOrders.appendChild(mobCard)
+                }
+                if (card_orders[i]['status'] == 'active') {
+                    mobActiveOrders.appendChild(mobCard)
+                }
+                if (card_orders[i]['status'] == 'done') {
+                    mobDoneOrders.appendChild(mobCard)
+                }
+            }
+        })
     }
-    if (card_orders[i]['status'] == 'active') {
-        activeOrderFlex.appendChild(card)
-    }
-    if (card_orders[i]['status'] == 'done') {
-        doneOrderFlex.appendChild(card)
-    }
-}
 
-let countOfNewOrders = document.createElement('p')
-countOfNewOrders.classList.add('count_orders')
-let quantityNewOrders = newOrderFlex.querySelectorAll('.modal_cr_order').length
-countOfNewOrders.innerHTML = quantityNewOrders
-headerOfNewOrders.appendChild(countOfNewOrders)
-
-let countOfActiveOrders = document.createElement('p')
-countOfActiveOrders.classList.add('count_orders')
-let quantityActiveOrders = activeOrderFlex.querySelectorAll('.modal_cr_order').length
-countOfActiveOrders.innerHTML = quantityActiveOrders
-headerOfActiveOrders.appendChild(countOfActiveOrders)
-
-let countOfDoneOrders = document.createElement('p')
-countOfDoneOrders.classList.add('count_orders')
-let quantityDoneOrders = doneOrderFlex.querySelectorAll('.modal_cr_order').length
-countOfDoneOrders.innerHTML = quantityDoneOrders
-headerOfDoneOrders.appendChild(countOfDoneOrders)
 }
 
 ordersArea()
