@@ -191,7 +191,7 @@ function modalAddCurators(selector) {
   
     // обработчик событий для открытия второго окна
     const target = document.querySelector(`#statusOrder ${selector}`)
-    console.log('>>>> target')
+    // console.log('>>>> target')
     // console.log(target)
     if (target) {
         // target.addEventListener('click', function () {
@@ -200,7 +200,7 @@ function modalAddCurators(selector) {
             // let modalInstance = M.Modal.getInstance(document.querySelector('#modal_add_curator'));
             // console.log(modalInstance)
             // modalInstance.open();
-            console.log('>>>>>>>>>> modalAddCurators')
+            // console.log('>>>>>>>>>> modalAddCurators')
 
            
             // тут удаляем если он один

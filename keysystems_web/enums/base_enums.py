@@ -142,7 +142,16 @@ soft_list_dict = [
     {'id': Soft.O_SMART.value, 'title': 'ПК "Собственность-СМАРТ"'},
 ]
 
-soft_tuple = ((k, v) for k, v in soft_dict.items())
+# soft_tuple = ((k, v) for k, v in soft_dict.items())
+soft_tuple = (
+    (Soft.B_SMART.value, 'ПК "Бюджет-СМАРТ Про"'),
+    (Soft.ADMIN_D.value, 'ПК "Администратор-Д"'),
+    (Soft.S_SMART.value, 'ПК "Свод-СМАРТ"'),
+    (Soft.P_SMART.value, 'ПРОЕКТИРОВАНИЕ БЮДЖЕТА: "Проект-СМАРТ Про"'),
+    (Soft.WEB_T.value, 'ПК "WEB-Торги-КС"'),
+    (Soft.DIGIT_B.value, 'ПК "Взаимодействие с порталом "Электронный бюджет" по приказу 243н"'),
+    (Soft.O_SMART.value, 'ПК "Собственность-СМАРТ"'),
+)
 
 
 # ПО

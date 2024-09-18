@@ -12,7 +12,7 @@ class News(models.Model):
     id = models.AutoField(primary_key=True)
     created_at = models.DateTimeField('Создана', auto_now_add=True)
     updated_at = models.DateTimeField('Обновлена', auto_now=True)
-    author = models.CharField('автор', max_length=255, null=True, blank=True)
+    author = models.CharField('Автор', max_length=255, null=True, blank=True)
     title = models.CharField('Название', max_length=255)
     text_preview = models.TextField('Текст привью', null=True, blank=True)
     text = CKEditor5Field('Текст')
@@ -56,7 +56,8 @@ class UpdateSoft(models.Model):
     created_at = models.DateTimeField('Создана', auto_now_add=True)
     updated_at = models.DateTimeField('Обновлена', auto_now=True)
     # soft = models.ForeignKey(Soft, on_delete=models.SET_NULL, null=True, related_name='update_soft', verbose_name='Обновления ПО')
-    soft = models.CharField('ПО', max_length=255, choices=soft_tuple, default=Soft.B_SMART.value)
+    # soft = models.CharField('ПО', max_length=255, choices=soft_tuple, default=Soft.B_SMART.value)
+    soft = models.CharField('ПО', max_length=255, choices=soft_tuple)
 
     description = CKEditor5Field('Описание')
     is_active = models.BooleanField(default=True)

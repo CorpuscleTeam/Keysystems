@@ -114,7 +114,7 @@ class SimpleOrderSerializer(serializers.ModelSerializer):
         return soft_dict.get(obj.soft, 'н/д')
 
     def get_topic(self, obj):
-        return order_topic_dict.get(obj.soft, 'н/д')
+        return order_topic_dict.get(obj.topic, 'н/д')
 
     def get_id_str(self, obj):
         return f'#{str(obj.id).zfill(5)}'
@@ -179,7 +179,7 @@ class FullOrderSerializer(serializers.ModelSerializer):
         return soft_dict.get(obj.soft, 'н/д')
 
     def get_topic(self, obj):
-        return order_topic_dict.get(obj.soft, 'н/д')
+        return order_topic_dict.get(obj.topic, 'н/д')
 
     def get_curators(self, obj):
         curators = obj.order_curator.all()

@@ -5,22 +5,19 @@ from django.urls import reverse
 from django.contrib.auth.hashers import make_password, check_password
 from django.core.serializers import serialize
 
-import logging
+import json
 
 from keysystems_web.settings import DEBUG
 from .forms import AuthBaseForm, RegistrationForm, PasswordForm, AuthUserForm
 from .models import Password
+from .auth_utils import send_password
 from common.models import UserKS, Soft, Customer, District, UsedSoft
 from common.logs import log_error
-from common import log_error, pass_gen, send_password_email, send_pass_email
-from enums import RequestMethod
+from enums import RequestMethod, soft_list_dict
 
 
 # Определяет начальную страницу пользователя
 def start_page_redirect(request: HttpRequest):
-    login_url = f'http://{request.get_host()}/index_2_2?pass=3'
-    # send_pass_email(email='dgushch@gmail.com', password='222222')
-    send_password_email(user_email='dgushch@gmail.com', password='3333333', login_url=login_url)
     if request.user.is_authenticated and request.user.is_staff:
         return redirect('cur_index_1_1')
 
@@ -47,9 +44,14 @@ def index_2(request: HttpRequest):
         form = AuthBaseForm(request.POST)
         if form.is_valid():
             input_inn = form.cleaned_data["inn"]
+
+            curator = UserKS.objects.filter(inn=input_inn, is_staff=True).first()
+            if curator:
+                pass_id = send_password(curator, request)
+                return redirect(reverse('index_2_2') + f'?pass={pass_id}')
+
             costumer = Customer.objects.filter(inn=input_inn).first()
-            users_inn = UserKS.objects.filter(customer=costumer).all()
-            log_error(f'>>len(users_inn): {len(users_inn)}', wt=False)
+            users_inn = UserKS.objects.filter(customer=costumer, is_staff=False).all()
 
             if len(users_inn) == 0:
                 if costumer:
@@ -58,21 +60,22 @@ def index_2(request: HttpRequest):
                     error_msg = {'text_error': 'ИНН не зарегистрирован', 'type_error': 'inn'}
 
             elif len(users_inn) == 1:
-                password = pass_gen()
-                new_pass = Password(password=password, user_ks=users_inn[0])
-                new_pass.save()
-                #  тут пароль отправляем на почту
-                login_url = f'http://{request.get_host()}/index_2_2?pass={new_pass.pk}'
+                # password = pass_gen()
+                # new_pass = Password(password=password, user_ks=users_inn[0])
+                # new_pass.save()
+                # #  тут пароль отправляем на почту
+                # login_url = f'http://{request.get_host()}/index_2_2?pass={new_pass.pk}'
+                #
+                # send_password_email(user_email=users_inn[0].username, password=password, login_url=login_url)
+                pass_id = send_password(users_inn[0], request)
 
-                send_password_email(user_email=users_inn[0].username, password=password, login_url=login_url)
-
-                return redirect(reverse('index_2_2') + f'?pass={new_pass.id}')
+                return redirect(reverse('index_2_2') + f'?pass={pass_id}')
 
             elif len(users_inn) > 1:
                 return redirect(reverse('index_2_1') + f'?inn={input_inn}')
 
-            else:
-                return redirect('index_2_2')
+            # else:
+            #     return redirect('index_2')
         else:
             error_msg = {'text_error': 'Некорректный ИНН', 'type_error': 'inn'}
 
@@ -97,14 +100,15 @@ def index_2_1(request: HttpRequest):
                 username=auth_form.cleaned_data['email']
             ).first()
             if user:
-                password = pass_gen()
-                new_pass = Password(password=password, user_ks=user)
-                new_pass.save()
-                #  тут пароль отправляем на почту
-                login_url = f'http://{request.get_host()}/index_2_2?pass={new_pass.id}'
-
-                send_password_email(user_email=user.username, password=password, login_url=login_url)
-                return redirect(reverse('index_2_2') + f'?pass={new_pass.pk}')
+                # password = pass_gen()
+                # new_pass = Password(password=password, user_ks=user)
+                # new_pass.save()
+                # #  тут пароль отправляем на почту
+                # login_url = f'http://{request.get_host()}/index_2_2?pass={new_pass.id}'
+                #
+                # send_password_email(user_email=user.username, password=password, login_url=login_url)
+                pass_id = send_password(user, request)
+                return redirect(reverse('index_2_2') + f'?pass={pass_id}')
 
             else:
                 return redirect('index_3_1')
@@ -178,7 +182,8 @@ def index_3_1(request: HttpRequest):
             email = email[len('mailto:'):] if email.startswith('mailto:') else email
             user = UserKS.objects.filter(username=email).first()
             if user:
-                error_msg = f'Почта {email} уже зарегистрирована'
+                # error_msg = f'Почта {email} уже зарегистрирована'
+                error_msg = {'text_error': f'Почта {email} уже зарегистрирована', 'type_error': 'email'}
 
             else:
                 new_user = UserKS(
@@ -190,16 +195,18 @@ def index_3_1(request: HttpRequest):
                 new_user.save()
 
                 #  тут пароль отправляем на почту
-                password = pass_gen()
-                new_pass = Password(password=password, user_ks=new_user)
-                new_pass.save()
-                login_url = f'http://{request.get_host()}/index_2_2?pass={new_pass.pk}'
-                send_password_email(user_email=email, password=password, login_url=login_url)
+                # password = pass_gen()
+                # new_pass = Password(password=password, user_ks=new_user)
+                # new_pass.save()
+                # login_url = f'http://{request.get_host()}/index_2_2?pass={new_pass.pk}'
+                # send_password_email(user_email=email, password=password, login_url=login_url)
                 # send_pass_email(email=email, password=password)
 
-                used_soft = Soft.objects.get(id=reg_form.cleaned_data['reg_progr'])
-                UsedSoft.objects.create(user=new_user, soft=used_soft)
-                return redirect(reverse('index_2_2') + f'?pass={new_pass.pk}')
+                # used_soft = Soft.objects.get(id=reg_form.cleaned_data['reg_progr'])
+                UsedSoft.objects.create(user=new_user, soft=reg_form.cleaned_data['reg_progr'])
+
+                pass_id = send_password(new_user, request)
+                return redirect(reverse('index_2_2') + f'?pass={pass_id}')
                 # return redirect(reverse('index_2_2') + f'?user={new_user.pk}')
 
         else:
@@ -218,7 +225,8 @@ def index_3_1(request: HttpRequest):
     input_inn = request.POST.get('inn', '') if request.POST.get('inn', '') else request.GET.get('inn', '')
     context = {
         **error_msg,
-        'soft': serialize(format='json', queryset=Soft.objects.filter(is_active=True).all()),
+        # 'soft': serialize(format='json', queryset=Soft.objects.filter(is_active=True).all()),
+        'soft': json.dumps(soft_list_dict),
         'inn': input_inn,
         'email': request.POST.get('email', ''),
         'fio': request.POST.get('fio', ''),

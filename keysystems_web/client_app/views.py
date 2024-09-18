@@ -17,7 +17,7 @@ from . import client_utils as utils
 from common.models import Notice, Order, Soft, OrderCurator
 from common.serializers import SimpleOrderSerializer, NoticeSerializer
 import common as ut
-from enums import RequestMethod, OrderStatus, notices_dict
+from enums import RequestMethod, OrderStatus, soft_dict
 
 
 # страничка с новостями
@@ -151,7 +151,7 @@ def index_7_1(request: HttpRequest):
         utils.form_processing(request)
         return redirect('index_7_1')
     # updates = UpdateSoft.objects.select_related('soft').prefetch_related('files').filter(is_active=True).order_by('-created_at').all()
-    updates = UpdateSoft.objects.select_related('soft').filter(is_active=True).order_by('-created_at').all()
+    updates = UpdateSoft.objects.filter(is_active=True).order_by('-created_at').all()
 
     # tst =OrderSerializer(updates)
 
@@ -167,7 +167,8 @@ def index_7_1(request: HttpRequest):
             {
                 'pk': update.pk,
                 'date': ut.get_date_string(update.created_at),
-                'soft': update.soft.title,
+                # 'soft': update.soft.title,
+                'soft': soft_dict.get(update.soft, 'н/д'),
                 'description': update.description,
                 'update_files': update_files
             }
@@ -202,7 +203,7 @@ def index_7_2(request: HttpRequest):
         return redirect('index_7_2')
 
     update_id = request.GET.get('update', 1)
-    update = UpdateSoft.objects.select_related('soft').filter(id=int(update_id)).order_by('-created_at').first()
+    update = UpdateSoft.objects.filter(id=int(update_id)).order_by('-created_at').first()
 
     files = UpdateSoftFiles.objects.filter(update_soft=update.pk).all()
     update_files = []
@@ -218,7 +219,7 @@ def index_7_2(request: HttpRequest):
 
     update_json = {
         'date': ut.get_date_string(update.created_at),
-        'soft': update.soft.title,
+        'soft': soft_dict.get(update.soft),
         'description': update.description,
         'update_files': update_files
         }

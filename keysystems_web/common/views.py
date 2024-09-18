@@ -24,9 +24,6 @@ def get_order_data(request: HttpRequest, order_id):
         client_messages = messages.filter(chat=ChatType.CLIENT.value)
         curator_messages = messages.filter(chat=ChatType.CURATOR.value)
 
-        # список софта
-        soft = Soft.objects.all()
-
         room_name = f'order{order_id}'
 
         # для отладки
@@ -42,7 +39,7 @@ def get_order_data(request: HttpRequest, order_id):
             curator_unviewed_message = 2
             user_id = 3
 
-        log_error('send all', wt=False)
+        # log_error('send all', wt=False)
         return JsonResponse(
             {
                 'order': FullOrderSerializer(order).data,
@@ -53,7 +50,8 @@ def get_order_data(request: HttpRequest, order_id):
                 'unv_msg_client': client_unviewed_message,
                 'unv_msg_curator': curator_unviewed_message,
                 'room': room_name,
-                'soft': json.dumps(soft_list_dict),
+                # 'soft': json.dumps(soft_list_dict),
+                'soft': soft_list_dict,
             },
             safe=False
         )

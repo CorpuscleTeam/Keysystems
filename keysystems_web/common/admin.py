@@ -3,7 +3,7 @@ from django.contrib.auth.forms import UserCreationForm, UserChangeForm
 
 from keysystems_web.settings import DEBUG
 from . import models as m
-# from .forms import CustomUserChangeForm
+from common.logs import log_error
 
 
 class CustomUserCreationForm(UserCreationForm):
@@ -20,42 +20,42 @@ class CustomUserChangeForm(UserChangeForm):
 
 class SoftBSmartInline(admin.TabularInline):
     model = m.SoftBSmart
-    extra = 1
+    extra = 0
 
 
 class SoftAdminDInline(admin.TabularInline):
     model = m.SoftAdminD
-    extra = 1
+    extra = 0
 
 
 class SoftSSmartInline(admin.TabularInline):
     model = m.SoftSSmart
-    extra = 1
+    extra = 0
 
 
 class SoftPSmartInline(admin.TabularInline):
     model = m.SoftPSmart
-    extra = 1
+    extra = 0
 
 
 class SoftWebTInline(admin.TabularInline):
     model = m.SoftWebT
-    extra = 1
+    extra = 0
 
 
 class SoftDigitBInline(admin.TabularInline):
     model = m.SoftDigitB
-    extra = 1
+    extra = 0
 
 
 class SoftOSmartInline(admin.TabularInline):
     model = m.SoftOSmart
-    extra = 1
+    extra = 0
 
 
 class SoftExceptionsInline(admin.TabularInline):
     model = m.SoftExceptions
-    extra = 1
+    extra = 0
 
 
 # админка софт
@@ -78,7 +78,7 @@ class ViewAdminUser(admin.ModelAdmin):
     ordering = ['-is_staff']
 
     fieldsets = (
-        ('О пользователе', {'fields': ('full_name', 'username', 'phone', 'customer')}),
+        ('О пользователе', {'fields': ('full_name', 'username', 'phone', 'inn')}),
         ('Права', {'fields': ('is_staff', 'is_superuser')}),
         ('Даты', {'fields': ('last_login', 'date_joined')}),
     )
@@ -87,7 +87,7 @@ class ViewAdminUser(admin.ModelAdmin):
     def get_inline_instances(self, request, obj=None):
         # Получаем стандартный список инлайнов
         inline_instances = []
-
+        # log_error(f'{obj}', wt=False)
         # Проверяем, является ли пользователь персоналом
         if obj and obj.is_staff:
             # Добавляем только если это сотрудник
@@ -98,7 +98,7 @@ class ViewAdminUser(admin.ModelAdmin):
         fieldsets = super().get_fieldsets(request, obj)
 
         # Если пользователь является персоналом, заменяем customer на inn
-        if obj and obj.is_staff:
+        if not obj or obj.is_staff:
             fieldsets[0][1]['fields'] = ('full_name', 'username', 'phone', 'inn')
         else:
             fieldsets[0][1]['fields'] = ('full_name', 'username', 'phone', 'customer')
@@ -136,6 +136,13 @@ class OrderCuratorInline(admin.TabularInline):
     model = m.OrderCurator
     extra = 1
 
+    # Переопределяем поле 'user' для фильтрации
+    def formfield_for_foreignkey(self, db_field, request, **kwargs):
+        if db_field.name == 'user':
+            # Фильтруем только пользователей со статусом персонала
+            kwargs['queryset'] = m.UserKS.objects.filter(is_staff=True)
+        return super().formfield_for_foreignkey(db_field, request, **kwargs)
+
 
 class OrderFilesInline(admin.TabularInline):
     model = m.DownloadedFile
@@ -152,7 +159,7 @@ class ViewAdminOrder(admin.ModelAdmin):
     readonly_fields = ['created_at', 'updated_at']
 
 
-# # админка новости
+# # админка районы
 @admin.register(m.District)
 class ViewAdminNews(admin.ModelAdmin):
     list_display = ['title']

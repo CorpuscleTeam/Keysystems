@@ -142,15 +142,15 @@ def form_processing(request: HttpRequest) -> None:
     type_form = request.POST.get('type_form')
     if type_form == e.FormType.ORDER:
         form = OrderForm(request.POST, request.FILES)
-        log_error(f'>>>> form.is_valid(): {form.is_valid()}\n{form.errors}\n{form.data}', wt=False)
+        # log_error(f'>>>> form.is_valid(): {form.is_valid()}\n{form.errors}\n{form.data}', wt=False)
         if form.is_valid():
-            log_error(f'>>>> form.cleaned_data: {form.cleaned_data}\n\n{e.order_topic_dict.get(1)}', wt=False)
+            # log_error(f'>>>> form.cleaned_data: {form.cleaned_data}\n\n{e.order_topic_dict.get(1)}', wt=False)
             # создаёт заказ
             new_order = m.Order(
                 from_user=request.user,
                 text=form.cleaned_data['description'],
                 soft=form.cleaned_data['type_soft'],
-                topic=form.cleaned_data['type_soft'],
+                topic=form.cleaned_data['type_appeal'],
                 # soft=soft,
                 # topic=topic,
                 customer=request.user.customer
@@ -165,7 +165,7 @@ def form_processing(request: HttpRequest) -> None:
             )
             for curator in curators:
                 m.OrderCurator.objects.create(
-                    user=curator,
+                    user_id=curator.user_id,
                     order=new_order
                 )
 
@@ -214,10 +214,11 @@ def form_processing(request: HttpRequest) -> None:
 
     elif type_form == e.FormType.SETTING:
         form = UserSettingForm(request.POST)
-        # log_error(f'>>>> form.is_valid(): {form.is_valid()}\n{form.errors}\n{form.data}', wt=False)
+
         if not form.is_valid():
             return
 
+        log_error(f'>>>> form.cleaned_data: {form.cleaned_data}', wt=False)
         user = request.user
         user.username = form.cleaned_data['settings_email']
         user.full_name = form.cleaned_data['settings_responsible']
@@ -226,7 +227,8 @@ def form_processing(request: HttpRequest) -> None:
 
         # soft = m.Soft.objects.get(id=form.cleaned_data['type_soft'])
         used_soft = m.UsedSoft.objects.get(user=user)
-        used_soft.soft_id = form.cleaned_data['type_soft']
+        log_error(f'>>>> used_soft: {used_soft}', wt=False)
+        used_soft.soft = form.cleaned_data['type_soft']
         # used_soft.soft = soft
         used_soft.save()
         # log_error(f'>>>> save user', wt=False)

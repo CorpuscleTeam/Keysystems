@@ -62,6 +62,7 @@ class UserKS(AbstractUser):
     full_name = models.CharField('ФИО', max_length=255, default='Админ')
     phone = models.CharField('Телефон', max_length=100, null=True, blank=True)
     inn = models.CharField('ИНН', max_length=12, null=True, blank=True)
+    # is_staff = models.BooleanField('Статус куратора', default=True)
 
     groups = models.ManyToManyField(
         Group,
