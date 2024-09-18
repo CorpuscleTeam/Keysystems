@@ -14,10 +14,10 @@ import json
 
 from keysystems_web.settings import FILE_STORAGE, DEBUG
 from .forms import OrderForm, UserSettingForm
-from .models import News, ViewNews, UpdateSoft
+from .models import UpdateSoft
 from common import models as m
 from common import log_error, months_str_ru
-from enums import OrderStatus, FormType, order_topic_dict, MsgType, ChatType
+import enums as e
 
 
 # проверяет доступ к странице
@@ -35,14 +35,16 @@ def is_access_denied(request: HttpRequest) -> bool:
 
 # Собирает данные для стандартного окружения клиентской части
 def get_main_client_front_data(request: HttpRequest) -> dict:
-    soft_json = serialize(format='json', queryset=m.Soft.objects.filter(is_active=True).all())
-    topics_json = serialize(format='json', queryset=m.OrderTopic.objects.filter(is_active=True).all())
+    # soft_json = serialize(format='json', queryset=m.Soft.objects.filter(is_active=True).all())
+    soft_json = json.dumps(e.soft_list_dict)
+    topics_json = json.dumps(e.order_topic_list_dict)
+    # topics_json = serialize(format='json', queryset=m.OrderTopic.objects.filter(is_active=True).all())
 
     log_error(f'request.user.is_authenticated: {request.user.is_authenticated}', wt=False)
 
     if request.user.is_authenticated:
         # количество заявок
-        user_orders_count = m.Order.objects.filter(from_user=request.user).exclude(status=OrderStatus.DONE).count()
+        user_orders_count = m.Order.objects.filter(from_user=request.user).exclude(status=e.OrderStatus.DONE).count()
         # количество непросмотренных уведомлений
         notice_count = m.Notice.objects.filter(viewed=False, user_ks=request.user).count()
         # Получаем все объекты UpdateSoft, которые пользователь не просмотрел
@@ -109,26 +111,46 @@ def get_main_client_front_data(request: HttpRequest) -> dict:
 # >>>> <QueryDict: {'csrfmiddlewaretoken': ['pYTOAQritYwXPWYtFZ11WJiIYZOY2Dei7EnijgTOLqaDbg5dfuTEHWeM9poMfXnP'],
 # 'type_form': ['order'], 'type_appeal': ['1'], 'type_soft': ['1'], 'description': [''], 'addfile': ['']}>
 # возвращает куратора
-def get_order_curator() -> m.UserKS:
-    user = m.UserKS.objects.filter(is_staff=True).order_by('?')
-    return user.first()
+def get_order_curator(soft: str, prefix: str, customer_type: str) -> list[m.UserKS]:
+    if soft == e.Soft.B_SMART:
+        curators = m.SoftBSmart.objects.filter(prefix=prefix, type=customer_type).all()
+    elif soft == e.Soft.ADMIN_D:
+        curators = m.SoftAdminD.objects.filter(prefix=prefix, type=customer_type).all()
+    elif soft == e.Soft.S_SMART:
+        curators = m.SoftSSmart.objects.filter(prefix=prefix, type=customer_type).all()
+    elif soft == e.Soft.P_SMART:
+        curators = m.SoftPSmart.objects.filter(prefix=prefix, type=customer_type).all()
+    elif soft == e.Soft.WEB_T:
+        curators = m.SoftWebT.objects.filter(prefix=prefix, type=customer_type).all()
+    elif soft == e.Soft.DIGIT_B:
+        curators = m.SoftDigitB.objects.filter(prefix=prefix, type=customer_type).all()
+    elif soft == e.Soft.O_SMART:
+        curators = m.SoftOSmart.objects.filter(prefix=prefix, type=customer_type).all()
+    else:
+        curators = False
+
+    # если не нашёлся куратор
+    if not curators:
+        curators = m.UserKS.objects.filter(is_staff=True).order_by('?').all()[0]
+
+    return curators.all()
 
 
 def form_processing(request: HttpRequest) -> None:
     # log_error(f'>>>> {request.POST}', wt=False)
 
     type_form = request.POST.get('type_form')
-    if type_form == FormType.ORDER:
+    if type_form == e.FormType.ORDER:
         form = OrderForm(request.POST, request.FILES)
-        # log_error(f'>>>> form.is_valid(): {form.is_valid()}\n{form.errors}\n{form.data}', wt=False)
+        log_error(f'>>>> form.is_valid(): {form.is_valid()}\n{form.errors}\n{form.data}', wt=False)
         if form.is_valid():
-            # log_error(f'>>>> form.cleaned_data: {form.cleaned_data}\n\n{order_topic_dict.get(1)}', wt=False)
+            log_error(f'>>>> form.cleaned_data: {form.cleaned_data}\n\n{e.order_topic_dict.get(1)}', wt=False)
             # создаёт заказ
             new_order = m.Order(
                 from_user=request.user,
                 text=form.cleaned_data['description'],
-                soft_id=form.cleaned_data['type_soft'],
-                topic_id=form.cleaned_data['type_soft'],
+                soft=form.cleaned_data['type_soft'],
+                topic=form.cleaned_data['type_soft'],
                 # soft=soft,
                 # topic=topic,
                 customer=request.user.customer
@@ -136,18 +158,24 @@ def form_processing(request: HttpRequest) -> None:
             new_order.save()
 
             # добавляет куратора
-            m.OrderCurator.objects.create(
-                user=get_order_curator(),
-                order=new_order
+            curators = get_order_curator(
+                soft=form.cleaned_data['type_soft'],
+                prefix=str(request.user.customer.inn)[:4],
+                customer_type=request.user.customer.form_type
             )
+            for curator in curators:
+                m.OrderCurator.objects.create(
+                    user=curator,
+                    order=new_order
+                )
 
             # Запись коммента
             full_description = form.cleaned_data.get('fullDescription')
             if full_description:
                 m.Message.objects.create(
-                    type_msg=MsgType.MSG.value,
+                    type_msg=e.MsgType.MSG.value,
                     from_user=request.user,
-                    chat=ChatType.CLIENT.value,
+                    chat=e.ChatType.CLIENT.value,
                     order=new_order,
                     text=full_description
                 )
@@ -164,6 +192,7 @@ def form_processing(request: HttpRequest) -> None:
 
             if not files:
                 return
+
             folder_path = os.path.join(FILE_STORAGE, str(request.user.customer.inn), str(new_order.pk))
             if not os.path.exists(folder_path) and files:
                 os.makedirs(folder_path)
@@ -183,7 +212,7 @@ def form_processing(request: HttpRequest) -> None:
                     file_size=uploaded_file.size
                 )
 
-    elif type_form == FormType.SETTING:
+    elif type_form == e.FormType.SETTING:
         form = UserSettingForm(request.POST)
         # log_error(f'>>>> form.is_valid(): {form.is_valid()}\n{form.errors}\n{form.data}', wt=False)
         if not form.is_valid():
@@ -200,7 +229,7 @@ def form_processing(request: HttpRequest) -> None:
         used_soft.soft_id = form.cleaned_data['type_soft']
         # used_soft.soft = soft
         used_soft.save()
-        log_error(f'>>>> save user', wt=False)
+        # log_error(f'>>>> save user', wt=False)
 
 
 # >>>> <QueryDict: {'csrfmiddlewaretoken': ['iM47xrP89HK7Rr7igTlGndSKF9jr2u4j0syBgRhEr9oNdLe2Qodj8qOOQzTffOdQ'],

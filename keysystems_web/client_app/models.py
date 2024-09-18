@@ -3,8 +3,8 @@ from django.db import models
 from django_ckeditor_5.fields import CKEditor5Field
 from django.db.models.fields import TextField
 
-from common.models import UserKS, Soft
-from enums import OrderStatus
+from common.models import UserKS
+from enums import OrderStatus, Soft, soft_tuple
 
 
 # Новости
@@ -36,8 +36,8 @@ class ViewNews(models.Model):
     id = models.AutoField(primary_key=True)
     created_at = models.DateTimeField('Создана', auto_now_add=True)
     updated_at = models.DateTimeField('Обновлена', auto_now=True)
-    news = models.ForeignKey(News, on_delete=models.CASCADE, related_name='view_news')
-    user_ks = models.ForeignKey(UserKS, on_delete=models.CASCADE, related_name='view_news')
+    news = models.ForeignKey(News, on_delete=models.SET_NULL, related_name='view_news', null=True)
+    user_ks = models.ForeignKey(UserKS, on_delete=models.SET_NULL, related_name='view_news', null=True)
 
     objects: models.Manager = models.Manager()
 
@@ -55,7 +55,9 @@ class UpdateSoft(models.Model):
     id = models.AutoField(primary_key=True)
     created_at = models.DateTimeField('Создана', auto_now_add=True)
     updated_at = models.DateTimeField('Обновлена', auto_now=True)
-    soft = models.ForeignKey(Soft, on_delete=models.DO_NOTHING, related_name='update_soft', verbose_name='Обновления ПО')
+    # soft = models.ForeignKey(Soft, on_delete=models.SET_NULL, null=True, related_name='update_soft', verbose_name='Обновления ПО')
+    soft = models.CharField('ПО', max_length=255, choices=soft_tuple, default=Soft.B_SMART.value)
+
     description = CKEditor5Field('Описание')
     is_active = models.BooleanField(default=True)
 
@@ -75,7 +77,13 @@ class UpdateSoftFiles(models.Model):
     id = models.AutoField(primary_key=True)
     created_at = models.DateTimeField('Создана', auto_now_add=True)
     updated_at = models.DateTimeField('Обновлена', auto_now=True)
-    update_soft = models.ForeignKey(UpdateSoft, on_delete=models.DO_NOTHING, related_name='files', verbose_name='Обновления ПО')
+    update_soft = models.ForeignKey(
+        UpdateSoft,
+        on_delete=models.SET_NULL,
+        related_name='files',
+        verbose_name='Обновления ПО',
+        null=True
+    )
     file = models.FileField('Путь', upload_to='updates')
     file_size = models.PositiveIntegerField('Размер файла (в байтах)', null=True, blank=True)
 
@@ -100,8 +108,8 @@ class ViewUpdate(models.Model):
     id = models.AutoField(primary_key=True)
     created_at = models.DateTimeField('Создана', auto_now_add=True)
     updated_at = models.DateTimeField('Обновлена', auto_now=True)
-    update_soft = models.ForeignKey(UpdateSoft, on_delete=models.CASCADE, related_name='view_update')
-    user_ks = models.ForeignKey(UserKS, on_delete=models.CASCADE, related_name='view_update')
+    update_soft = models.ForeignKey(UpdateSoft, on_delete=models.SET_NULL, related_name='view_update', null=True)
+    user_ks = models.ForeignKey(UserKS, on_delete=models.SET_NULL, related_name='view_update', null=True)
     objects: models.Manager = models.Manager()
 
     def __str__(self):

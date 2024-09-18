@@ -91,7 +91,7 @@ document.querySelectorAll('.modal_cr_order').forEach(link => {
 
                     <div id="tab1" class="tab-content active">
                         <h6 class="title_in_modal">Тема</h6>
-                        <div class="text_in_modal">${data.order.topic.topic}</div>
+                        <div class="text_in_modal">${data.order.topic}</div>
                         <form action="" method="post">
                             <div class="select_PO">
                                 <label class="title_in_modal" for="soft_in_chat">Програмное обеспечение</label>
@@ -180,7 +180,7 @@ document.querySelectorAll('.modal_cr_order').forEach(link => {
                     let textPOClientTab = document.createElement('p')
                     textPOClientTab.classList.add('text_in_modal')
                     textPOClientTab.setAttribute('id', 'soft_title')
-                    textPOClientTab.innerHTML = data['order']['soft']['title']
+                    textPOClientTab.innerHTML = data['order']['soft']
                     document.querySelector('.select_PO').appendChild(textPOClientTab)
                 } else {
                     selectPO('#soft_in_chat', data['soft'], data.order.soft.title)

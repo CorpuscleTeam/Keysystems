@@ -2,7 +2,8 @@ from django.db import models
 from django.contrib.auth.models import AbstractUser, Group, Permission
 from datetime import datetime
 
-from enums import OrderStatus, ORDER_CHOICES, notices_tuple, CHAT_CHOICES, MsgType, MSG_TYPE_CHOICES
+from .logs import log_error
+import enums as e
 
 
 # список районов
@@ -26,8 +27,13 @@ class Customer(models.Model):
     id = models.AutoField(primary_key=True)
     created_at = models.DateTimeField('Создана', auto_now_add=True)
     updated_at = models.DateTimeField('Обновлена', auto_now=True)
+    form_type = models.CharField(
+        'Тип',
+        choices=e.customer_type_tuple,
+        default=e.customer_type_dict[e.CustomerType.MY.value]
+    )
     inn = models.BigIntegerField('ИНН', null=True, blank=True)
-    district = models.ForeignKey(District, on_delete=models.CASCADE, related_name='customer', verbose_name='Район')
+    district = models.ForeignKey(District, on_delete=models.SET_NULL, related_name='customer', verbose_name='Район', null=True)
     title = models.CharField('Название', max_length=255)
 
     objects: models.Manager = models.Manager()
@@ -43,10 +49,19 @@ class Customer(models.Model):
 
 # пользователи
 class UserKS(AbstractUser):
-    customer = models.ForeignKey(Customer, on_delete=models.CASCADE, related_name='user', verbose_name='Клиент', null=True, blank=True)
-    email = models.CharField('Почта', max_length=100, null=True, blank=True)
+    customer = models.ForeignKey(
+        Customer,
+        on_delete=models.SET_NULL,
+        related_name='user',
+        verbose_name='Компания',
+        null=True,
+        blank=True
+    )
+    username = models.CharField('Почта', max_length=150, unique=True)
+    # email = models.CharField('Почта', max_length=100, null=True, blank=True)
     full_name = models.CharField('ФИО', max_length=255, default='Админ')
     phone = models.CharField('Телефон', max_length=100, null=True, blank=True)
+    inn = models.CharField('ИНН', max_length=12, null=True, blank=True)
 
     groups = models.ManyToManyField(
         Group,
@@ -93,8 +108,9 @@ class Soft(models.Model):
 # используемое ПО (связывает пользователя и ПО)
 class UsedSoft(models.Model):
     id = models.AutoField(primary_key=True)
-    user = models.ForeignKey(UserKS, on_delete=models.CASCADE, related_name='used_soft')
-    soft = models.ForeignKey(Soft, on_delete=models.CASCADE, related_name='used_soft')
+    user = models.ForeignKey(UserKS, on_delete=models.SET_NULL, related_name='used_soft', null=True)
+    # soft = models.ForeignKey(Soft, on_delete=models.SET_NULL, related_name='used_soft')
+    soft = models.CharField('ПО', max_length=255, choices=e.soft_tuple, default=e.Soft.B_SMART.value)
 
     objects = models.Manager()
 
@@ -108,20 +124,20 @@ class UsedSoft(models.Model):
 
 
 # темы обращений
-class OrderTopic(models.Model):
-    id = models.AutoField(primary_key=True)
-    topic = models.CharField('Тема', max_length=255)
-    is_active = models.BooleanField(default=True)
-
-    objects = models.Manager()
-
-    def __str__(self):
-        return f"{self.topic}"
-
-    class Meta:
-        verbose_name = 'Тема обращения'
-        verbose_name_plural = 'Темы обращений'
-        db_table = 'orders_topics'
+# class OrderTopic(models.Model):
+#     id = models.AutoField(primary_key=True)
+#     topic = models.CharField('Тема', max_length=255)
+#     is_active = models.BooleanField(default=True)
+#
+#     objects = models.Manager()
+#
+#     def __str__(self):
+#         return f"{self.topic}"
+#
+#     class Meta:
+#         verbose_name = 'Тема обращения'
+#         verbose_name_plural = 'Темы обращений'
+#         db_table = 'orders_topics'
 
 
 # заказы
@@ -129,12 +145,14 @@ class Order(models.Model):
     id = models.AutoField(primary_key=True)
     created_at = models.DateTimeField('Создана', auto_now_add=True)
     updated_at = models.DateTimeField('Обновлена', auto_now=True)
-    from_user = models.ForeignKey(UserKS, on_delete=models.CASCADE, related_name='created_orders', verbose_name='Пользователь')
-    customer = models.ForeignKey(Customer, on_delete=models.CASCADE, related_name='orders', verbose_name='Клиент')
+    from_user = models.ForeignKey(UserKS, on_delete=models.SET_NULL, related_name='created_orders', verbose_name='Пользователь', null=True)
+    customer = models.ForeignKey(Customer, on_delete=models.SET_NULL, related_name='orders', verbose_name='Клиент', null=True)
     text = models.CharField('Текст', max_length=255)
-    soft = models.ForeignKey(Soft, on_delete=models.DO_NOTHING, related_name='order', verbose_name='ПО')
-    topic = models.ForeignKey(OrderTopic, on_delete=models.DO_NOTHING, related_name='order', verbose_name='Тема')
-    status = models.CharField('Статус', default=OrderStatus.NEW.value, choices=ORDER_CHOICES)
+    # soft = models.ForeignKey(Soft, on_delete=models.SET_NULL, null=True, related_name='order', verbose_name='ПО')
+    soft = models.CharField('ПО', max_length=255, choices=e.soft_tuple, default=e.Soft.B_SMART.value)
+    topic = models.CharField('Тема', max_length=255, choices=e.order_topic_tuple, default=e.OrderTopic.TECH.value)
+    # topic = models.ForeignKey(OrderTopic, on_delete=models.SET_NULL, null=True, related_name='order', verbose_name='Тема')
+    status = models.CharField('Статус', default=e.OrderStatus.NEW.value, choices=e.ORDER_CHOICES)
 
     objects = models.Manager()
 
@@ -151,8 +169,8 @@ class Order(models.Model):
 class DownloadedFile(models.Model):
     id = models.AutoField(primary_key=True)
     created_at = models.DateTimeField('Создана', default=datetime.now())
-    user_ks = models.ForeignKey(UserKS, on_delete=models.DO_NOTHING, related_name='downloaded_file')
-    order = models.ForeignKey(Order, on_delete=models.CASCADE, related_name='downloaded_file')
+    user_ks = models.ForeignKey(UserKS, on_delete=models.SET_NULL, null=True, related_name='downloaded_file')
+    order = models.ForeignKey(Order, on_delete=models.SET_NULL, related_name='downloaded_file', null=True)
     url = models.CharField('Ссылка', max_length=255)
     file_size = models.PositiveIntegerField('Размер файла (в байтах)', null=True, blank=True)
 
@@ -169,8 +187,8 @@ class Notice(models.Model):
     id = models.AutoField(primary_key=True)
     created_at = models.DateTimeField('Создана', auto_now_add=True)
     updated_at = models.DateTimeField('Обновлена', auto_now=True)
-    order = models.ForeignKey(Order, on_delete=models.CASCADE, related_name='notice')
-    user_ks = models.ForeignKey(UserKS, on_delete=models.CASCADE, related_name='notice')
+    order = models.ForeignKey(Order, on_delete=models.SET_NULL, related_name='notice', null=True)
+    user_ks = models.ForeignKey(UserKS, on_delete=models.SET_NULL, related_name='notice', null=True)
     text = models.CharField('Текст', max_length=255)
     viewed = models.BooleanField(default=False)
 
@@ -186,23 +204,24 @@ class Notice(models.Model):
 
 
 # районы и по кураторов
-class CuratorDist(models.Model):
-    id = models.AutoField(primary_key=True)
-    created_at = models.DateTimeField('Создана', auto_now_add=True)
-    updated_at = models.DateTimeField('Обновлена', auto_now=True)
-    user = models.ForeignKey(UserKS, on_delete=models.DO_NOTHING, related_name='curator_dist')
-    district = models.ForeignKey(District, on_delete=models.DO_NOTHING, related_name='curator_dist')
-    soft = models.ForeignKey(Soft, on_delete=models.DO_NOTHING, related_name='curator_dist')
-
-    objects: models.Manager = models.Manager()
-
-    def __str__(self):
-        return f"{self.user}"
-
-    class Meta:
-        verbose_name = 'Распределение кураторов'
-        verbose_name_plural = 'Распределения кураторов'
-        db_table = 'curator_dist'
+# class CuratorDist(models.Model):
+#     id = models.AutoField(primary_key=True)
+#     created_at = models.DateTimeField('Создана', auto_now_add=True)
+#     updated_at = models.DateTimeField('Обновлена', auto_now=True)
+#     user = models.ForeignKey(UserKS, on_delete=models.SET_NULL, null=True, related_name='curator_dist')
+#     district = models.ForeignKey(District, on_delete=models.SET_NULL, null=True, related_name='curator_dist')
+#     soft = models.ForeignKey(Soft, on_delete=models.SET_NULL, null=True, related_name='curator_dist')
+#
+#
+#     objects: models.Manager = models.Manager()
+#
+#     def __str__(self):
+#         return f"{self.user}"
+#
+#     class Meta:
+#         verbose_name = 'Распределение кураторов'
+#         verbose_name_plural = 'Распределения кураторов'
+#         db_table = 'curator_dist'
 
 
 # кураторы заявки
@@ -210,8 +229,8 @@ class OrderCurator(models.Model):
     id = models.AutoField(primary_key=True)
     created_at = models.DateTimeField('Создана', auto_now_add=True)
     updated_at = models.DateTimeField('Обновлена', auto_now=True)
-    user = models.ForeignKey(UserKS, on_delete=models.DO_NOTHING, related_name='order_curator')
-    order = models.ForeignKey(Order, on_delete=models.DO_NOTHING, related_name='order_curator')
+    user = models.ForeignKey(UserKS, on_delete=models.SET_NULL, null=True, related_name='order_curator')
+    order = models.ForeignKey(Order, on_delete=models.SET_NULL, null=True, related_name='order_curator')
 
     objects: models.Manager = models.Manager()
 
@@ -228,10 +247,10 @@ class OrderCurator(models.Model):
 class Message(models.Model):
     id = models.AutoField(primary_key=True)
     created_at = models.DateTimeField('Создана', auto_now_add=True)
-    type_msg = models.CharField('Тип сообщения', max_length=255, default=MsgType.MSG.value, choices=MSG_TYPE_CHOICES)
-    from_user = models.ForeignKey(UserKS, on_delete=models.CASCADE, related_name='message')
-    chat = models.CharField('Чат', choices=CHAT_CHOICES)
-    order = models.ForeignKey(Order, on_delete=models.CASCADE, related_name='message')
+    type_msg = models.CharField('Тип сообщения', max_length=255, default=e.MsgType.MSG.value, choices=e.MSG_TYPE_CHOICES)
+    from_user = models.ForeignKey(UserKS, on_delete=models.SET_NULL, related_name='message', null=True)
+    chat = models.CharField('Чат', choices=e.CHAT_CHOICES)
+    order = models.ForeignKey(Order, on_delete=models.SET_NULL, related_name='message', null=True)
     text = models.TextField('Текст', null=True, blank=True)
     file_path = models.CharField('Путь', null=True, blank=True)
     file_size = models.PositiveIntegerField('Размер файла (в байтах)', null=True, blank=True)
@@ -251,8 +270,8 @@ class Message(models.Model):
 class ViewMessage(models.Model):
     id = models.AutoField(primary_key=True)
     created_at = models.DateTimeField('Создана', auto_now_add=True)
-    message = models.ForeignKey(Message, on_delete=models.CASCADE, related_name='view_message')
-    user_ks = models.ForeignKey(UserKS, on_delete=models.CASCADE, related_name='view_message')
+    message = models.ForeignKey(Message, on_delete=models.SET_NULL, related_name='view_message', null=True)
+    user_ks = models.ForeignKey(UserKS, on_delete=models.SET_NULL, related_name='view_message', null=True)
 
     objects: models.Manager = models.Manager()
 
@@ -263,3 +282,215 @@ class ViewMessage(models.Model):
         verbose_name = 'Просмотр сообщения'
         verbose_name_plural = 'Просмотр сообщений'
         db_table = 'view_message'
+
+
+# Распределение курьеров B_SMART
+class SoftBSmart(models.Model):
+    id = models.AutoField(primary_key=True)
+    prefix = models.CharField('Префикс', max_length=4)
+    type = models.CharField(
+        'Тип',
+        choices=e.customer_type_tuple,
+        default=e.customer_type_dict[e.CustomerType.MY.value]
+    )
+    user = models.ForeignKey(
+        UserKS,
+        on_delete=models.SET_NULL, null=True,
+        related_name=e.Soft.B_SMART.value,
+        verbose_name=e.soft_dict[e.Soft.B_SMART.value])
+
+    objects = models.Manager()
+
+    def __str__(self):
+        return f"{self.id}"
+
+    class Meta:
+        verbose_name = f'Распределение {e.soft_dict[e.Soft.B_SMART.value]}'
+        verbose_name_plural = f'Распределение {e.soft_dict[e.Soft.B_SMART.value]}'
+        db_table = 'soft_b_smart'
+
+
+# Распределение курьеров ADMIN_D
+class SoftAdminD(models.Model):
+    id = models.AutoField(primary_key=True)
+    prefix = models.CharField('Префикс', max_length=4)
+    type = models.CharField(
+        'Тип',
+        max_length=255,
+        choices=e.customer_type_tuple,
+        default=e.customer_type_dict[e.CustomerType.MY.value]
+    )
+    user = models.ForeignKey(
+        UserKS,
+        on_delete=models.SET_NULL, null=True,
+        related_name=e.Soft.ADMIN_D.value,
+        verbose_name=e.soft_dict[e.Soft.ADMIN_D.value])
+
+    objects = models.Manager()
+
+    def __str__(self):
+        return f"{self.id}"
+
+    class Meta:
+        verbose_name = f'Распределение {e.soft_dict[e.Soft.ADMIN_D.value]}'
+        verbose_name_plural = f'Распределение {e.soft_dict[e.Soft.ADMIN_D.value]}'
+        db_table = 'soft_admin_d'
+
+
+# Распределение курьеров S_SMART
+class SoftSSmart(models.Model):
+    id = models.AutoField(primary_key=True)
+    prefix = models.CharField('Префикс', max_length=4)
+    type = models.CharField(
+        'Тип',
+        choices=e.customer_type_tuple,
+        default=e.customer_type_dict[e.CustomerType.MY.value]
+    )
+    user = models.ForeignKey(
+        UserKS,
+        on_delete=models.SET_NULL, null=True,
+        related_name=e.Soft.S_SMART.value,
+        verbose_name=e.soft_dict[e.Soft.S_SMART.value])
+
+    objects = models.Manager()
+
+    def __str__(self):
+        return f"{self.id}"
+
+    class Meta:
+        verbose_name = f'Распределение {e.soft_dict[e.Soft.S_SMART.value]}'
+        verbose_name_plural = f'Распределение {e.soft_dict[e.Soft.S_SMART.value]}'
+        db_table = 'soft_s_smart'
+
+
+# Распределение курьеров P_SMART
+class SoftPSmart(models.Model):
+    id = models.AutoField(primary_key=True)
+    prefix = models.CharField('Префикс', max_length=4)
+    type = models.CharField(
+        'Тип',
+        choices=e.customer_type_tuple,
+        default=e.customer_type_dict[e.CustomerType.MY.value]
+    )
+    user = models.ForeignKey(
+        UserKS,
+        on_delete=models.SET_NULL, null=True,
+        related_name=e.Soft.P_SMART.value,
+        verbose_name=e.soft_dict[e.Soft.P_SMART.value])
+
+    objects = models.Manager()
+
+    def __str__(self):
+        return f"{self.id}"
+
+    class Meta:
+        verbose_name = f'Распределение {e.soft_dict[e.Soft.P_SMART.value]}'
+        verbose_name_plural = f'Распределение {e.soft_dict[e.Soft.P_SMART.value]}'
+        db_table = 'soft_p_smart'
+
+
+# Распределение курьеров WEB_T
+class SoftWebT(models.Model):
+    id = models.AutoField(primary_key=True)
+    prefix = models.CharField('Префикс', max_length=4)
+    type = models.CharField(
+        'Тип',
+        choices=e.customer_type_tuple,
+        default=e.customer_type_dict[e.CustomerType.MY.value]
+    )
+    user = models.ForeignKey(
+        UserKS,
+        on_delete=models.SET_NULL, null=True,
+        related_name=e.Soft.WEB_T.value,
+        verbose_name=e.soft_dict[e.Soft.WEB_T.value])
+
+    objects = models.Manager()
+
+    def __str__(self):
+        return f"{self.id}"
+
+    class Meta:
+        verbose_name = f'Распределение {e.soft_dict[e.Soft.WEB_T.value]}'
+        verbose_name_plural = f'Распределение {e.soft_dict[e.Soft.WEB_T.value]}'
+        db_table = 'soft_web_t'
+
+
+# Распределение курьеров DIGIT_B
+class SoftDigitB(models.Model):
+    id = models.AutoField(primary_key=True)
+    prefix = models.CharField('Префикс', max_length=4)
+    type = models.CharField(
+        'Тип',
+        choices=e.customer_type_tuple,
+        default=e.customer_type_dict[e.CustomerType.MY.value]
+    )
+    user = models.ForeignKey(
+        UserKS,
+        on_delete=models.SET_NULL, null=True,
+        related_name=e.Soft.DIGIT_B.value,
+        verbose_name=e.soft_dict[e.Soft.DIGIT_B.value])
+
+    objects = models.Manager()
+
+    def __str__(self):
+        return f"{self.id}"
+
+    class Meta:
+        verbose_name = f'Распределение {e.soft_dict[e.Soft.DIGIT_B.value]}'
+        verbose_name_plural = f'Распределение {e.soft_dict[e.Soft.DIGIT_B.value]}'
+        db_table = 'soft_digit_b'
+
+
+# Распределение курьеров O_SMART
+class SoftOSmart(models.Model):
+    id = models.AutoField(primary_key=True)
+    prefix = models.CharField('Префикс', max_length=4)
+    type = models.CharField(
+        'Тип',
+        choices=e.customer_type_tuple,
+        default=e.customer_type_dict[e.CustomerType.MY.value]
+    )
+    user = models.ForeignKey(
+        UserKS,
+        on_delete=models.SET_NULL, null=True,
+        related_name=e.Soft.O_SMART.value,
+        verbose_name=e.soft_dict[e.Soft.O_SMART.value])
+
+    objects = models.Manager()
+
+    def __str__(self):
+        return f"{self.id}"
+
+    class Meta:
+        verbose_name = f'Распределение {e.soft_dict[e.Soft.O_SMART.value]}'
+        verbose_name_plural = f'Распределение {e.soft_dict[e.Soft.O_SMART.value]}'
+        db_table = 'soft_o_smart'
+
+
+# Распределение курьеров O_SMART
+class SoftExceptions(models.Model):
+    id = models.AutoField(primary_key=True)
+   
+    customer = models.ForeignKey(
+        Customer,
+        on_delete=models.SET_NULL, null=True,
+        related_name='soft_exceptions',
+        verbose_name='Исключения распределения'
+    )
+    user = models.ForeignKey(
+        UserKS,
+        on_delete=models.SET_NULL, null=True,
+        related_name='soft_exceptions',
+        verbose_name='Исключения распределения'
+    )
+
+    objects = models.Manager()
+
+    def __str__(self):
+        return f"{self.id}"
+
+    class Meta:
+        verbose_name = f'Исключение распределения'
+        verbose_name_plural = f'Исключения распределения'
+        db_table = 'soft_exceptions'
+        

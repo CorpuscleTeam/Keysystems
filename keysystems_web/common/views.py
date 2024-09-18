@@ -6,9 +6,9 @@ import json
 import logging
 
 from .models import Order, Message, OrderCurator, ViewMessage, UserKS, Soft
-from .serializers import FullOrderSerializer, MessageSerializer, UserKSSerializer, SoftSerializer
+from .serializers import FullOrderSerializer, MessageSerializer, UserKSSerializer
 from .logs import log_error
-from enums import ChatType, RequestMethod, EditOrderAction
+from enums import ChatType, RequestMethod, EditOrderAction, soft_list_dict
 
 
 # полные данные по заказу
@@ -53,7 +53,7 @@ def get_order_data(request: HttpRequest, order_id):
                 'unv_msg_client': client_unviewed_message,
                 'unv_msg_curator': curator_unviewed_message,
                 'room': room_name,
-                'soft': SoftSerializer(soft, many=True).data,
+                'soft': json.dumps(soft_list_dict),
             },
             safe=False
         )

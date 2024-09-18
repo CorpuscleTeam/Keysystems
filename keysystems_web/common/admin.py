@@ -1,58 +1,115 @@
 from django.contrib import admin
-from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from django.contrib.auth.forms import UserCreationForm, UserChangeForm
 
 from keysystems_web.settings import DEBUG
-from .models import Soft, Customer, OrderTopic, UserKS, Order, District, Notice, OrderCurator, Message, DownloadedFile
+from . import models as m
 # from .forms import CustomUserChangeForm
 
 
 class CustomUserCreationForm(UserCreationForm):
     class Meta(UserCreationForm.Meta):
-        model = UserKS
+        model = m.UserKS
         fields = UserCreationForm.Meta.fields + ('email',)  # Добавьте дополнительные поля, если нужно
 
 
 class CustomUserChangeForm(UserChangeForm):
     class Meta(UserChangeForm.Meta):
-        model = UserKS
+        model = m.UserKS
         fields = UserChangeForm.Meta.fields
 
 
+class SoftBSmartInline(admin.TabularInline):
+    model = m.SoftBSmart
+    extra = 1
+
+
+class SoftAdminDInline(admin.TabularInline):
+    model = m.SoftAdminD
+    extra = 1
+
+
+class SoftSSmartInline(admin.TabularInline):
+    model = m.SoftSSmart
+    extra = 1
+
+
+class SoftPSmartInline(admin.TabularInline):
+    model = m.SoftPSmart
+    extra = 1
+
+
+class SoftWebTInline(admin.TabularInline):
+    model = m.SoftWebT
+    extra = 1
+
+
+class SoftDigitBInline(admin.TabularInline):
+    model = m.SoftDigitB
+    extra = 1
+
+
+class SoftOSmartInline(admin.TabularInline):
+    model = m.SoftOSmart
+    extra = 1
+
+
+class SoftExceptionsInline(admin.TabularInline):
+    model = m.SoftExceptions
+    extra = 1
+
+
 # админка софт
-@admin.register(UserKS)
+@admin.register(m.UserKS)
 class ViewAdminUser(admin.ModelAdmin):
+    inlines = [
+        SoftBSmartInline,
+        SoftAdminDInline,
+        SoftSSmartInline,
+        SoftPSmartInline,
+        SoftWebTInline,
+        SoftDigitBInline,
+        SoftOSmartInline,
+        SoftExceptionsInline
+    ]
+
     form = CustomUserChangeForm
-    list_display = ['full_name', 'email', 'is_active', 'is_staff']
+    list_display = ['full_name', 'username', 'phone', 'is_staff']
     readonly_fields = ['last_login', 'date_joined']
+    ordering = ['-is_staff']
 
     fieldsets = (
-        ('О пользователе', {'fields': ('username', 'full_name', 'customer')}),
-        ('Права', {'fields': ('is_active', 'is_staff', 'is_superuser')}),
+        ('О пользователе', {'fields': ('full_name', 'username', 'phone', 'customer')}),
+        ('Права', {'fields': ('is_staff', 'is_superuser')}),
         ('Даты', {'fields': ('last_login', 'date_joined')}),
     )
-    add_fieldsets = (
-        (None, {
-            'classes': ('wide',),
-            'fields': ('username', 'email', 'password1', 'password2', 'is_active', 'is_staff')}
-         ),
-    )
-    # list_display = ['inn', 'full_name', 'username', 'phone', 'is_staff']
-    # readonly_fields = ['date_joined', 'last_login']
-    #
-    # def get_fields(self, request, obj=None):
-    #     fields = super().get_fields(request, obj)
-    #     # Удаляем поле 'photo' из списка полей
-    #     fields.remove('email')
-    #     fields.remove('last_name')
-    #     fields.remove('first_name')
-    #     return fields
+
+    # Переопределяем метод для управления инлайнами
+    def get_inline_instances(self, request, obj=None):
+        # Получаем стандартный список инлайнов
+        inline_instances = []
+
+        # Проверяем, является ли пользователь персоналом
+        if obj and obj.is_staff:
+            # Добавляем только если это сотрудник
+            inline_instances = super().get_inline_instances(request, obj)
+        return inline_instances
+
+    def get_fieldsets(self, request, obj=None):
+        fieldsets = super().get_fieldsets(request, obj)
+
+        # Если пользователь является персоналом, заменяем customer на inn
+        if obj and obj.is_staff:
+            fieldsets[0][1]['fields'] = ('full_name', 'username', 'phone', 'inn')
+        else:
+            fieldsets[0][1]['fields'] = ('full_name', 'username', 'phone', 'customer')
+
+        return fieldsets
 
 
 # админка софт
-@admin.register(Soft)
-class ViewAdminSoft(admin.ModelAdmin):
-    list_display = ['title', 'description', 'is_active']
+# @admin.register(m.Soft)
+# class ViewAdminSoft(admin.ModelAdmin):
+#     list_display = ['title', 'description', 'is_active']
 
     # def event_name(self, obj):
     #     event = Event.objects.filter(id=obj.event_id).first()
@@ -62,32 +119,32 @@ class ViewAdminSoft(admin.ModelAdmin):
 
 
 # админка темы обращений
-@admin.register(OrderTopic)
-class ViewAdminOrderTopic(admin.ModelAdmin):
-    list_display = ['topic', 'is_active']
-    list_editable = ['is_active']
+# @admin.register(m.OrderTopic)
+# class ViewAdminOrderTopic(admin.ModelAdmin):
+#     list_display = ['topic', 'is_active']
+#     list_editable = ['is_active']
 
 
 # админка темы обращений
-@admin.register(Customer)
+@admin.register(m.Customer)
 class ViewAdminCostumer(admin.ModelAdmin):
     list_display = ['inn', 'title', 'district']
     readonly_fields = ['created_at', 'updated_at']
 
 
 class OrderCuratorInline(admin.TabularInline):
-    model = OrderCurator
+    model = m.OrderCurator
     extra = 1
 
 
 class OrderFilesInline(admin.TabularInline):
-    model = DownloadedFile
+    model = m.DownloadedFile
     fields = ['url', 'file_size']
     extra = 1
 
 
 # админка обращения
-@admin.register(Order)
+@admin.register(m.Order)
 class ViewAdminOrder(admin.ModelAdmin):
     inlines = [OrderCuratorInline, OrderFilesInline]
     list_display = ['id', 'from_user', 'soft', 'topic', 'text', 'status']
@@ -96,20 +153,20 @@ class ViewAdminOrder(admin.ModelAdmin):
 
 
 # # админка новости
-@admin.register(District)
+@admin.register(m.District)
 class ViewAdminNews(admin.ModelAdmin):
     list_display = ['title']
 
 
 # # админка уведомления
 if DEBUG:
-    @admin.register(Notice)
+    @admin.register(m.Notice)
     class ViewAdminNews(admin.ModelAdmin):
         list_display = ['text']
 
 
 # сообщения
 if DEBUG:
-    @admin.register(Message)
+    @admin.register(m.Message)
     class ViewAdminNews(admin.ModelAdmin):
         list_display = ['created_at', 'from_user', 'chat', 'text']

@@ -11,10 +11,10 @@ import json
 import random
 
 from . import curator_utils as utils
-from common.models import OrderTopic, Notice, Order, Soft, UserKS, OrderCurator
+from common.models import Notice, Order, Soft, UserKS, OrderCurator
 from common.serializers import NoticeSerializer, SimpleOrderSerializer, SimpleWithCurOrderSerializer, UserKSSerializer
 import common as ut
-from enums import RequestMethod, OrderStatus, notices_dict, ChatType
+from enums import RequestMethod, OrderStatus, notices_dict, ChatType, soft_dict
 
 
 # мои задачи
@@ -69,7 +69,8 @@ def cur_index_2_1(request: HttpRequest):
         'cur_selected': filter_dict.get('curator_filter'),
         'dist_list': list(set(order.customer.district.title for order in orders)),
         'dist_selected': filter_dict.get('district_filter'),
-        'soft_list': list(set(order.soft.title for order in orders)),
+        # 'soft_list': list(set(order.soft.title for order in orders)),
+        'soft_list': list(set(soft_dict.get(order.soft, 'н/д') for order in orders)),
         'soft_selected': filter_dict.get('soft_filter'),
         'sort': filter_dict.get('sort'),
     }

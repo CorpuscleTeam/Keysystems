@@ -14,7 +14,7 @@ from .forms import OrderForm
 from common.logs import log_error
 from .models import News, FAQ, UpdateSoft, UpdateSoftFiles, ViewUpdate
 from . import client_utils as utils
-from common.models import OrderTopic, Notice, Order, Soft, OrderCurator
+from common.models import Notice, Order, Soft, OrderCurator
 from common.serializers import SimpleOrderSerializer, NoticeSerializer
 import common as ut
 from enums import RequestMethod, OrderStatus, notices_dict

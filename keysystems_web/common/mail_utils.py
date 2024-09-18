@@ -4,13 +4,15 @@ from django.template.loader import render_to_string
 
 from datetime import datetime
 
+from common.logs import log_error
+
 
 # Определяет начальную страницу пользователя
 def send_pass_email(email: str, password: str) -> None:
     send_mail(
         subject='Пароль',
         message=f'Ваш пароль для входа в кабинет {password}',
-        from_email='no-reply@gmail.com',
+        from_email='lbvmzy@mail.ru',
         recipient_list=[email],
         fail_silently=False
     )

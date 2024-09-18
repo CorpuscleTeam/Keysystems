@@ -1,14 +1,13 @@
 from urllib.parse import urlparse
 
 import os
-import json
 import logging
 
 from rest_framework import serializers
 from . import models as cm
 import common as ut
 from .logs import log_error
-from enums import notices_dict
+from enums import notices_dict, soft_dict, order_topic_dict
 
 
 # районы
@@ -47,17 +46,17 @@ class DownloadedFileSerializer(serializers.ModelSerializer):
 
 
 # ПО
-class SoftSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = cm.Soft
-        fields = ['id', 'title', 'description', 'is_active']
+# class SoftSerializer(serializers.ModelSerializer):
+#     class Meta:
+#         model = cm.Soft
+#         fields = ['id', 'title', 'description', 'is_active']
 
 
 # Обращения
-class OrderTopicSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = cm.OrderTopic
-        fields = ['id', 'topic', 'is_active']
+# class OrderTopicSerializer(serializers.ModelSerializer):
+#     class Meta:
+#         model = cm.OrderTopic
+#         fields = ['id', 'topic', 'is_active']
 
 
 # пользователи
@@ -87,27 +86,35 @@ class OrderCuratorSerializer(serializers.ModelSerializer):
 
 # заказы самая минимальная версия
 class OnlyOrderSerializer(serializers.ModelSerializer):
+    soft = serializers.SerializerMethodField()
     class Meta:
         model = cm.Order
-        fields = ['id', 'text']
+        fields = ['id', 'text', 'soft']
+
+    def get_soft(self, obj):
+        return soft_dict.get(obj.soft, 'н/д')
 
 
 # заказы минимальная версия
 class SimpleOrderSerializer(serializers.ModelSerializer):
-    soft = SoftSerializer()
-    topic = OrderTopicSerializer()
+    # topic = OrderTopicSerializer()
     # files = DownloadedFileSerializer(many=True, source='downloaded_file')
     # from_user = UserKSSerializer()
     # customer = CustomerSerializer()
 
     id_str = serializers.SerializerMethodField()
+    soft = serializers.SerializerMethodField()
+    topic = serializers.SerializerMethodField()
 
     class Meta:
         model = cm.Order
-        # fields = ['id', 'from_user', 'customer', 'text', 'soft', 'topic', 'status', 'id_str']
-        # fields = ['id', 'text', 'soft', 'topic', 'status', 'id_str', 'files', 'customer']
-        # fields = ['id', 'text', 'soft', 'topic', 'status', 'id_str', 'customer']
-        fields = ['id', 'text', 'soft', 'topic', 'status', 'id_str']
+        fields = ['id', 'text', 'topic', 'status', 'id_str', 'soft']
+
+    def get_soft(self, obj):
+        return soft_dict.get(obj.soft, 'н/д')
+
+    def get_topic(self, obj):
+        return order_topic_dict.get(obj.soft, 'н/д')
 
     def get_id_str(self, obj):
         return f'#{str(obj.id).zfill(5)}'
@@ -115,19 +122,26 @@ class SimpleOrderSerializer(serializers.ModelSerializer):
 
 # заказы минимальная версия, но с кураторами
 class SimpleWithCurOrderSerializer(serializers.ModelSerializer):
-    soft = SoftSerializer()
-    topic = OrderTopicSerializer()
+    # topic = OrderTopicSerializer()
     customer = CustomerSerializer()
 
     id_str = serializers.SerializerMethodField()
     curators = serializers.SerializerMethodField()
+    soft = serializers.SerializerMethodField()
+    topic = serializers.SerializerMethodField()
 
     class Meta:
         model = cm.Order
-        fields = ['id', 'text', 'soft', 'topic', 'status', 'id_str', 'curators', 'customer']
+        fields = ['id', 'text', 'topic', 'status', 'id_str', 'curators', 'customer', 'soft']
 
     def get_id_str(self, obj) -> str:
         return f'#{str(obj.id).zfill(5)}'
+
+    def get_soft(self, obj):
+        return soft_dict.get(obj.soft, 'н/д')
+
+    def get_topic(self, obj):
+        return order_topic_dict.get(obj.soft, 'н/д')
 
     def get_curators(self, obj) -> str:
         curators = cm.OrderCurator.objects.select_related('user').filter(order=obj).all()
@@ -142,23 +156,30 @@ class SimpleWithCurOrderSerializer(serializers.ModelSerializer):
 
 # заказы полные данные
 class FullOrderSerializer(serializers.ModelSerializer):
-    soft = SoftSerializer()
-    topic = OrderTopicSerializer()
+    # topic = OrderTopicSerializer()
     from_user = UserKSSerializer()
     customer = CustomerSerializer()
     files = DownloadedFileSerializer(many=True, source='downloaded_file')
 
     id_str = serializers.SerializerMethodField()
     curators = serializers.SerializerMethodField()
+    soft = serializers.SerializerMethodField()
+    topic = serializers.SerializerMethodField()
 
     class Meta:
         model = cm.Order
         fields = [
-            'id', 'from_user', 'customer', 'text', 'soft', 'topic', 'status', 'id_str', 'curators', 'files'
+            'id', 'from_user', 'customer', 'text', 'topic', 'status', 'id_str', 'curators', 'files', 'soft'
         ]
 
     def get_id_str(self, obj):
         return f'#{str(obj.id).zfill(5)}'
+
+    def get_soft(self, obj):
+        return soft_dict.get(obj.soft, 'н/д')
+
+    def get_topic(self, obj):
+        return order_topic_dict.get(obj.soft, 'н/д')
 
     def get_curators(self, obj):
         curators = obj.order_curator.all()

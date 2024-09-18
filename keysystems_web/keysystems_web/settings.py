@@ -45,12 +45,19 @@ MIDDLEWARE = [
 ROOT_URLCONF = 'keysystems_web.urls'
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = 'smtp.gmail.com'
+
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
-EMAIL_HOST_USER = 'dgushch@gmail.com'
-EMAIL_HOST_PASSWORD = 'vgjk cqkb iqbu mzoj'
-DEFAULT_FROM_EMAIL = 'test_gmail_address@gmail.com'
+# Для gmail
+# EMAIL_HOST = 'smtp.gmail.com'
+# EMAIL_HOST_USER = 'dgushch@gmail.com'
+# EMAIL_HOST_PASSWORD = 'vgjk cqkb iqbu mzoj'
+
+# Для mail.ru
+EMAIL_HOST = 'smtp.mail.ru'
+EMAIL_HOST_USER = 'lbvmzy@mail.ru'
+EMAIL_HOST_PASSWORD = 'NyfKdhSGsRBnh5mSu4Fu'
+DEFAULT_FROM_EMAIL = 'lbvmzy@mail.ru'
 
 TEMPLATES = [
     {

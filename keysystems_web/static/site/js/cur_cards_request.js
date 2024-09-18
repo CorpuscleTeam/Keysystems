@@ -1,7 +1,7 @@
 console.log(card_orders)
 
 function createOrderCard(order) {
-    // console.log(order['status'])
+    // console.log(order)
     let modalLinkCard = document.createElement('a')
     modalLinkCard.classList.add('modal_link_cards')
     modalLinkCard.classList.add('modal_cr_order')
@@ -19,7 +19,7 @@ function createOrderCard(order) {
 
     let softNewOrder = document.createElement('p')
     softNewOrder.classList.add('softOfOrder')
-    softNewOrder.innerHTML = order['soft']['title']
+    softNewOrder.innerHTML = order['soft']
     newOrder.appendChild(softNewOrder)
 
     // исполнители только для cur_index_2_1

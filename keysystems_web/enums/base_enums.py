@@ -89,9 +89,16 @@ class OrderTopic(str, Enum):
 
 
 order_topic_dict = {
-    1: {OrderTopic.TECH.value: 'Техническая проблема'},
-    2: {OrderTopic.CONTRACT.value: 'Договорной отдел'},
+    OrderTopic.TECH.value: 'Техническая проблема',
+    OrderTopic.CONTRACT.value: 'Договорной отдел',
 }
+
+order_topic_list_dict = [
+    {'id': OrderTopic.TECH.value, 'topic': 'Техническая проблема'},
+    {'id': OrderTopic.CONTRACT.value, 'topic': 'Договорной отдел'},
+]
+
+order_topic_tuple = ((OrderTopic.TECH.value, 'Техническая проблема'), (OrderTopic.CONTRACT.value, 'Договорной отдел'))
 
 
 # вкладки
@@ -101,3 +108,53 @@ class CountSelector(str, Enum):
     PUSH = 'id_menu_push'
     CLIENT = 'id_client_chat'
     CURATOR = 'id_curator_chat'
+
+
+# ПО
+class Soft(str, Enum):
+    B_SMART = 'b_smart'
+    ADMIN_D = 'admin_d'
+    S_SMART = 's_smart'
+    P_SMART = 'p_smart'
+    WEB_T = 'web_t'
+    DIGIT_B = 'digit_b'
+    O_SMART = 'o_smart'
+
+
+soft_dict = {
+    Soft.B_SMART.value: 'ПК "Бюджет-СМАРТ Про"',
+    Soft.ADMIN_D.value: 'ПК "Администратор-Д"',
+    Soft.S_SMART.value: 'ПК "Свод-СМАРТ"',
+    Soft.P_SMART.value: 'ПРОЕКТИРОВАНИЕ БЮДЖЕТА: "Проект-СМАРТ Про"',
+    Soft.WEB_T.value: 'ПК "WEB-Торги-КС"',
+    Soft.DIGIT_B.value: 'ПК "Взаимодействие с порталом "Электронный бюджет" по приказу 243н"',
+    Soft.O_SMART.value: 'ПК "Собственность-СМАРТ"',
+}
+
+
+soft_list_dict = [
+    {'id': Soft.B_SMART.value, 'title': 'ПК "Бюджет-СМАРТ Про"'},
+    {'id': Soft.ADMIN_D.value, 'title': 'ПК "Администратор-Д"'},
+    {'id': Soft.S_SMART.value, 'title': 'ПК "Свод-СМАРТ"'},
+    {'id': Soft.P_SMART.value, 'title': 'ПРОЕКТИРОВАНИЕ БЮДЖЕТА, "Проект-СМАРТ Про"'},
+    {'id': Soft.WEB_T.value, 'title': 'ПК "WEB-Торги-КС"'},
+    {'id': Soft.DIGIT_B.value, 'title': 'ПК "Взаимодействие с порталом "Электронный бюджет" по приказу 243н"'},
+    {'id': Soft.O_SMART.value, 'title': 'ПК "Собственность-СМАРТ"'},
+]
+
+soft_tuple = ((k, v) for k, v in soft_dict.items())
+
+
+# ПО
+class CustomerType(str, Enum):
+    MY = 'my'
+    GY = 'gy'
+
+
+customer_type_dict = {
+    CustomerType.MY.value: 'МУ',
+    CustomerType.GY.value: 'ГУ'
+}
+
+# customer_type_tuple = ((k, v) for k, v in customer_type_dict.items())
+customer_type_tuple = ((CustomerType.MY.value, 'МУ'), (CustomerType.GY.value, 'ГУ'))

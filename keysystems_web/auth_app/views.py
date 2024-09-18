@@ -12,12 +12,15 @@ from .forms import AuthBaseForm, RegistrationForm, PasswordForm, AuthUserForm
 from .models import Password
 from common.models import UserKS, Soft, Customer, District, UsedSoft
 from common.logs import log_error
-from common import log_error, pass_gen, send_password_email, get_current_url
+from common import log_error, pass_gen, send_password_email, send_pass_email
 from enums import RequestMethod
 
 
 # Определяет начальную страницу пользователя
 def start_page_redirect(request: HttpRequest):
+    login_url = f'http://{request.get_host()}/index_2_2?pass=3'
+    # send_pass_email(email='dgushch@gmail.com', password='222222')
+    send_password_email(user_email='dgushch@gmail.com', password='3333333', login_url=login_url)
     if request.user.is_authenticated and request.user.is_staff:
         return redirect('cur_index_1_1')
 
