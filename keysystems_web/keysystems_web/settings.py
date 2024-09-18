@@ -55,9 +55,9 @@ EMAIL_USE_TLS = True
 
 # Для mail.ru
 EMAIL_HOST = 'smtp.mail.ru'
-EMAIL_HOST_USER = 'lbvmzy@mail.ru'
-EMAIL_HOST_PASSWORD = 'NyfKdhSGsRBnh5mSu4Fu'
-DEFAULT_FROM_EMAIL = 'lbvmzy@mail.ru'
+EMAIL_HOST_USER = os.getenv('EMAIL_HOST_USER')
+EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD')
+DEFAULT_FROM_EMAIL = os.getenv('DEFAULT_FROM_EMAIL')
 
 TEMPLATES = [
     {
