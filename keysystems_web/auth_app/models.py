@@ -10,7 +10,7 @@ class Password(models.Model):
     id = models.AutoField(primary_key=True)
     created_at = models.DateTimeField('Создана', auto_now_add=True)
     password = models.CharField('Пароль', max_length=20)
-    user_ks = models.ForeignKey(UserKS, on_delete=models.CASCADE, related_name='password_ot')
+    user_ks = models.ForeignKey(UserKS, on_delete=models.SET_NULL, related_name='password_ot', null=True)
 
     objects: models.Manager = models.Manager()
 

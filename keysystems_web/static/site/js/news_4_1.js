@@ -72,8 +72,14 @@ for (let i=0; i<news.length; i++) {
 
     // Текст Превью
     let news_text_preview = document.createElement('p')
+    console.log(news[i]['fields']['text_preview'])
     news_text_preview.classList.add('news_text_preview')
-    news_text_preview.innerHTML = news[i]['fields']['text_preview']
+    if (news[i]['fields']['text_preview']) {
+        news_text_preview.innerHTML = news[i]['fields']['text_preview']
+    }
+    else{
+        news_text_preview.innerHTML = news[i]['fields']['text']
+    }
     news_preview.appendChild(news_text_preview)
 
     // кнопка "Читать"
@@ -83,7 +89,7 @@ for (let i=0; i<news.length; i++) {
 
     let news_link_read = document.createElement('a')
     news_link_read.setAttribute('href', `index_4_2?news=${news[i].pk}`)
-    news_link_read.innerHTML = `Читать`
+    news_link_read.innerHTML = `Читать1111111`
     btn_link_read.appendChild(news_link_read)
 
     // Создать предпросмотр новости

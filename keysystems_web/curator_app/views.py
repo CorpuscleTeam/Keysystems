@@ -11,10 +11,10 @@ import json
 import random
 
 from . import curator_utils as utils
-from common.models import OrderTopic, Notice, Order, Soft, UserKS, OrderCurator
+from common.models import Notice, Order, Soft, UserKS, OrderCurator
 from common.serializers import NoticeSerializer, SimpleOrderSerializer, SimpleWithCurOrderSerializer, UserKSSerializer
 import common as ut
-from enums import RequestMethod, OrderStatus, notices_dict, ChatType
+from enums import RequestMethod, OrderStatus, notices_dict, ChatType, soft_dict
 
 
 # мои задачи
@@ -24,9 +24,10 @@ def cur_index_1_1(request: HttpRequest):
 
     # orders = utils.get_orders_curator(request)
 
+    logging.warning(f'request.user: {request.user.full_name} {request.user.id}')
     orders = OrderCurator.objects.select_related('order').filter(user=request.user).order_by('order__created_at').all()
     order_list = [order_curator.order for order_curator in orders]
-    logging.warning(f'order_list: {len(order_list)}')
+    # logging.warning(f'order_list: {len(order_list)}')
 
     curator_data = utils.get_main_curator_front_data(request)
     context = {
@@ -68,7 +69,8 @@ def cur_index_2_1(request: HttpRequest):
         'cur_selected': filter_dict.get('curator_filter'),
         'dist_list': list(set(order.customer.district.title for order in orders)),
         'dist_selected': filter_dict.get('district_filter'),
-        'soft_list': list(set(order.soft.title for order in orders)),
+        # 'soft_list': list(set(order.soft.title for order in orders)),
+        'soft_list': list(set(soft_dict.get(order.soft, 'н/д') for order in orders)),
         'soft_selected': filter_dict.get('soft_filter'),
         'sort': filter_dict.get('sort'),
     }

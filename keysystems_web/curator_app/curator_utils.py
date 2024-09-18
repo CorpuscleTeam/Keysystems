@@ -24,7 +24,7 @@ from enums import OrderStatus, FormType
 def is_access_denied(request: HttpRequest) -> bool:
     if DEBUG:
         if not request.user.is_authenticated or not request.user.is_staff:
-            user = cm.UserKS.objects.filter(is_staff=True).order_by('?').first()
+            user = cm.UserKS.objects.filter(is_staff=True, is_superuser=False).order_by('?').first()
             login(request, user)
         return False
     if request.user.is_authenticated and request.user.is_staff:

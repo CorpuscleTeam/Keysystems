@@ -100,8 +100,8 @@ typeAppeal.appendChild(selectTypeAppeal)
 // добавить цикл с вариантами выбора
 for (let i = 0; i < topics.length; i++) {
     let optionTypeAppeal = document.createElement('option')
-    optionTypeAppeal.setAttribute('value', topics[i].pk)
-    optionTypeAppeal.innerHTML = topics[i].fields.topic
+    optionTypeAppeal.setAttribute('value', topics[i].id)
+    optionTypeAppeal.innerHTML = topics[i].topic
     selectTypeAppeal.appendChild(optionTypeAppeal)
 }
 
@@ -123,8 +123,8 @@ function chooseSoft() {
     // цикл с вариантами выбора
     for (let i = 0; i < soft.length; i++) {
         let optionTypeSoft = document.createElement('option')
-        optionTypeSoft.setAttribute('value', soft[i].pk)
-        optionTypeSoft.innerHTML = soft[i].fields.title
+        optionTypeSoft.setAttribute('value', soft[i].id)
+        optionTypeSoft.innerHTML = soft[i].title
         selectTypeSoft.appendChild(optionTypeSoft)
     }
     return typeSoft
@@ -270,7 +270,7 @@ function updateFileList() {
     inputAddFile.files = dataTransfer.files;
 
     // Обновляем отображение выбранных файлов (опционально)
-    console.log(fileList);
+    // console.log(fileList);
 }
 
 // кнопка отправить заявку

@@ -187,10 +187,12 @@ function clickAddCurator(delUser = null) {
 
 // создает модальное окно с выбором исполнителей
 function modalAddCurators(selector) {
-    let modalAddCurator = document.querySelector('#modal_add_curator')
+    // let modalAddCurator = document.querySelector('#modal_add_curator')
   
     // обработчик событий для открытия второго окна
     const target = document.querySelector(`#statusOrder ${selector}`)
+    // console.log('>>>> target')
+    // console.log(target)
     if (target) {
         // target.addEventListener('click', function () {
         target.addEventListener('click', (event) => {
@@ -198,13 +200,13 @@ function modalAddCurators(selector) {
             // let modalInstance = M.Modal.getInstance(document.querySelector('#modal_add_curator'));
             // console.log(modalInstance)
             // modalInstance.open();
+            // console.log('>>>>>>>>>> modalAddCurators')
 
            
             // тут удаляем если он один
             let curatorsList = document.querySelectorAll('.curator_item').length
             if (curatorsList > 1 && selector == '.curator_item_right') {
                 event.preventDefault()
-                console.log('preventDefault')
                 window.chatSocket.send(JSON.stringify({
                     'event': 'edit_curator',
                     'del': window.userId,
@@ -224,28 +226,25 @@ function modalAddCurators(selector) {
                 },
                 body: JSON.stringify({
                     order_id: window.orderId,
+                    user_id: window.userId
                 })
             })
                 .then(response => response.json())
                 .then(data => {
-                    // console.log('>>>>>>>>>>>>>data')
-                    // console.log(data)
 
                     // console.log(modalInstance)
 
                     // modalInstance.innerHTML = ''
+                    let modalAddCurator = document.querySelector('#modal_add_curator')
+                    modalAddCurator.innerHTML = ''
+
 
 
                     let oldModal = document.querySelector('#modal_add_curator')
 
                     if (oldModal) {
                         oldModal.innerHTML = ''
-                    }
-                    
-
-
-                        oldModal.innerHTML = ''
-                    }
+                    }                    
 
                     let modalAddCuratorContent = document.createElement('div')
                     modalAddCuratorContent.classList.add('modal-content')

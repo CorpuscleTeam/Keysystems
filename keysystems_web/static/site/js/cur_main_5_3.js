@@ -44,7 +44,7 @@ document.querySelectorAll('.modal_cr_order').forEach(link => {
             .then(response => response.json())
             .then(data => {
 
-                console.log(data)
+                // console.log(data)
                 if (data.client_chat.length > 0) {
                     window.lastMsgForClientChat = data.client_chat[data.client_chat.length - 1].from_user.id;
                 } else {
@@ -92,7 +92,7 @@ document.querySelectorAll('.modal_cr_order').forEach(link => {
 
                     <div id="tab1" class="tab-content active">
                         <h6 class="title_in_modal">Тема</h6>
-                        <div class="text_in_modal">${data.order.topic.topic}</div>
+                        <div class="text_in_modal">${data.order.topic}</div>
                         <form action="" method="post">
                             <div class="select_PO">
                                 <label class="title_in_modal" for="soft_in_chat">Програмное обеспечение</label>
@@ -161,7 +161,7 @@ document.querySelectorAll('.modal_cr_order').forEach(link => {
                 // M.Modal.getInstance(modalAddCurator).open();
 
 
-                console.log(`curatorUser ${curatorUser}`)
+                // console.log(`curatorUser ${curatorUser}`)
                 // отображение вкладки "чат кураторов"
                 if (curatorUser == false) {
                     // поменял поиск вкладки, чтоб скрывалась у клиента
@@ -181,7 +181,7 @@ document.querySelectorAll('.modal_cr_order').forEach(link => {
                     let textPOClientTab = document.createElement('p')
                     textPOClientTab.classList.add('text_in_modal')
                     textPOClientTab.setAttribute('id', 'soft_title')
-                    textPOClientTab.innerHTML = data['order']['soft']['title']
+                    textPOClientTab.innerHTML = data['order']['soft']
                     document.querySelector('.select_PO').appendChild(textPOClientTab)
                 } else {
                     selectPO('#soft_in_chat', data['soft'], data.order.soft.title)
@@ -258,7 +258,7 @@ document.querySelectorAll('.modal_cr_order').forEach(link => {
                         }
 
                         // Логируем ID открытой вкладки
-                        console.log('Открыта вкладка:', selectedTab);
+                        // console.log('Открыта вкладка:', selectedTab);
                     });
                 });
 

@@ -175,14 +175,14 @@ class ChatConsumer(WebsocketConsumer):
         # меняет софт
         elif data_json['event'] == EditOrderAction.EDIT_SOFT:
             order_id = int(data_json['order_id'])
-            soft_id = int(data_json['soft_id'])
+            soft = data_json['soft_id']
 
             order = Order.objects.filter(id=order_id).first()
-            order.soft_id = soft_id
+            order.soft = soft
             order.save()
 
             async_to_sync(self.channel_layer.group_send)(
-                self.room_group_name, {"type": "edit.soft", 'soft_id': soft_id, 'soft_name': data_json['soft_name']}
+                self.room_group_name, {"type": "edit.soft", 'soft_id': soft, 'soft_name': data_json['soft_name']}
             )
 
     # обновляет сообщения в чате

@@ -6,16 +6,16 @@ import json
 import logging
 
 from .models import Order, Message, OrderCurator, ViewMessage, UserKS, Soft
-from .serializers import FullOrderSerializer, MessageSerializer, UserKSSerializer, SoftSerializer
+from .serializers import FullOrderSerializer, MessageSerializer, UserKSSerializer
 from .logs import log_error
-from enums import ChatType, RequestMethod, EditOrderAction
+from enums import ChatType, RequestMethod, EditOrderAction, soft_list_dict
 
 
 # полные данные по заказу
 def get_order_data(request: HttpRequest, order_id):
-    log_error('>>>>>>>>>>>>', wt=False)
+    # log_error('>>>>>>>>>>>>', wt=False)
     try:
-        log_error(f'{order_id}', wt=False)
+        # log_error(f'{order_id}', wt=False)
 
         order = Order.objects.filter(id=order_id).first()
         messages = Message.objects.prefetch_related('view_message').filter(order=order).order_by('created_at')
@@ -23,9 +23,6 @@ def get_order_data(request: HttpRequest, order_id):
         # разделяем чаты на клиентский и кураторский
         client_messages = messages.filter(chat=ChatType.CLIENT.value)
         curator_messages = messages.filter(chat=ChatType.CURATOR.value)
-
-        # список софта
-        soft = Soft.objects.all()
 
         room_name = f'order{order_id}'
 
@@ -42,7 +39,7 @@ def get_order_data(request: HttpRequest, order_id):
             curator_unviewed_message = 2
             user_id = 3
 
-        log_error('send all', wt=False)
+        # log_error('send all', wt=False)
         return JsonResponse(
             {
                 'order': FullOrderSerializer(order).data,
@@ -53,7 +50,8 @@ def get_order_data(request: HttpRequest, order_id):
                 'unv_msg_client': client_unviewed_message,
                 'unv_msg_curator': curator_unviewed_message,
                 'room': room_name,
-                'soft': SoftSerializer(soft, many=True).data,
+                # 'soft': json.dumps(soft_list_dict),
+                'soft': soft_list_dict,
             },
             safe=False
         )
@@ -121,13 +119,19 @@ def get_curator_view(request: HttpRequest):
         return JsonResponse({'error': 'request method must be POST'}, status=404)
 
     data: dict = json.loads(request.body)
-    # log_error(f'fdata: {type(data)} {data}', wt=False)
+    log_error(f'fdata: {type(data)} {data}', wt=False)
     try:
         order_id = int(data.get('order_id', 0))
         # curators = UserKS.objects.filter(is_staff=True).all()
+        # log_error(f'len(curators): {len(curators)} ', wt=False)
         curators = UserKS.objects.filter(is_staff=True).exclude(
             id__in=OrderCurator.objects.filter(order_id=order_id).values('user_id')
         )
+
+        # order_curators = OrderCurator.objects.filter(order_id=order_id).select_related('user').all()
+        # logging.warning('order_curators')
+        # for cur in order_curators:
+        #     logging.warning(cur.user.full_name)
 
         return JsonResponse(UserKSSerializer(curators, many=True).data, status=200, safe=False)
 
