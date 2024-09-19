@@ -249,7 +249,7 @@ inputAddFile.addEventListener('change', (event) => {
     if (files.length > 0) {
         for (let i = 0; i < files.length; i++) {
 
-            inDnl(fileNameDisplay, files[i])
+            // inDnl(fileNameDisplay, files[i])
             dnlFile(fileNameDisplay, files[i]) 
         }
     }

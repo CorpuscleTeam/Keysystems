@@ -140,8 +140,6 @@ function createCuratorsList(selector, arr, status) {
         curItemImgClose.setAttribute('src', link)
         curatorItemRight.appendChild(curItemImgClose)
 
-        // // триггер удалить куратора
-        // modalAddCuratorsTrigger('.curator_item_right')
 
     }
     // if (myOrder) {
@@ -194,7 +192,7 @@ function modalAddCuratorsTrigger(selector) {
                 // тут удаляем если он один
                 let curatorsList = document.querySelectorAll('.curator_item').length
                 // console.log(`>>>>> ${curatorsList} ${selector}`)
-         
+
                 if (curatorsList > 1 && selector == '.curator_item_right') {
                     // console.log(event)
                     event.preventDefault()
