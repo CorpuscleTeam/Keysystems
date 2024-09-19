@@ -11,6 +11,11 @@ from .logs import log_error
 from enums import ChatType, RequestMethod, EditOrderAction, soft_list_dict
 
 
+def test(request: HttpRequest):
+    context = {}
+    return render(request, 'test.html', context)
+
+
 # полные данные по заказу
 def get_order_data(request: HttpRequest, order_id):
     # log_error('>>>>>>>>>>>>', wt=False)

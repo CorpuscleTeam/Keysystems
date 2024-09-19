@@ -18,6 +18,8 @@ urlpatterns = [
     path("get-curators", com.get_curator_view),
     path("order-soft", com.edit_order_soft_view),
 
+    path("test", com.test),
+
     path('index_2', reg.index_2, name='index_2'),
     path('index_2_1', reg.index_2_1, name='index_2_1'),
     path('index_2_2', reg.index_2_2, name='index_2_2'),

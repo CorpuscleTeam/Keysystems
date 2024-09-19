@@ -120,12 +120,15 @@ class ChatConsumer(WebsocketConsumer):
 
             # если есть кого добавить
             if data_json.get('add'):
-                add_user_id = int(data_json.get('add'))
-                OrderCurator.objects.create(order_id=order_id, user_id=add_user_id)
+                add_user_id = int(data_json.get('add', 0))
+                # можно убрать
+                curator = OrderCurator.objects.filter(order_id=order_id, user_id=add_user_id).first()
+                if add_user_id and not curator:
+                    OrderCurator.objects.create(order_id=order_id, user_id=add_user_id)
 
             # если есть кого удалить
             if data_json.get('del'):
-                del_user_id = int(data_json.get('del'))
+                del_user_id = int(data_json.get('del', 0))
                 OrderCurator.objects.filter(order_id=order_id, user_id=del_user_id).delete()
 
             async_to_sync(self.channel_layer.group_send)(
