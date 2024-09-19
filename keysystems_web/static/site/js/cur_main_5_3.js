@@ -14,7 +14,7 @@ modalApplicationStatusContent.classList.add('modal-content')
 modalApplicationStatus.appendChild(modalApplicationStatusContent)
 
 document.body.append(modalApplicationStatus)
-console.log('должно создаться модальное окно 1')
+// console.log('должно создаться модальное окно 1')
 
 // МО добавить новых кураторов
 
@@ -157,7 +157,7 @@ document.querySelectorAll('.modal_cr_order').forEach(link => {
                 M.Tabs.init(tabs);
 
                 // Открываем модальное окно
-                M.Modal.getInstance(modalApplicationStatus).open();
+                // M.Modal.getInstance(modalApplicationStatus).open();
                 // M.Modal.getInstance(modalAddCurator).open();
 
 
@@ -198,12 +198,13 @@ document.querySelectorAll('.modal_cr_order').forEach(link => {
                     let titleOfCuratorsList = document.querySelector('.title_of_curators_request')
                     titleOfCuratorsList.style.display = "none"
                 }
-
+                
+                // убрал в создание 
                 // список кураторов
-                if (curatorUser == true) {
-                    modalAddCurators('.curator_item_right')
-                    modalAddCurators('.btn_add_curator')
-                }
+                // if (curatorUser == true) {
+                //     modalAddCuratorsTrigger('.curator_item_right')
+                //     modalAddCuratorsTrigger('.btn_add_curator')
+                // }
 
                 // отображение статуса заявки (+кнопка в первой вкладке)
                 status_btn(data.order.status)
@@ -268,6 +269,7 @@ document.querySelectorAll('.modal_cr_order').forEach(link => {
                     withoutFooter.style.display = 'none'
                 }
 
+                // смена ПО
                 document.querySelector('#tab1 select').addEventListener('change', function () {
                     let selectedOption = this.options[this.selectedIndex]
                     window.chatSocket.send(JSON.stringify({
