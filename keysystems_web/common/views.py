@@ -26,25 +26,15 @@ def get_order_data(request: HttpRequest, order_id):
         messages = Message.objects.prefetch_related('view_message').filter(order=order).order_by('created_at')
 
         # разделяем чаты на клиентский и кураторский
-        client_messages = messages.filter(chat=ChatType.CLIENT.value)
-        curator_messages = messages.filter(chat=ChatType.CURATOR.value)
+        client_messages = messages.filter(chat=ChatType.CLIENT.value).exclude(from_user=request.user)
+        curator_messages = messages.filter(chat=ChatType.CURATOR.value).exclude(from_user=request.user)
 
         room_name = f'order{order_id}'
 
-        # для отладки
-        if request.user.is_authenticated:
-            client_unviewed_message = client_messages.filter(~Q(view_message__user_ks=request.user)).distinct().count()
-            curator_unviewed_message = curator_messages.filter(~Q(view_message__user_ks=request.user)).distinct().count()
-            user_id = request.user.id
-            # client_unviewed_message = 1
-            # curator_unviewed_message = 2
+        client_unviewed_message = client_messages.filter(~Q(view_message__user_ks=request.user)).distinct().count()
+        curator_unviewed_message = curator_messages.filter(~Q(view_message__user_ks=request.user)).distinct().count()
+        user_id = request.user.id
 
-        else:
-            client_unviewed_message = 1
-            curator_unviewed_message = 2
-            user_id = 3
-
-        # log_error('send all', wt=False)
         return JsonResponse(
             {
                 'order': FullOrderSerializer(order).data,

@@ -59,16 +59,24 @@ function createOrderCard(order) {
 
     modalLinkCard.appendChild(newOrder)
     // newOrderFlex.appendChild(modalLinkCard)
-
+    console.log(modalLinkCard)
     return modalLinkCard
 }
 
 // Создать div_grid со всеми заявками
 
-function ordersArea() {
+function createOrdersArea(card_orders_data) {
+    // дескопт
     if (window.matchMedia('(min-width: 600px)').matches) {
+        // проверяем есть ли контейнер для заявок и удаляем если есть
+        let old_all_orders = document.getElementById('order_area_id')
+        if (old_all_orders) {
+            old_all_orders.remove()
+        }
+
         let all_orders = document.createElement('div')
         all_orders.classList.add('page_body_orders')
+        all_orders.id = 'order_area_id'
         // создать серку grid со всеми заявками
         document.querySelector('.page_flex_body').appendChild(all_orders)
 
@@ -152,17 +160,17 @@ function ordersArea() {
         doneOrderFlex.classList.add('order_flex')
         groupOfDoneOrders.appendChild(doneOrderFlex)
 
-        for (let i = 0; i < card_orders.length; i++) {
-            let card = createOrderCard(card_orders[i])
+        for (let i = 0; i < card_orders_data.length; i++) {
+            let card = createOrderCard(card_orders_data[i])
 
-            if (card_orders[i]['status'] == 'new') {
+            if (card_orders_data[i]['status'] == 'new') {
                 newOrderFlex.appendChild(card)
 
             }
-            if (card_orders[i]['status'] == 'active') {
+            if (card_orders_data[i]['status'] == 'active') {
                 activeOrderFlex.appendChild(card)
             }
-            if (card_orders[i]['status'] == 'done') {
+            if (card_orders_data[i]['status'] == 'done') {
                 doneOrderFlex.appendChild(card)
             }
         }
@@ -185,7 +193,27 @@ function ordersArea() {
         let quantityDoneOrders = doneOrderFlex.querySelectorAll('.modal_cr_order').length
         countOfDoneOrders.innerHTML = quantityDoneOrders
         headerOfDoneOrders.appendChild(countOfDoneOrders)
-    } else {
+
+        let testTrigger = document.querySelectorAll('.modal_cr_order')
+        console.log('testTrigger.length')
+        console.log(testTrigger.length)
+        // обработчик событий данные с бэка
+        document.querySelectorAll('.modal_cr_order').forEach(link => {
+            link.addEventListener('click', function () {
+                console.log('Создал тригер')
+                console.log(this)
+                let orderId = this.getAttribute('data-order-id');
+
+                // Здесь делаем запрос на бэк с использованием Fetch API
+                craeteOrderModal(orderId)
+
+            });
+
+        });
+
+    }
+    // мобилка
+    else {
         document.addEventListener('DOMContentLoaded', function () {
             // Находим элемент с классом .tabs
             let tabsElement = document.querySelector('.tabs');
@@ -213,22 +241,56 @@ function ordersArea() {
             document.querySelector('#tab3_mob').appendChild(mobDoneOrders)
 
             // карточки с заявками
-            for (let i = 0; i < card_orders.length; i++) {
-                let mobCard = createOrderCard(card_orders[i])
+            for (let i = 0; i < card_orders_data.length; i++) {
+                let mobCard = createOrderCard(card_orders_data[i])
 
-                if (card_orders[i]['status'] == 'new') {
+                if (card_orders_data[i]['status'] == 'new') {
                     mobNewOrders.appendChild(mobCard)
                 }
-                if (card_orders[i]['status'] == 'active') {
+                if (card_orders_data[i]['status'] == 'active') {
                     mobActiveOrders.appendChild(mobCard)
                 }
-                if (card_orders[i]['status'] == 'done') {
+                if (card_orders_data[i]['status'] == 'done') {
                     mobDoneOrders.appendChild(mobCard)
                 }
             }
+            let testTrigger = document.querySelectorAll('.modal_cr_order')
+            console.log('testTrigger.length')
+            console.log(testTrigger.length)
+            // обработчик событий данные с бэка
+            document.querySelectorAll('.modal_cr_order').forEach(link => {
+                link.addEventListener('click', function () {
+                    console.log('Создал тригер')
+                    console.log(this)
+                    let orderId = this.getAttribute('data-order-id');
+
+                    // Здесь делаем запрос на бэк с использованием Fetch API
+                    craeteOrderModal(orderId)
+
+                });
+
+            });
+
         })
     }
 
+    // let testTrigger = document.querySelectorAll('.modal_cr_order')
+    // console.log('testTrigger.length')
+    // console.log(testTrigger.length)
+    // // обработчик событий данные с бэка
+    // document.querySelectorAll('.modal_cr_order').forEach(link => {
+    //     link.addEventListener('click', function () {
+    //         console.log('Создал тригер')
+    //         console.log(this)
+    //         let orderId = this.getAttribute('data-order-id');
+
+    //         // Здесь делаем запрос на бэк с использованием Fetch API
+    //         craeteOrderModal(orderId)
+
+    //     });
+
+    // });
+
 }
 
-ordersArea()
+createOrdersArea(card_orders)
