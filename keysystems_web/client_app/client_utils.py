@@ -35,77 +35,49 @@ def is_access_denied(request: HttpRequest) -> bool:
 
 # Собирает данные для стандартного окружения клиентской части
 def get_main_client_front_data(request: HttpRequest) -> dict:
-    # soft_json = serialize(format='json', queryset=m.Soft.objects.filter(is_active=True).all())
     soft_json = json.dumps(e.soft_list_dict)
     topics_json = json.dumps(e.order_topic_list_dict)
-    # topics_json = serialize(format='json', queryset=m.OrderTopic.objects.filter(is_active=True).all())
 
-    log_error(f'request.user.is_authenticated: {request.user.is_authenticated}', wt=False)
+    # количество заявок
+    user_orders_count = m.Order.objects.filter(from_user=request.user).exclude(status=e.OrderStatus.DONE).count()
+    # количество непросмотренных уведомлений
+    notice_count = m.Notice.objects.filter(viewed=False, user_ks=request.user).count()
+    # Получаем все объекты UpdateSoft, которые пользователь не просмотрел
+    unviewed_updates = UpdateSoft.objects.filter(~Q(view_update__user_ks=request.user)).distinct()
+    # Считаем количество непросмотренных обновлений
+    unviewed_updates_count = unviewed_updates.count()
+    # используемый софт
+    used_soft = m.UsedSoft.objects.get(user=request.user)
 
-    if request.user.is_authenticated:
-        # количество заявок
-        user_orders_count = m.Order.objects.filter(from_user=request.user).exclude(status=e.OrderStatus.DONE).count()
-        # количество непросмотренных уведомлений
-        notice_count = m.Notice.objects.filter(viewed=False, user_ks=request.user).count()
-        # Получаем все объекты UpdateSoft, которые пользователь не просмотрел
-        unviewed_updates = UpdateSoft.objects.filter(~Q(view_update__user_ks=request.user)).distinct()
-        # Считаем количество непросмотренных обновлений
-        unviewed_updates_count = unviewed_updates.count()
-        # используемый софт
-        used_soft = m.UsedSoft.objects.get(user=request.user)
+    # log_error(f'>>>> {request.user.customer.inn}', wt=False)
 
-        # log_error(f'>>>> {request.user.customer.inn}', wt=False)
+    return {
+        'topics': topics_json,
+        'soft': soft_json,
+        'orders_count': user_orders_count,
+        'notice': notice_count,
+        'update_count': unviewed_updates_count,
+        'unviewed_updates': unviewed_updates,
+        'main_data': json.dumps(
+            {
+                'user_id': request.user.id,
+                'inn': request.user.customer.inn,
+                'institution': request.user.customer.title,
+                'region': request.user.customer.district.title,
+                'email': request.user.username,
+                'full_name': request.user.full_name,
+                'used_soft': used_soft.id,
+                'phone': request.user.phone,
+                'topics': topics_json,
+                'soft': soft_json,
+                'orders_count': user_orders_count,
+                'notice': notice_count,
+                'update_count': unviewed_updates_count,
+                'unviewed_updates': unviewed_updates.count(),
+            }
+        )
+    }
 
-        return {
-            'topics': topics_json,
-            'soft': soft_json,
-            'orders_count': user_orders_count,
-            'notice': notice_count,
-            'update_count': unviewed_updates_count,
-            'unviewed_updates': unviewed_updates,
-            'main_data': json.dumps(
-                {
-                    'inn': request.user.customer.inn,
-                    'institution': request.user.customer.title,
-                    'region': request.user.customer.district.title,
-                    'email': request.user.username,
-                    'full_name': request.user.full_name,
-                    'used_soft': used_soft.id,
-                    'phone': request.user.phone,
-                    'topics': topics_json,
-                    'soft': soft_json,
-                    'orders_count': user_orders_count,
-                    'notice': notice_count,
-                    'update_count': unviewed_updates_count,
-                    'unviewed_updates': unviewed_updates.count(),
-                }
-            )
-        }
-    else:
-        return {
-            'topics': topics_json,
-            'soft': soft_json,
-            'orders_count': 2,
-            'notice': 3,
-            'update_count': 12,
-            'main_data': json.dumps(
-                {
-                    'inn': "Тест ИНН",
-                    'institution': "OOO Oooo",
-                    'region': 'ChO',
-                    'email': 'ex@mail.com',
-                    'full_name': 'Мурат Насырович Шлакоблокунь',
-                    'used_soft': 2,
-                    'phone': '79012345678',
-                    'topics': topics_json,
-                    'soft': soft_json,
-                    'orders_count': 2,
-                    'notice': 3,
-                    'update_count': 12,
-
-                }
-            )
-        }
 
 
 # >>>> <QueryDict: {'csrfmiddlewaretoken': ['pYTOAQritYwXPWYtFZ11WJiIYZOY2Dei7EnijgTOLqaDbg5dfuTEHWeM9poMfXnP'],

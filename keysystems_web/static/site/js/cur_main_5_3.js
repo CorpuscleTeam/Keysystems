@@ -2,7 +2,14 @@ console.log('cur_main_5_3.js')
 
 document.addEventListener('DOMContentLoaded', function () {
     var elems = document.querySelectorAll('.modal');
-    var instances = M.Modal.init(elems);
+    // var instances = M.Modal.init(elems);
+    var instances = M.Modal.init(elems, {
+        onCloseStart: function(modal, trigger) {
+            if (modal.id == 'statusOrder') {
+                window.chatSocket.close()
+            }
+        }
+    });
 });
 
 let modalApplicationStatus = document.createElement('div')
@@ -32,15 +39,11 @@ moBackToWork.setAttribute('id', 'modalBackToWork')
 // заполняется в function modalBackToWork()
 document.body.append(moBackToWork)
 
-// обработчик событий данные с бэка
 
-document.querySelectorAll('.modal_cr_order').forEach(link => {
-    // console.log('должно')
-    link.addEventListener('click', function () {
-        let orderId = this.getAttribute('data-order-id');
-
-        // Здесь делаем запрос на бэк с использованием Fetch API
-        fetch(`/order-data/${orderId}`)
+// обработчик событий данные с бэка перенёс в cur_cards_reuest
+// создаёт модальное окно для заказа
+function craeteOrderModal(orderId) {
+    fetch(`/order-data/${orderId}`)
             .then(response => response.json())
             .then(data => {
 
@@ -316,8 +319,18 @@ document.querySelectorAll('.modal_cr_order').forEach(link => {
                 initOrderSocket(data.room, data.user_id)
             })
             .catch(error => console.error('Error:', error));
-    });
 
-});
+}
+
+// // обработчик событий данные с бэка
+// document.querySelectorAll('.modal_cr_order').forEach(link => {
+//     link.addEventListener('click', function () {
+//         let orderId = this.getAttribute('data-order-id');
+
+//         // Здесь делаем запрос на бэк с использованием Fetch API
+        
+//     });
+
+// });
 
 

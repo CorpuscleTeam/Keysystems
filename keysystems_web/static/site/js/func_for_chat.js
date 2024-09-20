@@ -610,7 +610,7 @@ function addMsgChat(data, userId) {
 
         // меняем цифорку сообщений 
         if (window.selectedTab != '#tab2') {
-            cur_notice('id_client_chat', 1)
+            count_notice('id_client_chat', 1)
         }
     } else {
         if (data.message.from_user.id == window.lastMsgForCuratorChat) {
@@ -626,7 +626,7 @@ function addMsgChat(data, userId) {
 
         // меняем цифорку сообщений 
         if (window.selectedTab != '#tab3') {
-            cur_notice('id_curator_chat', 1)
+            count_notice('id_curator_chat', 1)
         }
     }
 }
@@ -672,10 +672,6 @@ function initOrderSocket(roomName, userId) {
 
         if (data.type == 'msg') {
             addMsgChat(data, userId)
-        }
-        else if (data.type == 'file') {
-            console.log('Пришёл файл')
-
         }
         else if (data.type == 'edit_curator') {
             createCuratorsList('.curators_of_request', data.curators)
