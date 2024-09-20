@@ -115,8 +115,6 @@ def ws_proc_curator(event_data: dict, ws_consumer: WebsocketConsumer):
     )
 
 
-
-
 # обработка смены статуса
 def ws_proc_status(event_data: dict, ws_consumer: WebsocketConsumer):
     user_id = int(event_data.get('user_id', 0))
@@ -196,5 +194,5 @@ def ws_proc_soft(event_data: dict, ws_consumer: WebsocketConsumer):
     order.save()
 
     async_to_sync(ws_consumer.channel_layer.group_send)(
-        ws_consumer.room_group_name, {"type": "edit.soft", 'soft_id': soft, 'soft_name': data_json['soft_name']}
+        ws_consumer.room_group_name, {"type": "edit.soft", 'soft_id': soft, 'soft_name': event_data['soft_name']}
     )
