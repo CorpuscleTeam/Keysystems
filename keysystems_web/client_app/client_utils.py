@@ -79,7 +79,6 @@ def get_main_client_front_data(request: HttpRequest) -> dict:
     }
 
 
-
 # >>>> <QueryDict: {'csrfmiddlewaretoken': ['pYTOAQritYwXPWYtFZ11WJiIYZOY2Dei7EnijgTOLqaDbg5dfuTEHWeM9poMfXnP'],
 # 'type_form': ['order'], 'type_appeal': ['1'], 'type_soft': ['1'], 'description': [''], 'addfile': ['']}>
 # возвращает куратора
@@ -101,11 +100,7 @@ def get_order_curator(soft: str, prefix: str, customer_type: str) -> list[m.User
     else:
         curators = False
 
-    # если не нашёлся куратор
-    if not curators:
-        curators = m.UserKS.objects.filter(is_staff=True).order_by('?').all()[0]
-
-    return curators.all()
+    return curators
 
 
 def form_processing(request: HttpRequest) -> None:
@@ -135,9 +130,16 @@ def form_processing(request: HttpRequest) -> None:
                 prefix=str(request.user.customer.inn)[:4],
                 customer_type=request.user.customer.form_type
             )
-            for curator in curators:
+            if curators:
+                for curator in curators:
+                    m.OrderCurator.objects.create(
+                        user_id=curator.user_id,
+                        order=new_order
+                    )
+            else:
+                curator = m.UserKS.objects.filter(is_staff=True).order_by('?').first()
                 m.OrderCurator.objects.create(
-                    user_id=curator.user_id,
+                    user_id=curator.id,
                     order=new_order
                 )
 

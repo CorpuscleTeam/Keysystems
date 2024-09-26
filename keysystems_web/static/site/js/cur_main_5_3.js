@@ -47,7 +47,7 @@ function craeteOrderModal(orderId) {
             .then(response => response.json())
             .then(data => {
 
-                // console.log(data)
+                console.log(data)
                 if (data.client_chat.length > 0) {
                     window.lastMsgForClientChat = data.client_chat[data.client_chat.length - 1].from_user.id;
                 } else {
@@ -187,7 +187,7 @@ function craeteOrderModal(orderId) {
                     textPOClientTab.innerHTML = data['order']['soft']
                     document.querySelector('.select_PO').appendChild(textPOClientTab)
                 } else {
-                    selectPO('#soft_in_chat', data['soft'], data.order.soft.title)
+                    selectPO('#soft_in_chat', data['soft'], data.order.soft)
                 }
 
 
@@ -284,35 +284,69 @@ function craeteOrderModal(orderId) {
                     
                 })
 
+                // Находим оба элемента
+                const fileInputs = document.querySelectorAll('#client-msg-file, #curator-msg-file');
 
-                // добавить файл в чат клиентский
-                document.querySelector('#client-msg-file').addEventListener('change', (event) => {
-                    const files = event.target.files;
+                // Добавляем обработчик событий для каждого из них
+                fileInputs.forEach(input => {
+                    input.addEventListener('change', (event) => {
+                        const files = event.target.files;
 
-                    if (files.length > 0) {
-                        for (let i = 0; i < files.length; i++) {
-                            const reader = new FileReader();
-                            reader.onload = function (evt) {
-                                if (evt.target.readyState === FileReader.DONE) {
-                                    // Отправляем файл в формате Base64 вместе с метаинформацией
-                                    window.chatSocket.send(JSON.stringify({
-                                        'event': 'file',
-                                        'chat': 'client',
-                                        'tab': window.selectedTab,
-                                        'order_id': window.orderId,
-                                        'user_id': window.userId,
-                                        'file_name': files[i].name,
-                                        'file_size': files[i].size,
-                                        'file_type': files[i].type,
-                                        'file_data': evt.target.result.split(',')[1] // Base64 строка (удаляем "data:" префикс)
-                                    }));
-                                }
-                            };
-                            reader.readAsDataURL(files[i]);
-
+                        if (files.length > 0) {
+                            for (let i = 0; i < files.length; i++) {
+                                const reader = new FileReader();
+                                reader.onload = function (evt) {
+                                    if (evt.target.readyState === FileReader.DONE) {
+                                        // Отправляем файл в формате Base64 вместе с метаинформацией
+                                        window.chatSocket.send(JSON.stringify({
+                                            'event': 'file',
+                                            'chat': input.id === 'client-msg-file' ? 'client' : 'curator', // Определяем тип чата
+                                            'tab': window.selectedTab,
+                                            'order_id': window.orderId,
+                                            'user_id': window.userId,
+                                            'file_name': files[i].name,
+                                            'file_size': files[i].size,
+                                            'file_type': files[i].type,
+                                            'file_data': evt.target.result.split(',')[1] // Base64 строка (удаляем "data:" префикс)
+                                        }));
+                                    }
+                                };
+                                reader.readAsDataURL(files[i]);
+                            }
                         }
-                    }
-                })
+                    });
+                });
+
+
+
+                // // добавить файл в чат клиентский
+                // document.querySelector('#client-msg-file').addEventListener('change', (event) => {
+                //     const files = event.target.files;
+
+                //     if (files.length > 0) {
+                //         for (let i = 0; i < files.length; i++) {
+                //             const reader = new FileReader();
+                //             reader.onload = function (evt) {
+                //                 if (evt.target.readyState === FileReader.DONE) {
+                //                     // Отправляем файл в формате Base64 вместе с метаинформацией
+                //                     window.chatSocket.send(JSON.stringify({
+                //                         'event': 'file',
+                //                         'chat': 'client',
+                //                         'tab': window.selectedTab,
+                //                         'order_id': window.orderId,
+                //                         'user_id': window.userId,
+                //                         'file_name': files[i].name,
+                //                         'file_size': files[i].size,
+                //                         'file_type': files[i].type,
+                //                         'file_data': evt.target.result.split(',')[1] // Base64 строка (удаляем "data:" префикс)
+                //                     }));
+                //                 }
+                //             };
+                //             reader.readAsDataURL(files[i]);
+
+                //         }
+                //     }
+                // })
 
 
                 // сокет. оставляем последним

@@ -63,7 +63,7 @@ class ChatConsumer(WebsocketConsumer):
     # Receive message from WebSocket
     def receive(self, text_data=None, bytes_data=None):
         data_json: dict = json.loads(text_data) if text_data else {'event': 'file_', 'text_data': str(text_data)}
-        log_error(wt=False, message=f'receive\n{data_json}')
+        log_error(wt=False, message=f'receive\n{data_json}'[:200])
 
         if data_json['event'] == EditOrderAction.MSG or data_json['event'] == EditOrderAction.FILE:
             ut.ws_proc_msg(data_json, self)
@@ -110,8 +110,6 @@ class ChatConsumer(WebsocketConsumer):
         log_error(wt=False, message=f'curator_list\n{event}\n')
 
         curators = OrderCurator.objects.filter(order_id=event['order_id']).all()
-        log_error(wt=False, message=f'curators\n{curators}\n')
-
         context = {
             'type': EditOrderAction.EDIT_CURATOR.value,
             'curators': UserKSSerializer([curator.user for curator in curators], many=True).data,
@@ -186,6 +184,12 @@ class UserConsumer(WebsocketConsumer):
     def order_status(self, event: dict):
         log_error(f'order_status: {event}', wt=False)
         event['type'] = 'order_status'
+        # self.send(text_data=json.dumps({'selector': selector}))
+        self.send(text_data=json.dumps(event))
+
+    def order_soft(self, event: dict):
+        log_error(f'order_soft: {event}', wt=False)
+        event['type'] = 'order_soft'
         # self.send(text_data=json.dumps({'selector': selector}))
         self.send(text_data=json.dumps(event))
 
