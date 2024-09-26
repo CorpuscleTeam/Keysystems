@@ -59,7 +59,7 @@ function createOrderCard(order) {
 
     modalLinkCard.appendChild(newOrder)
     // newOrderFlex.appendChild(modalLinkCard)
-    console.log(modalLinkCard)
+    // console.log(modalLinkCard)
     return modalLinkCard
 }
 
@@ -195,13 +195,13 @@ function createOrdersArea(card_orders_data) {
         headerOfDoneOrders.appendChild(countOfDoneOrders)
 
         let testTrigger = document.querySelectorAll('.modal_cr_order')
-        console.log('testTrigger.length')
-        console.log(testTrigger.length)
+        // console.log('testTrigger.length')
+        // console.log(testTrigger.length)
         // обработчик событий данные с бэка
         document.querySelectorAll('.modal_cr_order').forEach(link => {
             link.addEventListener('click', function () {
-                console.log('Создал тригер')
-                console.log(this)
+                // console.log('Создал тригер')
+                // console.log(this)
                 let orderId = this.getAttribute('data-order-id');
 
                 // Здесь делаем запрос на бэк с использованием Fetch API
@@ -254,9 +254,9 @@ function createOrdersArea(card_orders_data) {
                     mobDoneOrders.appendChild(mobCard)
                 }
             }
-            let testTrigger = document.querySelectorAll('.modal_cr_order')
-            console.log('testTrigger.length')
-            console.log(testTrigger.length)
+            // let testTrigger = document.querySelectorAll('.modal_cr_order')
+            // console.log('testTrigger.length')
+            // console.log(testTrigger.length)
             // обработчик событий данные с бэка
             document.querySelectorAll('.modal_cr_order').forEach(link => {
                 link.addEventListener('click', function () {

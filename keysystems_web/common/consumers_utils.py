@@ -9,7 +9,7 @@ import logging
 from . import models as m
 from .serializers import MessageSerializer
 from .logs import log_error
-from enums import EditOrderAction, MsgType, NoticeType, notices_dict, CountSelector, ChatType, OrderStatus, TAB
+from enums import EditOrderAction, MsgType, NoticeType, notices_dict, CountSelector, ChatType, OrderStatus, TAB, soft_dict
 
 
 # список всех относящихся к заказу пользователей
@@ -18,12 +18,17 @@ def get_related_users_list(order: m.Order) -> list[int]:
     return [curator.user.id for curator in curators] + [order.from_user.id]
 
 
+# {'event': 'file', 'chat': 'client', 'tab': '#tab2', 'order_id': '7', 'user_id': 2, 'file_name': 'выполнена.png',
+# 'file_size': 1856322, 'file_type': 'image/png', 'file_data':
 # обработка входящего сообщения
 def ws_proc_msg(msg_data: dict, ws_consumer: WebsocketConsumer):
-    user = m.UserKS.objects.filter(id=msg_data['user_id']).first()
+    user_id = int(msg_data['user_id'])
+    order_id = int(msg_data['order_id'])
+
+    user = m.UserKS.objects.filter(id=user_id).first()
     # log_error(wt=False, message=f'user: {user}\n')
     if user:
-        order = m.Order.objects.select_related('from_user').filter(id=int(msg_data['order_id'])).first()
+        order = m.Order.objects.select_related('from_user').filter(id=order_id).first()
 
         # сохраняем сообщение
         if msg_data['event'] == EditOrderAction.MSG:
@@ -31,7 +36,7 @@ def ws_proc_msg(msg_data: dict, ws_consumer: WebsocketConsumer):
                 type_msg=MsgType.MSG.value,
                 from_user=user,
                 chat=msg_data['chat'],
-                order_id=int(msg_data['order_id']),
+                order_id=order_id,
                 text=msg_data['message']
             )
             new_message.save()
@@ -92,7 +97,7 @@ def ws_proc_msg(msg_data: dict, ws_consumer: WebsocketConsumer):
             }
         )
 
-
+# {'event': 'edit_curator', 'add': '2', 'del': 5, 'order_id': '10', 'room_name': 'order10'}
 # обработка смены статуса
 def ws_proc_curator(event_data: dict, ws_consumer: WebsocketConsumer):
     order_id = int(event_data.get('order_id', 0))
@@ -104,11 +109,13 @@ def ws_proc_curator(event_data: dict, ws_consumer: WebsocketConsumer):
         curator = m.OrderCurator.objects.filter(order_id=order_id, user_id=add_user_id).first()
         if add_user_id and not curator:
             m.OrderCurator.objects.create(order_id=order_id, user_id=add_user_id)
+            logging.warning(f'Добавил: {add_user_id}')
 
     # если есть кого удалить
     if event_data.get('del'):
         del_user_id = int(event_data.get('del', 0))
         m.OrderCurator.objects.filter(order_id=order_id, user_id=del_user_id).delete()
+        logging.warning(f'Удалил: {del_user_id}')
 
     async_to_sync(ws_consumer.channel_layer.group_send)(
         ws_consumer.room_group_name, {"type": "curator.list", 'order_id': order_id}
@@ -144,7 +151,6 @@ def ws_proc_status(event_data: dict, ws_consumer: WebsocketConsumer):
     for user in ws_send_list:
         async_to_sync(ws_consumer.channel_layer.group_send)(
             f'user{user}',
-            # f'user5',
             {
                 'type': 'order.status',
                 'order_id': order_id,
@@ -196,3 +202,16 @@ def ws_proc_soft(event_data: dict, ws_consumer: WebsocketConsumer):
     async_to_sync(ws_consumer.channel_layer.group_send)(
         ws_consumer.room_group_name, {"type": "edit.soft", 'soft_id': soft, 'soft_name': event_data['soft_name']}
     )
+    # обновляем поле заказа
+    ws_send_list = get_related_users_list(order)
+    for user in ws_send_list:
+        async_to_sync(ws_consumer.channel_layer.group_send)(
+            f'user{user}',
+            {
+                'type': 'order.soft',
+                'order_id': order_id,
+                'soft': soft,
+                'soft_title': soft_dict.get(soft, 'Обновлено'),
+
+            }
+        )

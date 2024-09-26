@@ -305,13 +305,16 @@ function modalAddCuratorsTrigger(selector) {
                         btnAddCuratorSubmit.classList.add('btn_support_submit')
                         btnAddCuratorSubmit.classList.add('modal-close')
                         // btnAddCuratorSubmit.innerHTML = `Добавить`
+                        
+                        console.log('>>>>> target.getAttribute(data-user)')
+                        console.log(target.getAttribute('data-user'))
 
                         let delUser = null
                         if (selector == '.btn_add_curator') {
                             btnAddCuratorSubmit.innerHTML = `Добавить`
                         } else {
                             btnAddCuratorSubmit.innerHTML = `Подтвердить`
-                            delUser = window.userId
+                            delUser = target.getAttribute('data-user')
                         }
                         footerAddCurator.appendChild(btnAddCuratorSubmit)
 
@@ -637,13 +640,16 @@ function changeSoft(soft_id, soft_name) {
     if (curatorUser) {
         selectorSoft = document.querySelector('#tab1 select')
         let optionToSelect = selectorSoft.querySelector(`option[value="${soft_id}"]`);
+        // console.log(selectorSoft)
+        // console.log(optionToSelect)
 
         if (optionToSelect) {
             selectorSoft.value = soft_id;  // Устанавливаем значение select
+            // selectorSoft.selected  // Устанавливаем значение select
         }
     }
     else {
-        soft_title
+        // soft_title
         titleSoft = document.getElementById('soft_title')
         if (titleSoft) {
             titleSoft.innerHTML = soft_name
@@ -668,7 +674,6 @@ function initOrderSocket(roomName, userId) {
 
         console.log('window.chatSocket.onmessage')
         console.log(data)
-        let withHeader = true
 
         if (data.type == 'msg') {
             addMsgChat(data, userId)
