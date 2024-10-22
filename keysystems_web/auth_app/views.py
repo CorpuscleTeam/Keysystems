@@ -11,13 +11,16 @@ from keysystems_web.settings import DEBUG
 from .forms import AuthBaseForm, RegistrationForm, PasswordForm, AuthUserForm
 from .models import Password
 from .auth_utils import send_password
-from common.models import UserKS, Soft, Customer, District, UsedSoft
+from common.models import UserKS, Soft, Customer, UsedSoft
+from common.views import test
 from common.logs import log_error
 from enums import RequestMethod, soft_list_dict
 
 
 # Определяет начальную страницу пользователя
 def start_page_redirect(request: HttpRequest):
+    # test()
+    # send_password(user=request.user, request=request)
     if request.user.is_authenticated and request.user.is_staff:
         return redirect('cur_index_1_1')
 

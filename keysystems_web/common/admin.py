@@ -106,29 +106,10 @@ class ViewAdminUser(admin.ModelAdmin):
         return fieldsets
 
 
-# админка софт
-# @admin.register(m.Soft)
-# class ViewAdminSoft(admin.ModelAdmin):
-#     list_display = ['title', 'description', 'is_active']
-
-    # def event_name(self, obj):
-    #     event = Event.objects.filter(id=obj.event_id).first()
-    #     return event.title if event else str(obj.event_id)
-    #
-    # event_name.short_description = 'Ивент'
-
-
-# админка темы обращений
-# @admin.register(m.OrderTopic)
-# class ViewAdminOrderTopic(admin.ModelAdmin):
-#     list_display = ['topic', 'is_active']
-#     list_editable = ['is_active']
-
-
 # админка темы обращений
 @admin.register(m.Customer)
 class ViewAdminCostumer(admin.ModelAdmin):
-    list_display = ['inn', 'title', 'district']
+    list_display = ['inn', 'title']
     readonly_fields = ['created_at', 'updated_at']
 
 
@@ -157,12 +138,6 @@ class ViewAdminOrder(admin.ModelAdmin):
     list_display = ['id', 'from_user', 'soft', 'topic', 'text', 'status']
     list_editable = ['status']
     readonly_fields = ['created_at', 'updated_at']
-
-
-# # админка районы
-@admin.register(m.District)
-class ViewAdminNews(admin.ModelAdmin):
-    list_display = ['title']
 
 
 # # админка уведомления

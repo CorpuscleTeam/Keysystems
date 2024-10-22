@@ -1,4 +1,4 @@
-console.log(card_orders)
+// console.log(card_orders)
 
 function createOrderCard(order) {
     // console.log(order)
@@ -159,6 +159,9 @@ function createOrdersArea(card_orders_data) {
         let doneOrderFlex = document.createElement('div')
         doneOrderFlex.classList.add('order_flex')
         groupOfDoneOrders.appendChild(doneOrderFlex)
+
+        // console.log('card_orders_data')
+        // console.log(card_orders_data)
 
         for (let i = 0; i < card_orders_data.length; i++) {
             let card = createOrderCard(card_orders_data[i])

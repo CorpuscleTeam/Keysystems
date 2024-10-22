@@ -3,17 +3,32 @@ from django.db.models import Count, Q, Case, When, IntegerField
 from django.shortcuts import render
 
 import json
-import logging
+import os
+import csv
 
-from .models import Order, Message, OrderCurator, ViewMessage, UserKS, Soft
+from keysystems_web.settings import BASE_DIR
+from .models import Order, Message, OrderCurator, ViewMessage, UserKS, Soft, Customer
 from .serializers import FullOrderSerializer, MessageSerializer, UserKSSerializer
 from .logs import log_error
+from .data import client_data
 from enums import ChatType, RequestMethod, EditOrderAction, soft_list_dict
 
 
-def test(request: HttpRequest):
-    context = {}
-    return render(request, 'test.html', context)
+def test():
+    print('start')
+    path = os.path.join(BASE_DIR, 'common', 'data_my.csv')
+    with open(path, mode='r', encoding='utf-8') as file:
+        reader = csv.reader(file)
+        data = [row for row in reader]
+
+    for client_row in data[1:]:
+        if len(client_row) == 5:
+            Customer.objects.create(
+                form_type=client_row[3],
+                inn=int(client_row[2]),
+                title=client_row[1],
+                # district=client_row[4],
+            )
 
 
 # полные данные по заказу

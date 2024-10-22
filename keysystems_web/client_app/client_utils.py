@@ -9,6 +9,9 @@ from django.db.models import Count, Q
 from django.contrib.auth import login
 from datetime import datetime
 
+from asgiref.sync import async_to_sync
+from channels.generic.websocket import WebsocketConsumer
+
 import os
 import json
 
@@ -17,6 +20,7 @@ from .forms import OrderForm, UserSettingForm
 from .models import UpdateSoft
 from common import models as m
 from common import log_error, months_str_ru
+from common.consumers import UserConsumer
 import enums as e
 
 
@@ -107,9 +111,10 @@ def form_processing(request: HttpRequest) -> None:
     # log_error(f'>>>> {request.POST}', wt=False)
 
     type_form = request.POST.get('type_form')
+    # новая заявка
     if type_form == e.FormType.ORDER:
         form = OrderForm(request.POST, request.FILES)
-        # log_error(f'>>>> form.is_valid(): {form.is_valid()}\n{form.errors}\n{form.data}', wt=False)
+        log_error(f'>>>> form.is_valid(): {form.is_valid()}\n{form.errors}\n{form.data}', wt=False)
         if form.is_valid():
             # log_error(f'>>>> form.cleaned_data: {form.cleaned_data}\n\n{e.order_topic_dict.get(1)}', wt=False)
             # создаёт заказ
@@ -164,27 +169,43 @@ def form_processing(request: HttpRequest) -> None:
             #
             files = request.FILES.getlist('addfile')
 
-            if not files:
-                return
+            if files:
+                folder_path = os.path.join(FILE_STORAGE, str(request.user.customer.inn), str(new_order.pk))
+                if not os.path.exists(folder_path) and files:
+                    os.makedirs(folder_path)
 
-            folder_path = os.path.join(FILE_STORAGE, str(request.user.customer.inn), str(new_order.pk))
-            if not os.path.exists(folder_path) and files:
-                os.makedirs(folder_path)
+                fs = FileSystemStorage(location=folder_path)  # Устанавливаем локальное хранилище для указанной папки
+                for uploaded_file in files:
+                    file_name = get_valid_filename(uploaded_file.name)
 
-            fs = FileSystemStorage(location=folder_path)  # Устанавливаем локальное хранилище для указанной папки
-            for uploaded_file in files:
-                file_name = get_valid_filename(uploaded_file.name)
+                    # Сохраняем файл
+                    fs.save(file_name, uploaded_file)  # Используем только имя файла
+                    file_url = os.path.join(folder_path, file_name).replace('/app', '')
 
-                # Сохраняем файл
-                fs.save(file_name, uploaded_file)  # Используем только имя файла
-                file_url = os.path.join(folder_path, file_name).replace('/app', '')
+                    m.DownloadedFile.objects.create(
+                        user_ks=request.user,
+                        order=new_order,
+                        url=file_url,
+                        file_size=uploaded_file.size
+                    )
 
-                m.DownloadedFile.objects.create(
-                    user_ks=request.user,
-                    order=new_order,
-                    url=file_url,
-                    file_size=uploaded_file.size
-                )
+            #     тут дополняем заяки куратора
+            log_error('ws', wt=False)
+            event_data = {
+                'order': new_order,
+                'user_id': request.user.id
+            }
+
+            # ws = UserConsumer()
+            # ws.receive_order(event_data)
+            # async_to_sync(ws.channel_layer.group_send)(
+            #     f'add_order: {new_order.id}',
+            #     {
+            #         'type': 'order.add',
+            #         'order_id': new_order.id,
+            #         'order': SimpleOrderSerializer(new_order).data(),
+            #     }
+            # )
 
     elif type_form == e.FormType.SETTING:
         form = UserSettingForm(request.POST)
