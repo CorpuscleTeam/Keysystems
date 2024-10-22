@@ -11,13 +11,6 @@ from enums import notices_dict, soft_dict, order_topic_dict
 
 
 # районы
-class DistrictSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = cm.District
-        fields = ['title']
-
-
-# районы
 class DownloadedFileSerializer(serializers.ModelSerializer):
     filename = serializers.SerializerMethodField()
     url = serializers.SerializerMethodField()
@@ -68,11 +61,10 @@ class UserKSSerializer(serializers.ModelSerializer):
 
 # районы клиент
 class CustomerSerializer(serializers.ModelSerializer):
-    district = DistrictSerializer()
 
     class Meta:
         model = cm.Customer
-        fields = ['id', 'inn', 'district', 'title']
+        fields = ['id', 'inn', 'short_name', 'title']
 
 
 # кураторы

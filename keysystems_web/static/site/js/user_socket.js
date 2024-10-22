@@ -12,7 +12,7 @@ function initUserSocket(userId) {
         + '/'
     );
 
-    console.log(`Приконнектились! ${roomName} ${userId}`)
+    // console.log(`Приконнектились! ${roomName} ${userId}`)
 
     // получение сообщений
     window.chatSocket.onmessage = function (e) {
@@ -45,6 +45,30 @@ function initUserSocket(userId) {
 
         // обновляем поле заказа ПО
         else if (data.type == 'order_soft') {
+            let wsOrderId = parseInt(data.order_id)
+            let orderDataUpdated = false
+
+            for (let i = 0; i < card_orders.length; i++) {
+                if (card_orders[i].id == wsOrderId) {
+                    card_orders[i].soft = data.soft_title
+                    orderDataUpdated = true
+                    break
+                }
+            }
+            if (orderDataUpdated) {
+                createOrdersArea(card_orders)
+            }
+        }
+        
+
+        // добавляем новый заказ
+        else if (data.type == 'add_new_order') {
+            let newOrder = data.order
+            console.log('new_order')
+            console.log(data.order)
+            card_orders.push(data.order)
+
+
             let wsOrderId = parseInt(data.order_id)
             let orderDataUpdated = false
 

@@ -160,7 +160,7 @@ function craeteOrderModal(orderId) {
                 M.Tabs.init(tabs);
 
                 // Открываем модальное окно
-                // M.Modal.getInstance(modalApplicationStatus).open();
+                M.Modal.getInstance(modalApplicationStatus).open();
                 // M.Modal.getInstance(modalAddCurator).open();
 
 

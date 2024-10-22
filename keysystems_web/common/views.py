@@ -3,17 +3,66 @@ from django.db.models import Count, Q, Case, When, IntegerField
 from django.shortcuts import render
 
 import json
-import logging
+import os
+import csv
 
-from .models import Order, Message, OrderCurator, ViewMessage, UserKS, Soft
+from keysystems_web.settings import BASE_DIR
+from .models import Order, Message, OrderCurator, ViewMessage, UserKS, Soft, Customer
+from . import models as m
 from .serializers import FullOrderSerializer, MessageSerializer, UserKSSerializer
 from .logs import log_error
-from enums import ChatType, RequestMethod, EditOrderAction, soft_list_dict
+from .data import client_data
+from enums import ChatType, RequestMethod, EditOrderAction, soft_list_dict, CustomerType
 
 
-def test(request: HttpRequest):
-    context = {}
-    return render(request, 'test.html', context)
+def test():
+    print('start')
+    user_id = 4
+    # [1407, 1413, 1424, 1427, 1435]
+    # for p in [1402,1409,1417,1420,1421,1422,1425,1426,1429,1431, 1432]:
+    #     m.SoftBSmart.objects.create(
+    #         prefix=p,
+    #         type=CustomerType.MY.value,
+    #         user_id=4
+    #     )
+    # for p in [1407, 1413, 1424, 1427, 1435]:
+    #     m.SoftBSmart.objects.create(
+    #         prefix=p,
+    #         type=CustomerType.MY.value,
+    #         user_id=5
+    #     )
+        # m.SoftAdminD.objects.create(
+        #     prefix=p,
+        #     type=CustomerType.MY.value,
+        #     user_id=user_id
+        # )
+        # m.SoftSSmart.objects.create(
+        #     prefix=p,
+        #     type=CustomerType.MY.value,
+        #     user_id=user_id
+        # )
+        # m.SoftPSmart.objects.create(
+        #     prefix=p,
+        #     type=CustomerType.MY.value,
+        #     user_id=user_id
+        # )
+        # m.SoftWebT.objects.create(
+        #     prefix=p,
+        #     type=CustomerType.MY.value,
+        #     user_id=user_id
+        # )
+        # m.SoftDigitB.objects.create(
+        #     prefix=p,
+        #     type=CustomerType.MY.value,
+        #     user_id=user_id
+        # )
+        # m.SoftOSmart.objects.create(
+        #     prefix=p,
+        #     type=CustomerType.MY.value,
+        #     user_id=user_id
+        # )
+
+
 
 
 # полные данные по заказу

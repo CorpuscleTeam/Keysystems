@@ -13,7 +13,7 @@ from . import redis_utils as ru
 from .logs import log_error
 from .models import Message, UserKS, Order, OrderCurator, Notice, ViewMessage
 from . import consumers_utils as ut
-from .serializers import MessageSerializer, UserKSSerializer
+from .serializers import SimpleOrderSerializer, UserKSSerializer
 from enums import ChatType, NoticeType, MsgType, notices_dict, EditOrderAction, TAB, CountSelector
 
 
@@ -174,23 +174,35 @@ class UserConsumer(WebsocketConsumer):
     def receive(self, text_data=None, bytes_data=None):
         pass
 
+    def receive_order(self, order_data: dict):
+        ut.add_new_order(event_data=order_data, ws_consumer=self)
+
     # обновляет счётчик сообщений
     def update_counter(self, event: dict):
-        log_error(f'update_counter: {event}', wt=False)
+        # log_error(f'update_counter: {event}', wt=False)
         event['type'] = 'count_update'
         # self.send(text_data=json.dumps({'selector': selector}))
         self.send(text_data=json.dumps(event))
 
     def order_status(self, event: dict):
-        log_error(f'order_status: {event}', wt=False)
+        # log_error(f'order_status: {event}', wt=False)
         event['type'] = 'order_status'
         # self.send(text_data=json.dumps({'selector': selector}))
         self.send(text_data=json.dumps(event))
 
     def order_soft(self, event: dict):
-        log_error(f'order_soft: {event}', wt=False)
+        # log_error(f'order_soft: {event}', wt=False)
         event['type'] = 'order_soft'
         # self.send(text_data=json.dumps({'selector': selector}))
+        self.send(text_data=json.dumps(event))
+
+    def order_add(self, event: dict):
+        log_error(f'order_add: {event}', wt=False)
+        # order = Order.objects.filter(id=int(event['order_id'])).first()
+
+        # event['type'] = SimpleOrderSerializer(order).data
+        event['type'] = 'add_new_order'
+
         self.send(text_data=json.dumps(event))
 
 

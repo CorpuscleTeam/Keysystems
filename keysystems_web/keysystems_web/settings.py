@@ -59,6 +59,17 @@ EMAIL_HOST_USER = os.getenv('EMAIL_HOST_USER')
 EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD')
 DEFAULT_FROM_EMAIL = os.getenv('DEFAULT_FROM_EMAIL')
 
+
+# EMAIL_HOST = 'nic.ru'
+# EMAIL_HOST_USER = '4087971/NIC-D'
+# EMAIL_HOST_PASSWORD = '4087971'
+# DEFAULT_FROM_EMAIL = os.getenv('DEFAULT_FROM_EMAIL')
+
+'''
+4087971/NIC-D
+123456
+'''
+
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',

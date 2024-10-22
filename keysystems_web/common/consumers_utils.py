@@ -18,8 +18,6 @@ def get_related_users_list(order: m.Order) -> list[int]:
     return [curator.user.id for curator in curators] + [order.from_user.id]
 
 
-# {'event': 'file', 'chat': 'client', 'tab': '#tab2', 'order_id': '7', 'user_id': 2, 'file_name': 'выполнена.png',
-# 'file_size': 1856322, 'file_type': 'image/png', 'file_data':
 # обработка входящего сообщения
 def ws_proc_msg(msg_data: dict, ws_consumer: WebsocketConsumer):
     user_id = int(msg_data['user_id'])
@@ -40,6 +38,7 @@ def ws_proc_msg(msg_data: dict, ws_consumer: WebsocketConsumer):
                 text=msg_data['message']
             )
             new_message.save()
+
         else:
             # создаём путь к папке и саму папку
             folder_path = os.path.join('media', 'msg_files', str(msg_data['order_id']), str(msg_data['user_id']))
@@ -97,6 +96,7 @@ def ws_proc_msg(msg_data: dict, ws_consumer: WebsocketConsumer):
             }
         )
 
+
 # {'event': 'edit_curator', 'add': '2', 'del': 5, 'order_id': '10', 'room_name': 'order10'}
 # обработка смены статуса
 def ws_proc_curator(event_data: dict, ws_consumer: WebsocketConsumer):
@@ -109,13 +109,13 @@ def ws_proc_curator(event_data: dict, ws_consumer: WebsocketConsumer):
         curator = m.OrderCurator.objects.filter(order_id=order_id, user_id=add_user_id).first()
         if add_user_id and not curator:
             m.OrderCurator.objects.create(order_id=order_id, user_id=add_user_id)
-            logging.warning(f'Добавил: {add_user_id}')
+            # logging.warning(f'Добавил: {add_user_id}')
 
     # если есть кого удалить
     if event_data.get('del'):
         del_user_id = int(event_data.get('del', 0))
         m.OrderCurator.objects.filter(order_id=order_id, user_id=del_user_id).delete()
-        logging.warning(f'Удалил: {del_user_id}')
+        # logging.warning(f'Удалил: {del_user_id}')
 
     async_to_sync(ws_consumer.channel_layer.group_send)(
         ws_consumer.room_group_name, {"type": "curator.list", 'order_id': order_id}
@@ -204,6 +204,8 @@ def ws_proc_soft(event_data: dict, ws_consumer: WebsocketConsumer):
     )
     # обновляем поле заказа
     ws_send_list = get_related_users_list(order)
+    log_error(f'add_new_order: {type(ws_consumer)} {ws_consumer}', wt=False)
+
     for user in ws_send_list:
         async_to_sync(ws_consumer.channel_layer.group_send)(
             f'user{user}',
@@ -213,5 +215,22 @@ def ws_proc_soft(event_data: dict, ws_consumer: WebsocketConsumer):
                 'soft': soft,
                 'soft_title': soft_dict.get(soft, 'Обновлено'),
 
+            }
+        )
+
+
+def add_new_order(event_data: dict, ws_consumer: WebsocketConsumer):
+    user_list = get_related_users_list(event_data['order'])
+    if event_data['user_id'] in user_list:
+        user_list.remove(event_data['user_id'])
+
+    log_error(f'add_new_order: {type(ws_consumer)} {ws_consumer}', wt=False)
+    for user_id in user_list:
+        # добавляем заказ
+        async_to_sync(ws_consumer.channel_layer.group_send)(
+            f'user{user_id}',  # Имя группы
+            {
+                'type': 'order.add',  # Это соответствует методу 'counter' в UserConsumer
+                'order': event_data['order'],
             }
         )

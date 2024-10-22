@@ -103,7 +103,7 @@ def index_5_1(request: HttpRequest):
         return redirect('redirect')
 
     if request.method == RequestMethod.POST:
-        log_error(f'5_1 post {request.POST}', wt=False)
+        # log_error(f'5_1 post {request.POST}', wt=False)
         utils.form_processing(request)
         return redirect('index_5_1')
 

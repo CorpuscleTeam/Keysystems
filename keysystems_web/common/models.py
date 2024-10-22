@@ -6,22 +6,6 @@ from .logs import log_error
 import enums as e
 
 
-# список районов
-class District(models.Model):
-    id = models.AutoField(primary_key=True)
-    title = models.CharField('Название', max_length=255)
-
-    objects = models.Manager()
-
-    def __str__(self):
-        return f"{self.title}"
-
-    class Meta:
-        verbose_name = 'Район'
-        verbose_name_plural = 'Районы'
-        db_table = 'districts'
-
-
 # модель клиентов customer
 class Customer(models.Model):
     id = models.AutoField(primary_key=True)
@@ -33,8 +17,8 @@ class Customer(models.Model):
         default=e.customer_type_dict[e.CustomerType.MY.value]
     )
     inn = models.BigIntegerField('ИНН', null=True, blank=True)
-    district = models.ForeignKey(District, on_delete=models.SET_NULL, related_name='customer', verbose_name='Район', null=True)
-    title = models.CharField('Название', max_length=255)
+    title = models.TextField('Название')
+    short_name = models.CharField('Короткое название', max_length=255, null=True, blank=True)
 
     objects: models.Manager = models.Manager()
 
@@ -110,7 +94,6 @@ class Soft(models.Model):
 class UsedSoft(models.Model):
     id = models.AutoField(primary_key=True)
     user = models.ForeignKey(UserKS, on_delete=models.SET_NULL, related_name='used_soft', null=True)
-    # soft = models.ForeignKey(Soft, on_delete=models.SET_NULL, related_name='used_soft')
     soft = models.CharField('ПО', max_length=255, choices=e.soft_tuple, default=e.Soft.B_SMART.value)
 
     objects = models.Manager()
@@ -124,23 +107,6 @@ class UsedSoft(models.Model):
         db_table = 'used_soft'
 
 
-# темы обращений
-# class OrderTopic(models.Model):
-#     id = models.AutoField(primary_key=True)
-#     topic = models.CharField('Тема', max_length=255)
-#     is_active = models.BooleanField(default=True)
-#
-#     objects = models.Manager()
-#
-#     def __str__(self):
-#         return f"{self.topic}"
-#
-#     class Meta:
-#         verbose_name = 'Тема обращения'
-#         verbose_name_plural = 'Темы обращений'
-#         db_table = 'orders_topics'
-
-
 # заказы
 class Order(models.Model):
     id = models.AutoField(primary_key=True)
@@ -149,10 +115,8 @@ class Order(models.Model):
     from_user = models.ForeignKey(UserKS, on_delete=models.SET_NULL, related_name='created_orders', verbose_name='Пользователь', null=True)
     customer = models.ForeignKey(Customer, on_delete=models.SET_NULL, related_name='orders', verbose_name='Клиент', null=True)
     text = models.CharField('Текст', max_length=255)
-    # soft = models.ForeignKey(Soft, on_delete=models.SET_NULL, null=True, related_name='order', verbose_name='ПО')
     soft = models.CharField('ПО', max_length=255, choices=e.soft_tuple, default=e.Soft.B_SMART.value)
     topic = models.CharField('Тема', max_length=255, choices=e.order_topic_tuple, default=e.OrderTopic.TECH.value)
-    # topic = models.ForeignKey(OrderTopic, on_delete=models.SET_NULL, null=True, related_name='order', verbose_name='Тема')
     status = models.CharField('Статус', default=e.OrderStatus.NEW.value, choices=e.ORDER_CHOICES)
 
     objects = models.Manager()
@@ -202,27 +166,6 @@ class Notice(models.Model):
         verbose_name = 'Уведомление'
         verbose_name_plural = 'Уведомления'
         db_table = 'notice'
-
-
-# районы и по кураторов
-# class CuratorDist(models.Model):
-#     id = models.AutoField(primary_key=True)
-#     created_at = models.DateTimeField('Создана', auto_now_add=True)
-#     updated_at = models.DateTimeField('Обновлена', auto_now=True)
-#     user = models.ForeignKey(UserKS, on_delete=models.SET_NULL, null=True, related_name='curator_dist')
-#     district = models.ForeignKey(District, on_delete=models.SET_NULL, null=True, related_name='curator_dist')
-#     soft = models.ForeignKey(Soft, on_delete=models.SET_NULL, null=True, related_name='curator_dist')
-#
-#
-#     objects: models.Manager = models.Manager()
-#
-#     def __str__(self):
-#         return f"{self.user}"
-#
-#     class Meta:
-#         verbose_name = 'Распределение кураторов'
-#         verbose_name_plural = 'Распределения кураторов'
-#         db_table = 'curator_dist'
 
 
 # кураторы заявки
