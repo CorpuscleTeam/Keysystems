@@ -85,7 +85,7 @@ btn_news_footer.appendChild(news_footer_left)
 
 if (news_previous > 0) {
     let link_news_previous = document.createElement('a')
-    link_news_previous.setAttribute('href', `index_4_2?news=${news_previous}`)
+    link_news_previous.setAttribute('href', `/client/news?news=${news_previous}`)
     link_news_previous.classList.add('link_news_previous')
     news_footer_left.appendChild(link_news_previous)
 
@@ -101,7 +101,7 @@ btn_news_footer.appendChild(news_footer_right)
 
 if (news_next > 0) {
     let link_news_next = document.createElement('a')
-    link_news_next.setAttribute('href', `index_4_2?news=${news_next}`)
+    link_news_next.setAttribute('href', `/client/news?news=${news_next}`)
     link_news_next.classList.add('link_news_next')
     news_footer_right.appendChild(link_news_next)
 
