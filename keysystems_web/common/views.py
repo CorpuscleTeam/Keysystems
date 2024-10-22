@@ -8,27 +8,61 @@ import csv
 
 from keysystems_web.settings import BASE_DIR
 from .models import Order, Message, OrderCurator, ViewMessage, UserKS, Soft, Customer
+from . import models as m
 from .serializers import FullOrderSerializer, MessageSerializer, UserKSSerializer
 from .logs import log_error
 from .data import client_data
-from enums import ChatType, RequestMethod, EditOrderAction, soft_list_dict
+from enums import ChatType, RequestMethod, EditOrderAction, soft_list_dict, CustomerType
 
 
 def test():
     print('start')
-    path = os.path.join(BASE_DIR, 'common', 'data_my.csv')
-    with open(path, mode='r', encoding='utf-8') as file:
-        reader = csv.reader(file)
-        data = [row for row in reader]
+    user_id = 4
+    # [1407, 1413, 1424, 1427, 1435]
+    # for p in [1402,1409,1417,1420,1421,1422,1425,1426,1429,1431, 1432]:
+    #     m.SoftBSmart.objects.create(
+    #         prefix=p,
+    #         type=CustomerType.MY.value,
+    #         user_id=4
+    #     )
+    # for p in [1407, 1413, 1424, 1427, 1435]:
+    #     m.SoftBSmart.objects.create(
+    #         prefix=p,
+    #         type=CustomerType.MY.value,
+    #         user_id=5
+    #     )
+        # m.SoftAdminD.objects.create(
+        #     prefix=p,
+        #     type=CustomerType.MY.value,
+        #     user_id=user_id
+        # )
+        # m.SoftSSmart.objects.create(
+        #     prefix=p,
+        #     type=CustomerType.MY.value,
+        #     user_id=user_id
+        # )
+        # m.SoftPSmart.objects.create(
+        #     prefix=p,
+        #     type=CustomerType.MY.value,
+        #     user_id=user_id
+        # )
+        # m.SoftWebT.objects.create(
+        #     prefix=p,
+        #     type=CustomerType.MY.value,
+        #     user_id=user_id
+        # )
+        # m.SoftDigitB.objects.create(
+        #     prefix=p,
+        #     type=CustomerType.MY.value,
+        #     user_id=user_id
+        # )
+        # m.SoftOSmart.objects.create(
+        #     prefix=p,
+        #     type=CustomerType.MY.value,
+        #     user_id=user_id
+        # )
 
-    for client_row in data[1:]:
-        if len(client_row) == 5:
-            Customer.objects.create(
-                form_type=client_row[3],
-                inn=int(client_row[2]),
-                title=client_row[1],
-                # district=client_row[4],
-            )
+
 
 
 # полные данные по заказу
