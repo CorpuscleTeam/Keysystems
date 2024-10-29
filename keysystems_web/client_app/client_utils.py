@@ -67,7 +67,7 @@ def get_main_client_front_data(request: HttpRequest) -> dict:
                 'user_id': request.user.id,
                 'inn': request.user.customer.inn,
                 'institution': request.user.customer.title,
-                'region': request.user.customer.district.title,
+                'region': 'н/д',
                 'email': request.user.username,
                 'full_name': request.user.full_name,
                 'used_soft': used_soft.id,
