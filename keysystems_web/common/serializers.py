@@ -26,7 +26,7 @@ class DownloadedFileSerializer(serializers.ModelSerializer):
         return os.path.basename(parsed_url.path)
 
     def get_url(self, obj):
-        return f'..{obj.url}'
+        return f'{obj.url}'
 
     def get_file_size(self, obj):
         if obj.file_size:
@@ -35,6 +35,7 @@ class DownloadedFileSerializer(serializers.ModelSerializer):
             return 'н/д'
 
     def get_icon(self, obj):
+        log_error(f'>> {ut.get_file_icon_link(obj.url)}', wt=False)
         return ut.get_file_icon_link(obj.url)
 
 

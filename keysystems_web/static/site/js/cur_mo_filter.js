@@ -4,7 +4,7 @@ document.addEventListener('DOMContentLoaded', function() {
   });
 
 // просмотр элемента
-console.log(filter)
+// console.log(filter)
 
   // МО Фильтр
 

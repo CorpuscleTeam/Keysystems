@@ -50,7 +50,8 @@ def get_size_file_str(size: int) -> str:
 # возвращает ссылку на иконку файла
 def get_file_icon_link(file_name: str) -> str:
     file_type = file_name[-3:] if file_name[-3:] in upload_file_type else 'file'
-    return f"../{os.path.join('static', 'site', 'img', 'files', f'{file_type}.svg')}"
+    # return f"{os.path.join('static', 'site', 'img', 'files', f'{file_type}.svg')}"
+    return f"/{os.path.join('static', 'site', 'img', 'files', f'{file_type}.svg')}"
 
 
 # возвращает url текущей страницы

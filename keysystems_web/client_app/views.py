@@ -53,7 +53,7 @@ def index_4_1(request: HttpRequest):
 
 
 # новость подробно
-def index_4_2(request: HttpRequest):
+def index_4_2(request: HttpRequest, news_id: int):
     if utils.is_access_denied(request):
         return redirect('redirect')
 
@@ -61,8 +61,8 @@ def index_4_2(request: HttpRequest):
         utils.form_processing(request)
         return redirect('index_4_2')
 
-    news_id = request.GET.get('news', 1)
-    main_news = News.objects.get(pk=int(news_id))
+    # news_id = request.GET.get('news', 1)
+    main_news = News.objects.get(pk=news_id)
     news_json = serialize(format='json', queryset=[main_news])
     news_data = json.loads(news_json)
 
@@ -144,6 +144,7 @@ def index_6(request: HttpRequest):
 
 # обновление списком
 def index_7_1(request: HttpRequest):
+    log_error(f'>> index_7_1 {request.GET}', wt=False)
     if utils.is_access_denied(request):
         return redirect('redirect')
 
@@ -194,7 +195,9 @@ def index_7_1(request: HttpRequest):
 
 
 # обновление подробнее
-def index_7_2(request: HttpRequest):
+def index_7_2(request: HttpRequest, update_id: int):
+    log_error(f'>> index_7_2 {update_id} {type(update_id)}', wt=False)
+
     if utils.is_access_denied(request):
         return redirect('redirect')
 
@@ -202,8 +205,8 @@ def index_7_2(request: HttpRequest):
         utils.form_processing(request)
         return redirect('index_7_2')
 
-    update_id = request.GET.get('update', 1)
-    update = UpdateSoft.objects.filter(id=int(update_id)).order_by('-created_at').first()
+    # update_id = request.GET.get('update', 1)
+    update = UpdateSoft.objects.filter(id=update_id).order_by('-created_at').first()
 
     files = UpdateSoftFiles.objects.filter(update_soft=update.pk).all()
     update_files = []
@@ -214,7 +217,7 @@ def index_7_2(request: HttpRequest):
             'url': f'..{file.file.url}',
             'name': file_name,
             'size': ut.get_size_file_str(file.file_size),
-            'icon': f"../{os.path.join('static', 'site', 'img', 'files', f'{file_type}.svg')}",
+            'icon': f"/{os.path.join('static', 'site', 'img', 'files', f'{file_type}.svg')}",
         })
 
     update_json = {
