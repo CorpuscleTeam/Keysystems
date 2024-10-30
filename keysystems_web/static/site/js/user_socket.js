@@ -64,8 +64,8 @@ function initUserSocket(userId) {
         // добавляем новый заказ
         else if (data.type == 'add_new_order') {
             let newOrder = data.order
-            console.log('new_order')
-            console.log(data.order)
+            // console.log('new_order')
+            // console.log(data.order)
             card_orders.push(data.order)
 
 

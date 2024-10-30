@@ -34,6 +34,8 @@ function selectPO(selector, arr, selSoft) {
 
 // для скачивания файлов (приложены к заявкам)
 function btnLdFile(selector, arr) {
+    // console.log('>>>>>> arr')
+    // console.log(arr)
     for (let i = 0; i < arr.length; i++) {
         let btnFile = document.createElement('button')
         btnFile.classList.add('update_file_btn')
@@ -207,7 +209,7 @@ function modalAddCuratorsTrigger(selector) {
                 }
 
                 // Выполняем запрос к бэку
-                fetch("get-curators", {
+                fetch("/get-curators", {
                     method: "POST", // Указываем метод POST
                     headers: {
                         "Content-Type": "application/json", // Указываем, что отправляем JSON данные
@@ -220,8 +222,8 @@ function modalAddCuratorsTrigger(selector) {
                 })
                     .then(response => response.json())
                     .then(data => {
-                        // console.log('data')
-                        // console.log(data)
+                        console.log('data')
+                        console.log(data)
 
                         // if (data.length == 0) {
                         //     event.preventDefault()

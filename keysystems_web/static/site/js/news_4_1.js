@@ -89,7 +89,7 @@ for (let i=0; i<news.length; i++) {
 
     let news_link_read = document.createElement('a')
     // news_link_read.setAttribute('href', `index_4_2?news=${news[i].pk}`)
-    news_link_read.setAttribute('href', `/client/news?news=${news[i].pk}`)
+    news_link_read.setAttribute('href', `/client/news/${news[i].pk}`)
     news_link_read.innerHTML = `Читать`
     btn_link_read.appendChild(news_link_read)
 
