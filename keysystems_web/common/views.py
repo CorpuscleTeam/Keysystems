@@ -5,64 +5,15 @@ from django.shortcuts import render
 import json
 import os
 import csv
+import logging
 
 from keysystems_web.settings import BASE_DIR
-from .models import Order, Message, OrderCurator, ViewMessage, UserKS, Soft, Customer
+from .models import Order, Message, OrderCurator, ViewMessage, UserKS, Soft, Customer, Ministry
 from . import models as m
 from .serializers import FullOrderSerializer, MessageSerializer, UserKSSerializer
 from .logs import log_error
 from .data import client_data
 from enums import ChatType, RequestMethod, EditOrderAction, soft_list_dict, CustomerType
-
-
-def test():
-    print('start')
-    user_id = 4
-    # [1407, 1413, 1424, 1427, 1435]
-    # for p in [1402,1409,1417,1420,1421,1422,1425,1426,1429,1431, 1432]:
-    #     m.SoftBSmart.objects.create(
-    #         prefix=p,
-    #         type=CustomerType.MY.value,
-    #         user_id=4
-    #     )
-    # for p in [1407, 1413, 1424, 1427, 1435]:
-    #     m.SoftBSmart.objects.create(
-    #         prefix=p,
-    #         type=CustomerType.MY.value,
-    #         user_id=5
-    #     )
-        # m.SoftAdminD.objects.create(
-        #     prefix=p,
-        #     type=CustomerType.MY.value,
-        #     user_id=user_id
-        # )
-        # m.SoftSSmart.objects.create(
-        #     prefix=p,
-        #     type=CustomerType.MY.value,
-        #     user_id=user_id
-        # )
-        # m.SoftPSmart.objects.create(
-        #     prefix=p,
-        #     type=CustomerType.MY.value,
-        #     user_id=user_id
-        # )
-        # m.SoftWebT.objects.create(
-        #     prefix=p,
-        #     type=CustomerType.MY.value,
-        #     user_id=user_id
-        # )
-        # m.SoftDigitB.objects.create(
-        #     prefix=p,
-        #     type=CustomerType.MY.value,
-        #     user_id=user_id
-        # )
-        # m.SoftOSmart.objects.create(
-        #     prefix=p,
-        #     type=CustomerType.MY.value,
-        #     user_id=user_id
-        # )
-
-
 
 
 # полные данные по заказу
@@ -79,14 +30,6 @@ def get_order_data(request: HttpRequest, order_id):
         curator_messages = messages.filter(chat=ChatType.CURATOR.value)
 
         room_name = f'order{order_id}'
-
-        # messages = Message.objects.prefetch_related('view_message').filter(order=order).order_by('created_at')
-        #
-        # client_messages_count = messages.filter(chat=ChatType.CLIENT.value).exclude(from_user=request.user)
-        # curator_messages_count = messages.filter(chat=ChatType.CURATOR.value).exclude(from_user=request.user)
-        #
-        # client_unviewed_message = client_messages_count.filter(~Q(view_message__user_ks=request.user)).distinct().count()
-        # curator_unviewed_message = curator_messages_count.filter(~Q(view_message__user_ks=request.user)).distinct().count()
 
         # получаем непросмотренные сообщения
         # Все сообщения для указанного заказа с необходимыми предвыборками

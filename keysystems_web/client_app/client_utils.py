@@ -86,21 +86,49 @@ def get_main_client_front_data(request: HttpRequest) -> dict:
 # >>>> <QueryDict: {'csrfmiddlewaretoken': ['pYTOAQritYwXPWYtFZ11WJiIYZOY2Dei7EnijgTOLqaDbg5dfuTEHWeM9poMfXnP'],
 # 'type_form': ['order'], 'type_appeal': ['1'], 'type_soft': ['1'], 'description': [''], 'addfile': ['']}>
 # возвращает куратора
-def get_order_curator(soft: str, prefix: str, customer_type: str) -> list[m.UserKS]:
+def get_order_curator(soft: str, customer_type: str, prefix: str = None, ministry_id: int = None) -> list[m.SoftBSmart]:
     if soft == e.Soft.B_SMART:
-        curators = m.SoftBSmart.objects.filter(prefix=prefix, type=customer_type).all()
+        if customer_type == e.CustomerType.MY:
+            curators = m.SoftBSmart.objects.filter(prefix=prefix).all()
+        else:
+            curators = m.SoftBSmart.objects.filter(ministry_id=ministry_id).all()
+            
     elif soft == e.Soft.ADMIN_D:
-        curators = m.SoftAdminD.objects.filter(prefix=prefix, type=customer_type).all()
+        if customer_type == e.CustomerType.MY:
+            curators = m.SoftAdminD.objects.filter(prefix=prefix).all()
+        else:
+            curators = m.SoftAdminD.objects.filter(ministry_id=ministry_id).all()
+
     elif soft == e.Soft.S_SMART:
-        curators = m.SoftSSmart.objects.filter(prefix=prefix, type=customer_type).all()
+        if customer_type == e.CustomerType.MY:
+            curators = m.SoftSSmart.objects.filter(ministry_id=prefix).all()
+        else:
+            curators = m.SoftSSmart.objects.filter(ministry_id=ministry_id).all()
+
     elif soft == e.Soft.P_SMART:
-        curators = m.SoftPSmart.objects.filter(prefix=prefix, type=customer_type).all()
+        if customer_type == e.CustomerType.MY:
+            curators = m.SoftPSmart.objects.filter(prefix=prefix).all()
+        else:
+            curators = m.SoftPSmart.objects.filter(ministry_id=ministry_id).all()
+
     elif soft == e.Soft.WEB_T:
-        curators = m.SoftWebT.objects.filter(prefix=prefix, type=customer_type).all()
+        if customer_type == e.CustomerType.MY:
+            curators = m.SoftWebT.objects.filter(prefix=prefix).all()
+        else:
+            curators = m.SoftWebT.objects.filter(ministry_id=ministry_id).all()
+
     elif soft == e.Soft.DIGIT_B:
-        curators = m.SoftDigitB.objects.filter(prefix=prefix, type=customer_type).all()
+        if customer_type == e.CustomerType.MY:
+            curators = m.SoftDigitB.objects.filter(prefix=prefix).all()
+        else:
+            curators = m.SoftDigitB.objects.filter(ministry_id=ministry_id).all()
+
     elif soft == e.Soft.O_SMART:
-        curators = m.SoftOSmart.objects.filter(prefix=prefix, type=customer_type).all()
+        if customer_type == e.CustomerType.MY:
+            curators = m.SoftOSmart.objects.filter(prefix=prefix).all()
+        else:
+            curators = m.SoftOSmart.objects.filter(ministry_id=ministry_id).all()
+
     else:
         curators = False
 
@@ -133,12 +161,13 @@ def form_processing(request: HttpRequest) -> None:
             curators = get_order_curator(
                 soft=form.cleaned_data['type_soft'],
                 prefix=str(request.user.customer.inn)[:4],
+                ministry_id=request.user.customer.ministry_id,
                 customer_type=request.user.customer.form_type
             )
             if curators:
                 for curator in curators:
                     m.OrderCurator.objects.create(
-                        user_id=curator.user_id,
+                        user_id=curator.user.id,
                         order=new_order
                     )
             else:

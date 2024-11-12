@@ -19,6 +19,7 @@ def send_pass_email(email: str, password: str) -> None:
 
 
 def send_password_email(user_email: str, password: str, login_url: str):
+    log_error(f'{user_email}, {password}, {login_url}', wt=False)
     subject = 'Ваш пароль для входа'
     message = render_to_string('email_password.html', {
         'password': password,
