@@ -60,12 +60,16 @@ EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD')
 DEFAULT_FROM_EMAIL = os.getenv('DEFAULT_FROM_EMAIL')
 
 
-# EMAIL_HOST = 'nic.ru'
-# EMAIL_HOST_USER = '4087971/NIC-D'
-# EMAIL_HOST_PASSWORD = '4087971'
-# DEFAULT_FROM_EMAIL = os.getenv('DEFAULT_FROM_EMAIL')
+# EMAIL_HOST = 'smtp.mail.ru'
+# EMAIL_HOST_USER = 'lkyktks@mail.ru'
+# EMAIL_HOST_PASSWORD = 'iKed5x0Djc5qX6YCLHYj'
+# DEFAULT_FROM_EMAIL = 'lkyktks@mail.ru'
 
 '''
+smtp.nicmail.ru
+postmaster@h202060049.nichost.ru
+Qwerty12
+
 4087971/NIC-D
 123456
 '''

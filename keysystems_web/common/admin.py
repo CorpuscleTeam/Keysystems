@@ -19,36 +19,43 @@ class CustomUserChangeForm(UserChangeForm):
 
 
 class SoftBSmartInline(admin.TabularInline):
+    fields = ('prefix', 'ministry')
     model = m.SoftBSmart
     extra = 0
 
 
 class SoftAdminDInline(admin.TabularInline):
+    fields = ('prefix', 'ministry')
     model = m.SoftAdminD
     extra = 0
 
 
 class SoftSSmartInline(admin.TabularInline):
+    fields = ('prefix', 'ministry')
     model = m.SoftSSmart
     extra = 0
 
 
 class SoftPSmartInline(admin.TabularInline):
+    fields = ('prefix', 'ministry')
     model = m.SoftPSmart
     extra = 0
 
 
 class SoftWebTInline(admin.TabularInline):
+    fields = ('prefix', 'ministry')
     model = m.SoftWebT
     extra = 0
 
 
 class SoftDigitBInline(admin.TabularInline):
+    fields = ('prefix', 'ministry')
     model = m.SoftDigitB
     extra = 0
 
 
 class SoftOSmartInline(admin.TabularInline):
+    fields = ('prefix', 'ministry')
     model = m.SoftOSmart
     extra = 0
 
@@ -56,6 +63,8 @@ class SoftOSmartInline(admin.TabularInline):
 class SoftExceptionsInline(admin.TabularInline):
     model = m.SoftExceptions
     extra = 0
+    # autocomplete_fields = ['title']  # Включает поиск для внешнего ключа
+
 
 
 # админка софт
@@ -76,6 +85,8 @@ class ViewAdminUser(admin.ModelAdmin):
     list_display = ['full_name', 'username', 'phone', 'is_staff']
     readonly_fields = ['last_login', 'date_joined']
     ordering = ['-is_staff']
+    search_fields = ['full_name', 'inn', 'customer', 'title']
+    list_filter = ['is_staff']
 
     fieldsets = (
         ('О пользователе', {'fields': ('full_name', 'username', 'phone', 'inn')}),
@@ -138,17 +149,25 @@ class ViewAdminOrder(admin.ModelAdmin):
     list_display = ['id', 'from_user', 'soft', 'topic', 'text', 'status']
     list_editable = ['status']
     readonly_fields = ['created_at', 'updated_at']
+    search_fields = ['id']
+    list_filter = ['topic', 'soft', 'status']
+
+
+@admin.register(m.Ministry)
+class ViewAdminMinistry(admin.ModelAdmin):
+    list_display = ['name']
+    readonly_fields = ['created_at', 'updated_at']
 
 
 # # админка уведомления
 if DEBUG:
     @admin.register(m.Notice)
-    class ViewAdminNews(admin.ModelAdmin):
+    class ViewAdminNotice(admin.ModelAdmin):
         list_display = ['text']
 
 
 # сообщения
 if DEBUG:
     @admin.register(m.Message)
-    class ViewAdminNews(admin.ModelAdmin):
+    class ViewAdminMessage(admin.ModelAdmin):
         list_display = ['created_at', 'from_user', 'chat', 'text']
