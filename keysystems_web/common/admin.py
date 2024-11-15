@@ -66,7 +66,6 @@ class SoftExceptionsInline(admin.TabularInline):
     # autocomplete_fields = ['title']  # Включает поиск для внешнего ключа
 
 
-
 # админка софт
 @admin.register(m.UserKS)
 class ViewAdminUser(admin.ModelAdmin):
@@ -122,6 +121,7 @@ class ViewAdminUser(admin.ModelAdmin):
 class ViewAdminCostumer(admin.ModelAdmin):
     list_display = ['inn', 'title']
     readonly_fields = ['created_at', 'updated_at']
+    search_fields = ['inn']
 
 
 class OrderCuratorInline(admin.TabularInline):
