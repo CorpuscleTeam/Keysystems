@@ -885,7 +885,7 @@ select option:hover {
     word-break: break-word;
     max-width: 100%;
     line-height: 21px;
-    margin-bottom: 20px;
+    margin-bottom: 32px;
 }
 
 .news_link_read {
@@ -1371,14 +1371,15 @@ select option:hover {
     padding: 10px;
     box-sizing: border-box;
     overflow-y: auto;
-    /* max-height: calc(80vh - 180px); */
+    /* height: 64vh; */
+    /* height: calc(80vh - 180px); */
     max-height: 290px;
 
     /* overflow-y: auto; */
 }
 
 .chat_msg_item {
-    /* max-height: calc(80vh - 180px); */
+    height: calc(80vh - 180px);
     resize: none;
     flex-grow: 1;
     overflow-y: auto;

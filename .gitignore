@@ -9,3 +9,4 @@
 **/staticfiles/
 /keysystems_web/staticfiles
 nginx/logs
+data
