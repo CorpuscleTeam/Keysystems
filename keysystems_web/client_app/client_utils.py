@@ -164,6 +164,7 @@ def form_processing(request: HttpRequest) -> None:
                 ministry_id=request.user.customer.ministry_id,
                 customer_type=request.user.customer.form_type
             )
+            log_error(f'>>>> {len(curators)}', wt=False)
             if curators:
                 for curator in curators:
                     m.OrderCurator.objects.create(
@@ -242,7 +243,6 @@ def form_processing(request: HttpRequest) -> None:
         if not form.is_valid():
             return
 
-        log_error(f'>>>> form.cleaned_data: {form.cleaned_data}', wt=False)
         user = request.user
         user.username = form.cleaned_data['settings_email']
         user.full_name = form.cleaned_data['settings_responsible']
