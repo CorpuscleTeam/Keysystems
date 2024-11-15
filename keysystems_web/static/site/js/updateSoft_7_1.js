@@ -56,7 +56,8 @@ for (let i = 0; i < updateSoft.length; i++) {
 
     let btnLinkRead = document.createElement('a')
     btnLinkRead.classList.add('read_link')
-    btnLinkRead.setAttribute('href', `index_7_2?update=${updateSoft[i].pk}`)
+    // btnLinkRead.setAttribute('href', `index_7_2?update=${updateSoft[i].pk}`)
+    btnLinkRead.setAttribute('href', `/client/upgrade/${updateSoft[i].pk}`)
     btnLinkRead.innerHTML = `Читать`
     updatePOitem.appendChild(btnLinkRead)
 

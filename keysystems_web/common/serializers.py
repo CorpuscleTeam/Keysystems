@@ -11,13 +11,6 @@ from enums import notices_dict, soft_dict, order_topic_dict
 
 
 # районы
-class DistrictSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = cm.District
-        fields = ['title']
-
-
-# районы
 class DownloadedFileSerializer(serializers.ModelSerializer):
     filename = serializers.SerializerMethodField()
     url = serializers.SerializerMethodField()
@@ -33,7 +26,7 @@ class DownloadedFileSerializer(serializers.ModelSerializer):
         return os.path.basename(parsed_url.path)
 
     def get_url(self, obj):
-        return f'..{obj.url}'
+        return f'{obj.url}'
 
     def get_file_size(self, obj):
         if obj.file_size:
@@ -42,6 +35,7 @@ class DownloadedFileSerializer(serializers.ModelSerializer):
             return 'н/д'
 
     def get_icon(self, obj):
+        log_error(f'>> {ut.get_file_icon_link(obj.url)}', wt=False)
         return ut.get_file_icon_link(obj.url)
 
 
@@ -68,11 +62,10 @@ class UserKSSerializer(serializers.ModelSerializer):
 
 # районы клиент
 class CustomerSerializer(serializers.ModelSerializer):
-    district = DistrictSerializer()
 
     class Meta:
         model = cm.Customer
-        fields = ['id', 'inn', 'district', 'title']
+        fields = ['id', 'inn', 'short_name', 'title']
 
 
 # кураторы

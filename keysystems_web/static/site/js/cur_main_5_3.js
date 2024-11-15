@@ -2,7 +2,14 @@ console.log('cur_main_5_3.js')
 
 document.addEventListener('DOMContentLoaded', function () {
     var elems = document.querySelectorAll('.modal');
-    var instances = M.Modal.init(elems);
+    // var instances = M.Modal.init(elems);
+    var instances = M.Modal.init(elems, {
+        onCloseStart: function(modal, trigger) {
+            if (modal.id == 'statusOrder') {
+                window.chatSocket.close()
+            }
+        }
+    });
 });
 
 let modalApplicationStatus = document.createElement('div')
@@ -14,7 +21,7 @@ modalApplicationStatusContent.classList.add('modal-content')
 modalApplicationStatus.appendChild(modalApplicationStatusContent)
 
 document.body.append(modalApplicationStatus)
-console.log('должно создаться модальное окно 1')
+// console.log('должно создаться модальное окно 1')
 
 // МО добавить новых кураторов
 
@@ -32,19 +39,15 @@ moBackToWork.setAttribute('id', 'modalBackToWork')
 // заполняется в function modalBackToWork()
 document.body.append(moBackToWork)
 
-// обработчик событий данные с бэка
 
-document.querySelectorAll('.modal_cr_order').forEach(link => {
-    // console.log('должно')
-    link.addEventListener('click', function () {
-        let orderId = this.getAttribute('data-order-id');
-
-        // Здесь делаем запрос на бэк с использованием Fetch API
-        fetch(`/order-data/${orderId}`)
+// обработчик событий данные с бэка перенёс в cur_cards_reuest
+// создаёт модальное окно для заказа
+function craeteOrderModal(orderId) {
+    fetch(`/order-data/${orderId}`)
             .then(response => response.json())
             .then(data => {
 
-                // console.log(data)
+                console.log(data)
                 if (data.client_chat.length > 0) {
                     window.lastMsgForClientChat = data.client_chat[data.client_chat.length - 1].from_user.id;
                 } else {
@@ -184,7 +187,7 @@ document.querySelectorAll('.modal_cr_order').forEach(link => {
                     textPOClientTab.innerHTML = data['order']['soft']
                     document.querySelector('.select_PO').appendChild(textPOClientTab)
                 } else {
-                    selectPO('#soft_in_chat', data['soft'], data.order.soft.title)
+                    selectPO('#soft_in_chat', data['soft'], data.order.soft)
                 }
 
 
@@ -198,12 +201,13 @@ document.querySelectorAll('.modal_cr_order').forEach(link => {
                     let titleOfCuratorsList = document.querySelector('.title_of_curators_request')
                     titleOfCuratorsList.style.display = "none"
                 }
-
+                
+                // убрал в создание 
                 // список кураторов
-                if (curatorUser == true) {
-                    modalAddCurators('.curator_item_right')
-                    modalAddCurators('.btn_add_curator')
-                }
+                // if (curatorUser == true) {
+                //     modalAddCuratorsTrigger('.curator_item_right')
+                //     modalAddCuratorsTrigger('.btn_add_curator')
+                // }
 
                 // отображение статуса заявки (+кнопка в первой вкладке)
                 status_btn(data.order.status)
@@ -268,6 +272,7 @@ document.querySelectorAll('.modal_cr_order').forEach(link => {
                     withoutFooter.style.display = 'none'
                 }
 
+                // смена ПО
                 document.querySelector('#tab1 select').addEventListener('change', function () {
                     let selectedOption = this.options[this.selectedIndex]
                     window.chatSocket.send(JSON.stringify({
@@ -279,43 +284,87 @@ document.querySelectorAll('.modal_cr_order').forEach(link => {
                     
                 })
 
+                // Находим оба элемента
+                const fileInputs = document.querySelectorAll('#client-msg-file, #curator-msg-file');
 
-                // добавить файл в чат клиентский
-                document.querySelector('#client-msg-file').addEventListener('change', (event) => {
-                    const files = event.target.files;
+                // Добавляем обработчик событий для каждого из них
+                fileInputs.forEach(input => {
+                    input.addEventListener('change', (event) => {
+                        const files = event.target.files;
 
-                    if (files.length > 0) {
-                        for (let i = 0; i < files.length; i++) {
-                            const reader = new FileReader();
-                            reader.onload = function (evt) {
-                                if (evt.target.readyState === FileReader.DONE) {
-                                    // Отправляем файл в формате Base64 вместе с метаинформацией
-                                    window.chatSocket.send(JSON.stringify({
-                                        'event': 'file',
-                                        'chat': 'client',
-                                        'tab': window.selectedTab,
-                                        'order_id': window.orderId,
-                                        'user_id': window.userId,
-                                        'file_name': files[i].name,
-                                        'file_size': files[i].size,
-                                        'file_type': files[i].type,
-                                        'file_data': evt.target.result.split(',')[1] // Base64 строка (удаляем "data:" префикс)
-                                    }));
-                                }
-                            };
-                            reader.readAsDataURL(files[i]);
-
+                        if (files.length > 0) {
+                            for (let i = 0; i < files.length; i++) {
+                                const reader = new FileReader();
+                                reader.onload = function (evt) {
+                                    if (evt.target.readyState === FileReader.DONE) {
+                                        // Отправляем файл в формате Base64 вместе с метаинформацией
+                                        window.chatSocket.send(JSON.stringify({
+                                            'event': 'file',
+                                            'chat': input.id === 'client-msg-file' ? 'client' : 'curator', // Определяем тип чата
+                                            'tab': window.selectedTab,
+                                            'order_id': window.orderId,
+                                            'user_id': window.userId,
+                                            'file_name': files[i].name,
+                                            'file_size': files[i].size,
+                                            'file_type': files[i].type,
+                                            'file_data': evt.target.result.split(',')[1] // Base64 строка (удаляем "data:" префикс)
+                                        }));
+                                    }
+                                };
+                                reader.readAsDataURL(files[i]);
+                            }
                         }
-                    }
-                })
+                    });
+                });
+
+
+
+                // // добавить файл в чат клиентский
+                // document.querySelector('#client-msg-file').addEventListener('change', (event) => {
+                //     const files = event.target.files;
+
+                //     if (files.length > 0) {
+                //         for (let i = 0; i < files.length; i++) {
+                //             const reader = new FileReader();
+                //             reader.onload = function (evt) {
+                //                 if (evt.target.readyState === FileReader.DONE) {
+                //                     // Отправляем файл в формате Base64 вместе с метаинформацией
+                //                     window.chatSocket.send(JSON.stringify({
+                //                         'event': 'file',
+                //                         'chat': 'client',
+                //                         'tab': window.selectedTab,
+                //                         'order_id': window.orderId,
+                //                         'user_id': window.userId,
+                //                         'file_name': files[i].name,
+                //                         'file_size': files[i].size,
+                //                         'file_type': files[i].type,
+                //                         'file_data': evt.target.result.split(',')[1] // Base64 строка (удаляем "data:" префикс)
+                //                     }));
+                //                 }
+                //             };
+                //             reader.readAsDataURL(files[i]);
+
+                //         }
+                //     }
+                // })
 
 
                 // сокет. оставляем последним
                 initOrderSocket(data.room, data.user_id)
             })
             .catch(error => console.error('Error:', error));
-    });
 
-});
+}
+
+// // обработчик событий данные с бэка
+// document.querySelectorAll('.modal_cr_order').forEach(link => {
+//     link.addEventListener('click', function () {
+//         let orderId = this.getAttribute('data-order-id');
+
+//         // Здесь делаем запрос на бэк с использованием Fetch API
+        
+//     });
+
+// });
 
 

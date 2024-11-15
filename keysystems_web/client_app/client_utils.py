@@ -9,6 +9,9 @@ from django.db.models import Count, Q
 from django.contrib.auth import login
 from datetime import datetime
 
+from asgiref.sync import async_to_sync
+from channels.generic.websocket import WebsocketConsumer
+
 import os
 import json
 
@@ -17,6 +20,7 @@ from .forms import OrderForm, UserSettingForm
 from .models import UpdateSoft
 from common import models as m
 from common import log_error, months_str_ru
+from common.consumers import UserConsumer
 import enums as e
 
 
@@ -35,114 +39,110 @@ def is_access_denied(request: HttpRequest) -> bool:
 
 # Собирает данные для стандартного окружения клиентской части
 def get_main_client_front_data(request: HttpRequest) -> dict:
-    # soft_json = serialize(format='json', queryset=m.Soft.objects.filter(is_active=True).all())
     soft_json = json.dumps(e.soft_list_dict)
     topics_json = json.dumps(e.order_topic_list_dict)
-    # topics_json = serialize(format='json', queryset=m.OrderTopic.objects.filter(is_active=True).all())
 
-    log_error(f'request.user.is_authenticated: {request.user.is_authenticated}', wt=False)
+    # количество заявок
+    user_orders_count = m.Order.objects.filter(from_user=request.user).exclude(status=e.OrderStatus.DONE).count()
+    # количество непросмотренных уведомлений
+    notice_count = m.Notice.objects.filter(viewed=False, user_ks=request.user).count()
+    # Получаем все объекты UpdateSoft, которые пользователь не просмотрел
+    unviewed_updates = UpdateSoft.objects.filter(~Q(view_update__user_ks=request.user)).distinct()
+    # Считаем количество непросмотренных обновлений
+    unviewed_updates_count = unviewed_updates.count()
+    # используемый софт
+    used_soft = m.UsedSoft.objects.get(user=request.user)
 
-    if request.user.is_authenticated:
-        # количество заявок
-        user_orders_count = m.Order.objects.filter(from_user=request.user).exclude(status=e.OrderStatus.DONE).count()
-        # количество непросмотренных уведомлений
-        notice_count = m.Notice.objects.filter(viewed=False, user_ks=request.user).count()
-        # Получаем все объекты UpdateSoft, которые пользователь не просмотрел
-        unviewed_updates = UpdateSoft.objects.filter(~Q(view_update__user_ks=request.user)).distinct()
-        # Считаем количество непросмотренных обновлений
-        unviewed_updates_count = unviewed_updates.count()
-        # используемый софт
-        used_soft = m.UsedSoft.objects.get(user=request.user)
+    # log_error(f'>>>> {request.user.customer.inn}', wt=False)
 
-        # log_error(f'>>>> {request.user.customer.inn}', wt=False)
-
-        return {
-            'topics': topics_json,
-            'soft': soft_json,
-            'orders_count': user_orders_count,
-            'notice': notice_count,
-            'update_count': unviewed_updates_count,
-            'unviewed_updates': unviewed_updates,
-            'main_data': json.dumps(
-                {
-                    'inn': request.user.customer.inn,
-                    'institution': request.user.customer.title,
-                    'region': request.user.customer.district.title,
-                    'email': request.user.username,
-                    'full_name': request.user.full_name,
-                    'used_soft': used_soft.id,
-                    'phone': request.user.phone,
-                    'topics': topics_json,
-                    'soft': soft_json,
-                    'orders_count': user_orders_count,
-                    'notice': notice_count,
-                    'update_count': unviewed_updates_count,
-                    'unviewed_updates': unviewed_updates.count(),
-                }
-            )
-        }
-    else:
-        return {
-            'topics': topics_json,
-            'soft': soft_json,
-            'orders_count': 2,
-            'notice': 3,
-            'update_count': 12,
-            'main_data': json.dumps(
-                {
-                    'inn': "Тест ИНН",
-                    'institution': "OOO Oooo",
-                    'region': 'ChO',
-                    'email': 'ex@mail.com',
-                    'full_name': 'Мурат Насырович Шлакоблокунь',
-                    'used_soft': 2,
-                    'phone': '79012345678',
-                    'topics': topics_json,
-                    'soft': soft_json,
-                    'orders_count': 2,
-                    'notice': 3,
-                    'update_count': 12,
-
-                }
-            )
-        }
+    return {
+        'topics': topics_json,
+        'soft': soft_json,
+        'orders_count': user_orders_count,
+        'notice': notice_count,
+        'update_count': unviewed_updates_count,
+        'unviewed_updates': unviewed_updates,
+        'main_data': json.dumps(
+            {
+                'user_id': request.user.id,
+                'inn': request.user.customer.inn,
+                'institution': request.user.customer.title,
+                'region': 'н/д',
+                'email': request.user.username,
+                'full_name': request.user.full_name,
+                'used_soft': used_soft.id,
+                'phone': request.user.phone,
+                'topics': topics_json,
+                'soft': soft_json,
+                'orders_count': user_orders_count,
+                'notice': notice_count,
+                'update_count': unviewed_updates_count,
+                'unviewed_updates': unviewed_updates.count(),
+            }
+        )
+    }
 
 
 # >>>> <QueryDict: {'csrfmiddlewaretoken': ['pYTOAQritYwXPWYtFZ11WJiIYZOY2Dei7EnijgTOLqaDbg5dfuTEHWeM9poMfXnP'],
 # 'type_form': ['order'], 'type_appeal': ['1'], 'type_soft': ['1'], 'description': [''], 'addfile': ['']}>
 # возвращает куратора
-def get_order_curator(soft: str, prefix: str, customer_type: str) -> list[m.UserKS]:
+def get_order_curator(soft: str, customer_type: str, prefix: str = None, ministry_id: int = None) -> list[m.SoftBSmart]:
     if soft == e.Soft.B_SMART:
-        curators = m.SoftBSmart.objects.filter(prefix=prefix, type=customer_type).all()
+        if customer_type == e.CustomerType.MY:
+            curators = m.SoftBSmart.objects.filter(prefix=prefix).all()
+        else:
+            curators = m.SoftBSmart.objects.filter(ministry_id=ministry_id).all()
+            
     elif soft == e.Soft.ADMIN_D:
-        curators = m.SoftAdminD.objects.filter(prefix=prefix, type=customer_type).all()
+        if customer_type == e.CustomerType.MY:
+            curators = m.SoftAdminD.objects.filter(prefix=prefix).all()
+        else:
+            curators = m.SoftAdminD.objects.filter(ministry_id=ministry_id).all()
+
     elif soft == e.Soft.S_SMART:
-        curators = m.SoftSSmart.objects.filter(prefix=prefix, type=customer_type).all()
+        if customer_type == e.CustomerType.MY:
+            curators = m.SoftSSmart.objects.filter(ministry_id=prefix).all()
+        else:
+            curators = m.SoftSSmart.objects.filter(ministry_id=ministry_id).all()
+
     elif soft == e.Soft.P_SMART:
-        curators = m.SoftPSmart.objects.filter(prefix=prefix, type=customer_type).all()
+        if customer_type == e.CustomerType.MY:
+            curators = m.SoftPSmart.objects.filter(prefix=prefix).all()
+        else:
+            curators = m.SoftPSmart.objects.filter(ministry_id=ministry_id).all()
+
     elif soft == e.Soft.WEB_T:
-        curators = m.SoftWebT.objects.filter(prefix=prefix, type=customer_type).all()
+        if customer_type == e.CustomerType.MY:
+            curators = m.SoftWebT.objects.filter(prefix=prefix).all()
+        else:
+            curators = m.SoftWebT.objects.filter(ministry_id=ministry_id).all()
+
     elif soft == e.Soft.DIGIT_B:
-        curators = m.SoftDigitB.objects.filter(prefix=prefix, type=customer_type).all()
+        if customer_type == e.CustomerType.MY:
+            curators = m.SoftDigitB.objects.filter(prefix=prefix).all()
+        else:
+            curators = m.SoftDigitB.objects.filter(ministry_id=ministry_id).all()
+
     elif soft == e.Soft.O_SMART:
-        curators = m.SoftOSmart.objects.filter(prefix=prefix, type=customer_type).all()
+        if customer_type == e.CustomerType.MY:
+            curators = m.SoftOSmart.objects.filter(prefix=prefix).all()
+        else:
+            curators = m.SoftOSmart.objects.filter(ministry_id=ministry_id).all()
+
     else:
         curators = False
 
-    # если не нашёлся куратор
-    if not curators:
-        curators = m.UserKS.objects.filter(is_staff=True).order_by('?').all()[0]
-
-    return curators.all()
+    return curators
 
 
 def form_processing(request: HttpRequest) -> None:
     # log_error(f'>>>> {request.POST}', wt=False)
 
     type_form = request.POST.get('type_form')
+    # новая заявка
     if type_form == e.FormType.ORDER:
         form = OrderForm(request.POST, request.FILES)
-        # log_error(f'>>>> form.is_valid(): {form.is_valid()}\n{form.errors}\n{form.data}', wt=False)
+        log_error(f'>>>> form.is_valid(): {form.is_valid()}\n{form.errors}\n{form.data}', wt=False)
         if form.is_valid():
             # log_error(f'>>>> form.cleaned_data: {form.cleaned_data}\n\n{e.order_topic_dict.get(1)}', wt=False)
             # создаёт заказ
@@ -161,11 +161,19 @@ def form_processing(request: HttpRequest) -> None:
             curators = get_order_curator(
                 soft=form.cleaned_data['type_soft'],
                 prefix=str(request.user.customer.inn)[:4],
+                ministry_id=request.user.customer.ministry_id,
                 customer_type=request.user.customer.form_type
             )
-            for curator in curators:
+            if curators:
+                for curator in curators:
+                    m.OrderCurator.objects.create(
+                        user_id=curator.user.id,
+                        order=new_order
+                    )
+            else:
+                curator = m.UserKS.objects.filter(is_staff=True).order_by('?').first()
                 m.OrderCurator.objects.create(
-                    user_id=curator.user_id,
+                    user_id=curator.id,
                     order=new_order
                 )
 
@@ -190,27 +198,43 @@ def form_processing(request: HttpRequest) -> None:
             #
             files = request.FILES.getlist('addfile')
 
-            if not files:
-                return
+            if files:
+                folder_path = os.path.join(FILE_STORAGE, str(request.user.customer.inn), str(new_order.pk))
+                if not os.path.exists(folder_path) and files:
+                    os.makedirs(folder_path)
 
-            folder_path = os.path.join(FILE_STORAGE, str(request.user.customer.inn), str(new_order.pk))
-            if not os.path.exists(folder_path) and files:
-                os.makedirs(folder_path)
+                fs = FileSystemStorage(location=folder_path)  # Устанавливаем локальное хранилище для указанной папки
+                for uploaded_file in files:
+                    file_name = get_valid_filename(uploaded_file.name)
 
-            fs = FileSystemStorage(location=folder_path)  # Устанавливаем локальное хранилище для указанной папки
-            for uploaded_file in files:
-                file_name = get_valid_filename(uploaded_file.name)
+                    # Сохраняем файл
+                    fs.save(file_name, uploaded_file)  # Используем только имя файла
+                    file_url = os.path.join(folder_path, file_name).replace('/app', '')
 
-                # Сохраняем файл
-                fs.save(file_name, uploaded_file)  # Используем только имя файла
-                file_url = os.path.join(folder_path, file_name).replace('/app', '')
+                    m.DownloadedFile.objects.create(
+                        user_ks=request.user,
+                        order=new_order,
+                        url=file_url,
+                        file_size=uploaded_file.size
+                    )
 
-                m.DownloadedFile.objects.create(
-                    user_ks=request.user,
-                    order=new_order,
-                    url=file_url,
-                    file_size=uploaded_file.size
-                )
+            #     тут дополняем заяки куратора
+            log_error('ws', wt=False)
+            event_data = {
+                'order': new_order,
+                'user_id': request.user.id
+            }
+
+            # ws = UserConsumer()
+            # ws.receive_order(event_data)
+            # async_to_sync(ws.channel_layer.group_send)(
+            #     f'add_order: {new_order.id}',
+            #     {
+            #         'type': 'order.add',
+            #         'order_id': new_order.id,
+            #         'order': SimpleOrderSerializer(new_order).data(),
+            #     }
+            # )
 
     elif type_form == e.FormType.SETTING:
         form = UserSettingForm(request.POST)

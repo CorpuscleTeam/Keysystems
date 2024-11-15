@@ -1,4 +1,4 @@
-console.log(push)
+// console.log(push)
 
 /* 
 [
@@ -19,7 +19,7 @@ let allPush = document.createElement('div')
 allPush.classList.add('page_body_push_flex')
 
 for(let i = 0; i < push.length; i++) {
-    console.log(push[i])
+    // console.log(push[i])
     let modalLinkPush = document.createElement('a')
     modalLinkPush.classList.add('modal_link_push')
     modalLinkPush.classList.add('modal_cr_order')
@@ -59,3 +59,14 @@ for(let i = 0; i < push.length; i++) {
 
 // создать флекс все уведомления
 document.querySelector('.page_flex_body').appendChild(allPush)
+
+document.querySelectorAll('.modal_cr_order').forEach(link => {
+    link.addEventListener('click', function () {
+        let orderId = this.getAttribute('data-order-id');
+        // console.log(orderId)
+
+        // Здесь делаем запрос на бэк с использованием Fetch API
+        craeteOrderModal(orderId)
+
+    });
+});

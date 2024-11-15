@@ -13,6 +13,7 @@ import random
 from . import curator_utils as utils
 from common.models import Notice, Order, Soft, UserKS, OrderCurator
 from common.serializers import NoticeSerializer, SimpleOrderSerializer, SimpleWithCurOrderSerializer, UserKSSerializer
+from common.logs import log_error
 import common as ut
 from enums import RequestMethod, OrderStatus, notices_dict, ChatType, soft_dict
 
@@ -24,7 +25,7 @@ def cur_index_1_1(request: HttpRequest):
 
     # orders = utils.get_orders_curator(request)
 
-    logging.warning(f'request.user: {request.user.full_name} {request.user.id}')
+    # logging.warning(f'request.user: {request.user.full_name} {request.user.id}')
     orders = OrderCurator.objects.select_related('order').filter(user=request.user).order_by('order__created_at').all()
     order_list = [order_curator.order for order_curator in orders]
     # logging.warning(f'order_list: {len(order_list)}')
@@ -46,28 +47,23 @@ def cur_index_2_1(request: HttpRequest):
     filter_dict = {}
     if request.method == RequestMethod.POST:
         filter_dict = request.POST
-        logging.warning(f'2_1 request.POST: {request.POST}')
-        logging.warning(f'2_1 request.POST: {type(request.POST)}')
+        # logging.warning(f'2_1 request.POST: {request.POST}')
+        # logging.warning(f'2_1 request.POST: {type(request.POST)}')
 
     orders = utils.get_orders_curator(request, filter_dict)
+    # log_error(f'filter_dict: {filter_dict}', wt=False)
+    # log_error(f'orders: {len(orders)}', wt=False)
     curators = UserKS.objects.filter(is_staff=True)
 
-    '''
-    <QueryDict: {
-    'sort': ['optionSort1'], 
-    'inn_filter': ['1234567890'], 
-    'curator_filter': ['Вас Вася Васев'], 
-    'district_filter': ['Анабарский национальный (долгано-эвенкийский) район'], 
-    'soft_filter': ['ПО 2']}
-    '''
-
     filters = {
+        'orders': json.dumps(SimpleOrderSerializer(orders, many=True).data),
         'inn_list': list(set(order.customer.inn for order in orders)),
         'inn_selected': filter_dict.get('inn_filter'),
         'cur_list': list(set(curator.full_name for curator in curators)),
         # 'cur_selected': random.choice(list(set(curator.full_name for curator in curators))),
         'cur_selected': filter_dict.get('curator_filter'),
-        'dist_list': list(set(order.customer.district.title for order in orders)),
+        # 'dist_list': list(set(order.customer.district.title for order in orders)),
+        'dist_list': [],
         'dist_selected': filter_dict.get('district_filter'),
         # 'soft_list': list(set(order.soft.title for order in orders)),
         'soft_list': list(set(soft_dict.get(order.soft, 'н/д') for order in orders)),

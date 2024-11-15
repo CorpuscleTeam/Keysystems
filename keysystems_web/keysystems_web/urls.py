@@ -18,22 +18,26 @@ urlpatterns = [
     path("get-curators", com.get_curator_view),
     path("order-soft", com.edit_order_soft_view),
 
-    path('index_2', reg.index_2, name='index_2'),
-    path('index_2_1', reg.index_2_1, name='index_2_1'),
-    path('index_2_2', reg.index_2_2, name='index_2_2'),
-    path('index_3_1', reg.index_3_1, name='index_3_1'),
-    path('index_4_1', client.index_4_1, name='index_4_1'),
-    path('index_4_2', client.index_4_2, name='index_4_2'),
+    path('auth/', include('auth_app.urls')),
+    path('client/', include('client_app.urls')),
+    path('curator/', include('curator_app.urls')),
 
-    path('index_8', client.index_8, name='index_8'),
-    path('index_5_1', client.index_5_1, name='index_5_1'),
-    path('index_6', client.index_6, name='index_6'),
-    path('index_7_1', client.index_7_1, name='index_7_1'),
-    path('index_7_2', client.index_7_2, name='index_7_2'),
-
-    path('cur_index_1_1', curator.cur_index_1_1, name='cur_index_1_1'),
-    path('cur_index_2_1', curator.cur_index_2_1, name='cur_index_2_1'),
-    path('cur_index_3', curator.cur_index_3, name='cur_index_3'),
+    # path('index_2', reg.index_2, name='index_2'),
+    # path('index_2_1', reg.index_2_1, name='index_2_1'),
+    # path('index_2_2', reg.index_2_2, name='index_2_2'),
+    # path('index_3_1', reg.index_3_1, name='index_3_1'),
+    # path('index_4_1', client.index_4_1, name='index_4_1'),
+    # path('index_4_2', client.index_4_2, name='index_4_2'),
+    #
+    # path('index_8', client.index_8, name='index_8'),
+    # path('index_5_1', client.index_5_1, name='index_5_1'),
+    # path('index_6', client.index_6, name='index_6'),
+    # path('index_7_1', client.index_7_1, name='index_7_1'),
+    # path('index_7_2', client.index_7_2, name='index_7_2'),
+    #
+    # path('cur_index_1_1', curator.cur_index_1_1, name='cur_index_1_1'),
+    # path('cur_index_2_1', curator.cur_index_2_1, name='cur_index_2_1'),
+    # path('cur_index_3', curator.cur_index_3, name='cur_index_3'),
 
     path('admin/', admin.site.urls),
 

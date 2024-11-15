@@ -1,14 +1,19 @@
 from django.http import JsonResponse, HttpRequest
-from django.db.models import Count, Q
+from django.db.models import Count, Q, Case, When, IntegerField
 from django.shortcuts import render
 
 import json
+import os
+import csv
 import logging
 
-from .models import Order, Message, OrderCurator, ViewMessage, UserKS, Soft
+from keysystems_web.settings import BASE_DIR
+from .models import Order, Message, OrderCurator, ViewMessage, UserKS, Soft, Customer, Ministry
+from . import models as m
 from .serializers import FullOrderSerializer, MessageSerializer, UserKSSerializer
 from .logs import log_error
-from enums import ChatType, RequestMethod, EditOrderAction, soft_list_dict
+from .data import client_data
+from enums import ChatType, RequestMethod, EditOrderAction, soft_list_dict, CustomerType
 
 
 # полные данные по заказу
@@ -26,20 +31,36 @@ def get_order_data(request: HttpRequest, order_id):
 
         room_name = f'order{order_id}'
 
-        # для отладки
-        if request.user.is_authenticated:
-            client_unviewed_message = client_messages.filter(~Q(view_message__user_ks=request.user)).distinct().count()
-            curator_unviewed_message = curator_messages.filter(~Q(view_message__user_ks=request.user)).distinct().count()
-            user_id = request.user.id
-            # client_unviewed_message = 1
-            # curator_unviewed_message = 2
+        # получаем непросмотренные сообщения
+        # Все сообщения для указанного заказа с необходимыми предвыборками
+        messages = Message.objects.prefetch_related('view_message').filter(order=order)
 
-        else:
-            client_unviewed_message = 1
-            curator_unviewed_message = 2
-            user_id = 3
+        # Фильтрация сообщений, которые не от текущего пользователя
+        non_user_messages = messages.exclude(from_user=request.user)
 
-        # log_error('send all', wt=False)
+        # Используем аннотации для подсчета непросмотренных сообщений
+        annotated_messages = non_user_messages.annotate(
+            is_unviewed_by_user=Case(
+                When(~Q(view_message__user_ks=request.user), then=1),
+                default=0,
+                output_field=IntegerField()
+            )
+        )
+
+        # Подсчет непросмотренных клиентских сообщений
+        client_unviewed_message = annotated_messages.filter(
+            chat=ChatType.CLIENT.value,
+            is_unviewed_by_user=1
+        ).distinct().count()
+
+        # Подсчет непросмотренных кураторских сообщений
+        curator_unviewed_message = annotated_messages.filter(
+            chat=ChatType.CURATOR.value,
+            is_unviewed_by_user=1
+        ).distinct().count()
+
+        user_id = request.user.id
+
         return JsonResponse(
             {
                 'order': FullOrderSerializer(order).data,

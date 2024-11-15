@@ -6,7 +6,10 @@ function create_icon_path(ext) {
     } else {
         file_name = 'file'
     }
-    return `../static/site/img/files/${file_name}.svg`
+    file_path = `../static/site/img/files/${file_name}.svg`
+    console.log('file_path')
+    console.log(file_path)
+    return file_path
 }
 
 // создаём строку с размером
@@ -200,6 +203,8 @@ function dnlFile(selector, data) {
 // кнопка скачать файл
 
 function addUpdateFile(parent, arr) {
+    console.log('addUpdateFile')
+    console.log(arr)
     let fileUrl = arr['url'] || arr['file_url'];
     let fileName = arr['name'] || arr['filename'];
     let filSize = arr['size'] || arr['file_size'];

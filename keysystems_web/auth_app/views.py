@@ -11,7 +11,8 @@ from keysystems_web.settings import DEBUG
 from .forms import AuthBaseForm, RegistrationForm, PasswordForm, AuthUserForm
 from .models import Password
 from .auth_utils import send_password
-from common.models import UserKS, Soft, Customer, District, UsedSoft
+from common.models import UserKS, Soft, Customer, UsedSoft
+from common.mail_utils import send_password_email
 from common.logs import log_error
 from enums import RequestMethod, soft_list_dict
 

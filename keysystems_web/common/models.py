@@ -6,20 +6,22 @@ from .logs import log_error
 import enums as e
 
 
-# список районов
-class District(models.Model):
+# министерства
+class Ministry(models.Model):
     id = models.AutoField(primary_key=True)
-    title = models.CharField('Название', max_length=255)
+    created_at = models.DateTimeField('Создана', auto_now_add=True)
+    updated_at = models.DateTimeField('Обновлена', auto_now=True)
+    name = models.TextField('Название')
 
-    objects = models.Manager()
+    objects: models.Manager = models.Manager()
 
     def __str__(self):
-        return f"{self.title}"
+        return f"{self.name}"
 
     class Meta:
-        verbose_name = 'Район'
-        verbose_name_plural = 'Районы'
-        db_table = 'districts'
+        verbose_name = 'Министерство'
+        verbose_name_plural = 'Министерства'
+        db_table = 'ministries'
 
 
 # модель клиентов customer
@@ -33,8 +35,13 @@ class Customer(models.Model):
         default=e.customer_type_dict[e.CustomerType.MY.value]
     )
     inn = models.BigIntegerField('ИНН', null=True, blank=True)
-    district = models.ForeignKey(District, on_delete=models.SET_NULL, related_name='customer', verbose_name='Район', null=True)
-    title = models.CharField('Название', max_length=255)
+    title = models.TextField('Название')
+    short_name = models.CharField('Короткое название', max_length=255, null=True, blank=True)
+    ministry = models.ForeignKey(
+        Ministry,
+        on_delete=models.SET_NULL,
+        null=True, blank=True,
+        related_name='customer')
 
     objects: models.Manager = models.Manager()
 
@@ -42,6 +49,7 @@ class Customer(models.Model):
         return f"{self.title}"
 
     class Meta:
+        ordering = ['title']
         verbose_name = 'Компания'
         verbose_name_plural = 'Компании'
         db_table = 'customers'
@@ -110,7 +118,6 @@ class Soft(models.Model):
 class UsedSoft(models.Model):
     id = models.AutoField(primary_key=True)
     user = models.ForeignKey(UserKS, on_delete=models.SET_NULL, related_name='used_soft', null=True)
-    # soft = models.ForeignKey(Soft, on_delete=models.SET_NULL, related_name='used_soft')
     soft = models.CharField('ПО', max_length=255, choices=e.soft_tuple, default=e.Soft.B_SMART.value)
 
     objects = models.Manager()
@@ -124,23 +131,6 @@ class UsedSoft(models.Model):
         db_table = 'used_soft'
 
 
-# темы обращений
-# class OrderTopic(models.Model):
-#     id = models.AutoField(primary_key=True)
-#     topic = models.CharField('Тема', max_length=255)
-#     is_active = models.BooleanField(default=True)
-#
-#     objects = models.Manager()
-#
-#     def __str__(self):
-#         return f"{self.topic}"
-#
-#     class Meta:
-#         verbose_name = 'Тема обращения'
-#         verbose_name_plural = 'Темы обращений'
-#         db_table = 'orders_topics'
-
-
 # заказы
 class Order(models.Model):
     id = models.AutoField(primary_key=True)
@@ -149,10 +139,8 @@ class Order(models.Model):
     from_user = models.ForeignKey(UserKS, on_delete=models.SET_NULL, related_name='created_orders', verbose_name='Пользователь', null=True)
     customer = models.ForeignKey(Customer, on_delete=models.SET_NULL, related_name='orders', verbose_name='Клиент', null=True)
     text = models.CharField('Текст', max_length=255)
-    # soft = models.ForeignKey(Soft, on_delete=models.SET_NULL, null=True, related_name='order', verbose_name='ПО')
     soft = models.CharField('ПО', max_length=255, choices=e.soft_tuple, default=e.Soft.B_SMART.value)
     topic = models.CharField('Тема', max_length=255, choices=e.order_topic_tuple, default=e.OrderTopic.TECH.value)
-    # topic = models.ForeignKey(OrderTopic, on_delete=models.SET_NULL, null=True, related_name='order', verbose_name='Тема')
     status = models.CharField('Статус', default=e.OrderStatus.NEW.value, choices=e.ORDER_CHOICES)
 
     objects = models.Manager()
@@ -202,27 +190,6 @@ class Notice(models.Model):
         verbose_name = 'Уведомление'
         verbose_name_plural = 'Уведомления'
         db_table = 'notice'
-
-
-# районы и по кураторов
-# class CuratorDist(models.Model):
-#     id = models.AutoField(primary_key=True)
-#     created_at = models.DateTimeField('Создана', auto_now_add=True)
-#     updated_at = models.DateTimeField('Обновлена', auto_now=True)
-#     user = models.ForeignKey(UserKS, on_delete=models.SET_NULL, null=True, related_name='curator_dist')
-#     district = models.ForeignKey(District, on_delete=models.SET_NULL, null=True, related_name='curator_dist')
-#     soft = models.ForeignKey(Soft, on_delete=models.SET_NULL, null=True, related_name='curator_dist')
-#
-#
-#     objects: models.Manager = models.Manager()
-#
-#     def __str__(self):
-#         return f"{self.user}"
-#
-#     class Meta:
-#         verbose_name = 'Распределение кураторов'
-#         verbose_name_plural = 'Распределения кураторов'
-#         db_table = 'curator_dist'
 
 
 # кураторы заявки
@@ -288,7 +255,7 @@ class ViewMessage(models.Model):
 # Распределение курьеров B_SMART
 class SoftBSmart(models.Model):
     id = models.AutoField(primary_key=True)
-    prefix = models.CharField('Префикс', max_length=4)
+    prefix = models.CharField('Префикс', max_length=4, null=True, blank=True)
     type = models.CharField(
         'Тип',
         choices=e.customer_type_tuple,
@@ -299,6 +266,11 @@ class SoftBSmart(models.Model):
         on_delete=models.SET_NULL, null=True,
         related_name=e.Soft.B_SMART.value,
         verbose_name=e.soft_dict[e.Soft.B_SMART.value])
+    ministry = models.ForeignKey(
+        Ministry,
+        on_delete=models.SET_NULL,
+        null=True, blank=True,
+        related_name=e.Soft.B_SMART.value)
 
     objects = models.Manager()
 
@@ -314,7 +286,7 @@ class SoftBSmart(models.Model):
 # Распределение курьеров ADMIN_D
 class SoftAdminD(models.Model):
     id = models.AutoField(primary_key=True)
-    prefix = models.CharField('Префикс', max_length=4)
+    prefix = models.CharField('Префикс', max_length=4, null=True, blank=True)
     type = models.CharField(
         'Тип',
         max_length=255,
@@ -326,6 +298,11 @@ class SoftAdminD(models.Model):
         on_delete=models.SET_NULL, null=True,
         related_name=e.Soft.ADMIN_D.value,
         verbose_name=e.soft_dict[e.Soft.ADMIN_D.value])
+    ministry = models.ForeignKey(
+        Ministry,
+        on_delete=models.SET_NULL,
+        null=True, blank=True,
+        related_name=e.Soft.ADMIN_D.value)
 
     objects = models.Manager()
 
@@ -341,7 +318,7 @@ class SoftAdminD(models.Model):
 # Распределение курьеров S_SMART
 class SoftSSmart(models.Model):
     id = models.AutoField(primary_key=True)
-    prefix = models.CharField('Префикс', max_length=4)
+    prefix = models.CharField('Префикс', max_length=4, null=True, blank=True)
     type = models.CharField(
         'Тип',
         choices=e.customer_type_tuple,
@@ -352,6 +329,11 @@ class SoftSSmart(models.Model):
         on_delete=models.SET_NULL, null=True,
         related_name=e.Soft.S_SMART.value,
         verbose_name=e.soft_dict[e.Soft.S_SMART.value])
+    ministry = models.ForeignKey(
+        Ministry,
+        on_delete=models.SET_NULL,
+        null=True, blank=True,
+        related_name=e.Soft.S_SMART.value)
 
     objects = models.Manager()
 
@@ -367,7 +349,7 @@ class SoftSSmart(models.Model):
 # Распределение курьеров P_SMART
 class SoftPSmart(models.Model):
     id = models.AutoField(primary_key=True)
-    prefix = models.CharField('Префикс', max_length=4)
+    prefix = models.CharField('Префикс', max_length=4, null=True, blank=True)
     type = models.CharField(
         'Тип',
         choices=e.customer_type_tuple,
@@ -378,6 +360,11 @@ class SoftPSmart(models.Model):
         on_delete=models.SET_NULL, null=True,
         related_name=e.Soft.P_SMART.value,
         verbose_name=e.soft_dict[e.Soft.P_SMART.value])
+    ministry = models.ForeignKey(
+        Ministry,
+        on_delete=models.SET_NULL,
+        null=True, blank=True,
+        related_name=e.Soft.P_SMART.value)
 
     objects = models.Manager()
 
@@ -393,7 +380,7 @@ class SoftPSmart(models.Model):
 # Распределение курьеров WEB_T
 class SoftWebT(models.Model):
     id = models.AutoField(primary_key=True)
-    prefix = models.CharField('Префикс', max_length=4)
+    prefix = models.CharField('Префикс', max_length=4, null=True, blank=True)
     type = models.CharField(
         'Тип',
         choices=e.customer_type_tuple,
@@ -404,6 +391,11 @@ class SoftWebT(models.Model):
         on_delete=models.SET_NULL, null=True,
         related_name=e.Soft.WEB_T.value,
         verbose_name=e.soft_dict[e.Soft.WEB_T.value])
+    ministry = models.ForeignKey(
+        Ministry,
+        on_delete=models.SET_NULL,
+        null=True, blank=True,
+        related_name=e.Soft.WEB_T.value)
 
     objects = models.Manager()
 
@@ -419,7 +411,7 @@ class SoftWebT(models.Model):
 # Распределение курьеров DIGIT_B
 class SoftDigitB(models.Model):
     id = models.AutoField(primary_key=True)
-    prefix = models.CharField('Префикс', max_length=4)
+    prefix = models.CharField('Префикс', max_length=4, null=True, blank=True)
     type = models.CharField(
         'Тип',
         choices=e.customer_type_tuple,
@@ -430,6 +422,11 @@ class SoftDigitB(models.Model):
         on_delete=models.SET_NULL, null=True,
         related_name=e.Soft.DIGIT_B.value,
         verbose_name=e.soft_dict[e.Soft.DIGIT_B.value])
+    ministry = models.ForeignKey(
+        Ministry,
+        on_delete=models.SET_NULL,
+        null=True, blank=True,
+        related_name=e.Soft.DIGIT_B.value)
 
     objects = models.Manager()
 
@@ -445,7 +442,7 @@ class SoftDigitB(models.Model):
 # Распределение курьеров O_SMART
 class SoftOSmart(models.Model):
     id = models.AutoField(primary_key=True)
-    prefix = models.CharField('Префикс', max_length=4)
+    prefix = models.CharField('Префикс', max_length=4, null=True, blank=True)
     type = models.CharField(
         'Тип',
         choices=e.customer_type_tuple,
@@ -456,6 +453,11 @@ class SoftOSmart(models.Model):
         on_delete=models.SET_NULL, null=True,
         related_name=e.Soft.O_SMART.value,
         verbose_name=e.soft_dict[e.Soft.O_SMART.value])
+    ministry = models.ForeignKey(
+        Ministry,
+        on_delete=models.SET_NULL,
+        null=True, blank=True,
+        related_name=e.Soft.O_SMART.value)
 
     objects = models.Manager()
 

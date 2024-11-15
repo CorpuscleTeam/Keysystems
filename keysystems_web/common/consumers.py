@@ -6,31 +6,50 @@ import json
 import random
 import os
 import base64
+import logging
 
 from . import utils as ut
 from . import redis_utils as ru
 from .logs import log_error
 from .models import Message, UserKS, Order, OrderCurator, Notice, ViewMessage
-from .serializers import MessageSerializer, UserKSSerializer
-from enums import ChatType, NoticeType, MsgType, notices_dict, EditOrderAction, TAB
+from . import consumers_utils as ut
+from .serializers import SimpleOrderSerializer, UserKSSerializer
+from enums import ChatType, NoticeType, MsgType, notices_dict, EditOrderAction, TAB, CountSelector
+
+
+online_group_name = 'user_status_tracker'
 
 
 # окошко заявки
 class ChatConsumer(WebsocketConsumer):
+    online_users = {}
     def connect(self):
         self.room_name = self.scope["url_route"]["kwargs"]["room_name"]
-        self.room_group_name = f"chat_{self.room_name}"
+        self.room_group_name = f"group_{self.room_name}"
 
-        user_id = self.scope["user"].id
-
+        # user_id = self.scope["user"].id
+        #
         log_error(wt=False, message=f'connect\n'
-                                    f'{self.scope["url_route"]}\n'
-                                    f'{self.scope["user"]}\n'
-                                    f'self.channel_name: {self.channel_name}')
+                                    f'room_name: {self.room_name}')
 
         # Join room group
         async_to_sync(self.channel_layer.group_add)(
             self.room_group_name, self.channel_name
+        )
+
+        async_to_sync(self.channel_layer.group_add)(
+            "user_status_tracker",  # Имя группы для отслеживания статусов пользователей
+            self.channel_name  # Канал текущего соединения
+        )
+
+        # Добавляем в онлайн
+        async_to_sync(self.channel_layer.send)(
+            'user_status_tracker',  # Группа для отслеживания статусов пользователей
+            {
+                'type': 'user_online',
+                'user_id': self.scope["user"].id,
+                'group': self.room_name
+            }
         )
 
         self.accept()
@@ -43,147 +62,27 @@ class ChatConsumer(WebsocketConsumer):
 
     # Receive message from WebSocket
     def receive(self, text_data=None, bytes_data=None):
-        # {'event': 'edit_curator', 'add': '5', 'del': 4, 'order_id': '23', 'room_name': 'order23'}
         data_json: dict = json.loads(text_data) if text_data else {'event': 'file_', 'text_data': str(text_data)}
-        # log_error(wt=False, message=f'receive\n{data_json}')
+        log_error(wt=False, message=f'receive\n{data_json}'[:200])
 
         if data_json['event'] == EditOrderAction.MSG or data_json['event'] == EditOrderAction.FILE:
-            user = UserKS.objects.filter(id=data_json['user_id']).first()
-            # log_error(wt=False, message=f'user: {user}\n')
-            if user:
-                order = Order.objects.select_related('from_user').filter(id=int(data_json['order_id'])).first()
-                curators = OrderCurator.objects.select_related('user').filter(order=order).all()
-
-                # сохраняем сообщение
-                if data_json['event'] == EditOrderAction.MSG:
-                    new_message = Message(
-                        type_msg=MsgType.MSG.value,
-                        from_user=user,
-                        chat=data_json['chat'],
-                        order_id=int(data_json['order_id']),
-                        text=data_json['message']
-                    )
-                    new_message.save()
-                else:
-                    # создаём путь к папке и саму папку
-                    folder_path = os.path.join('media', 'msg_files', str(data_json['order_id']), str(data_json['user_id']))
-                    if not os.path.exists(folder_path):
-                        os.makedirs(folder_path)
-
-                    file_path = os.path.join(folder_path, data_json['file_name'])
-                    new_message = Message(
-                        type_msg=MsgType.FILE.value,
-                        from_user=user,
-                        chat=data_json['chat'],
-                        order_id=int(data_json['order_id']),
-                        file_path=file_path,
-                        file_size=data_json['file_size'],
-
-                    )
-                    new_message.save()
-                    # сохраняем файл
-                    file_data = base64.b64decode(data_json['file_data'])
-                    with open(file_path, 'wb') as f:
-                        f.write(file_data)
-
-                # рассылаем уведомления
-                notice_list = [curator.user.id for curator in curators] + [order.from_user.id]
-                if data_json['user_id'] in notice_list:
-                    notice_list.remove(data_json['user_id'])
-
-                notice: str = notices_dict.get(NoticeType.NEW_MSG.value)
-                notice_text = notice.format(pk=order.id)
-
-                for user_id in notice_list:
-                    new_notice = Notice(
-                        order=order,
-                        user_ks_id=user_id,
-                        text=notice_text
-                    )
-                    new_notice.save()
-
-                async_to_sync(self.channel_layer.group_send)(
-                    self.room_group_name, {
-                        "type": "chat.message",
-                        'data': MessageSerializer(new_message).data,
-                    }
-                )
-
-            else:
-                async_to_sync(self.channel_layer.group_send)(
-                    self.room_group_name, {"type": "chat.message", **data_json}
-                )
+            ut.ws_proc_msg(data_json, self)
 
         # обновление списка кураторов заказа
         elif data_json['event'] == EditOrderAction.EDIT_CURATOR:
-            order_id = int(data_json.get('order_id', 0))
-
-            # если есть кого добавить
-            if data_json.get('add'):
-                add_user_id = int(data_json.get('add'))
-                OrderCurator.objects.create(order_id=order_id, user_id=add_user_id)
-
-            # если есть кого удалить
-            if data_json.get('del'):
-                del_user_id = int(data_json.get('del'))
-                OrderCurator.objects.filter(order_id=order_id, user_id=del_user_id).delete()
-
-            async_to_sync(self.channel_layer.group_send)(
-                self.room_group_name, {"type": "curator.list", 'order_id': order_id}
-            )
+            ut.ws_proc_curator(event_data=data_json, ws_consumer=self)
 
         # изменить статус заказа
         elif data_json['event'] == EditOrderAction.EDIT_STATUS:
-
-            order_id = int(data_json['order_id'])
-            order = Order.objects.filter(id=order_id).first()
-            order.status = data_json['status']
-            order.save()
-            #
-            # # пишем коммент, если есть
-            comment = data_json.get('comment')
-            # log_error(comment, wt=False)
-            if comment:
-                # сохраняем сообщение
-                new_message = Message(
-                    type_msg=MsgType.MSG.value,
-                    from_user_id=int(data_json.get('user_id', 0)),
-                    chat=ChatType.CLIENT.value,
-                    order_id=int(data_json['order_id']),
-                    text=comment
-                )
-                new_message.save()
-
-            async_to_sync(self.channel_layer.group_send)(
-                self.room_group_name, {"type": "select.status", 'status': data_json['status']}
-            )
+            ut.ws_proc_status(event_data=data_json, ws_consumer=self)
 
         # отмечает сообщения просмотренными
         elif data_json['event'] == EditOrderAction.VIEW_TAB:
-            order_id = int(data_json['order_id'])
-            user_id = int(data_json['user_id'])
-            tab = data_json['tab']
-            chat = ChatType.CLIENT.value if tab == TAB.TAB2 else ChatType.CURATOR.value
-
-            # log_error(f'tab: {tab}\norder_id: {order_id}\nuser_id: {user_id}\n', wt=False)
-
-            viewed_msgs = Message.objects.filter(chat=chat, order_id=order_id).all()
-            # log_error(f'viewed_msgs: {len(viewed_msgs)}', wt=False)
-            for msg in viewed_msgs:
-                ViewMessage.objects.create(message=msg, user_ks_id=user_id)
+            ut.ws_proc_view_msg(event_data=data_json, ws_consumer=self)
 
         # меняет софт
         elif data_json['event'] == EditOrderAction.EDIT_SOFT:
-            order_id = int(data_json['order_id'])
-            soft = data_json['soft_id']
-
-            order = Order.objects.filter(id=order_id).first()
-            order.soft = soft
-            order.save()
-
-            async_to_sync(self.channel_layer.group_send)(
-                self.room_group_name, {"type": "edit.soft", 'soft_id': soft, 'soft_name': data_json['soft_name']}
-            )
+            ut.ws_proc_soft(event_data=data_json, ws_consumer=self)
 
     # обновляет сообщения в чате
     def chat_message(self, event):
@@ -211,8 +110,6 @@ class ChatConsumer(WebsocketConsumer):
         log_error(wt=False, message=f'curator_list\n{event}\n')
 
         curators = OrderCurator.objects.filter(order_id=event['order_id']).all()
-        log_error(wt=False, message=f'curators\n{curators}\n')
-
         context = {
             'type': EditOrderAction.EDIT_CURATOR.value,
             'curators': UserKSSerializer([curator.user for curator in curators], many=True).data,
@@ -241,12 +138,25 @@ class ChatConsumer(WebsocketConsumer):
 
         self.send(text_data=json.dumps(context))
 
+    # def user_online(self, event):
+    #     user_id = event['user_id']
+    #     group = event['group']
+    #
+    #     log_error(f'1user_online', wt=False)
+    #
+    #     # Добавляем пользователя в онлайн статус
+    #     if group not in self.online_users:
+    #         self.online_users[group] = set()
+    #     self.online_users[group].add(user_id)
+
 
 # оживление страницы
 class UserConsumer(WebsocketConsumer):
     def connect(self):
         self.room_name = self.scope["url_route"]["kwargs"]["room_name"]
-        self.room_group_name = f"chat_{self.room_name}"
+        self.room_group_name = f"user{self.scope['user'].id}"
+
+        # log_error(f'Летииим!!!!  {self.room_group_name}', wt=False)
 
         # Join room group
         async_to_sync(self.channel_layer.group_add)(
@@ -264,8 +174,67 @@ class UserConsumer(WebsocketConsumer):
     def receive(self, text_data=None, bytes_data=None):
         pass
 
-    # обновляет счётчик сообщений
-    def counter(self, selector: str, room_name: str):
-        room_name = ''
-        self.send(text_data=json.dumps({'selector': selector}))
+    def receive_order(self, order_data: dict):
+        ut.add_new_order(event_data=order_data, ws_consumer=self)
 
+    # обновляет счётчик сообщений
+    def update_counter(self, event: dict):
+        # log_error(f'update_counter: {event}', wt=False)
+        event['type'] = 'count_update'
+        # self.send(text_data=json.dumps({'selector': selector}))
+        self.send(text_data=json.dumps(event))
+
+    def order_status(self, event: dict):
+        # log_error(f'order_status: {event}', wt=False)
+        event['type'] = 'order_status'
+        # self.send(text_data=json.dumps({'selector': selector}))
+        self.send(text_data=json.dumps(event))
+
+    def order_soft(self, event: dict):
+        # log_error(f'order_soft: {event}', wt=False)
+        event['type'] = 'order_soft'
+        # self.send(text_data=json.dumps({'selector': selector}))
+        self.send(text_data=json.dumps(event))
+
+    def order_add(self, event: dict):
+        log_error(f'order_add: {event}', wt=False)
+        # order = Order.objects.filter(id=int(event['order_id'])).first()
+
+        # event['type'] = SimpleOrderSerializer(order).data
+        event['type'] = 'add_new_order'
+
+        self.send(text_data=json.dumps(event))
+
+
+# данные о пользователях онлайн
+# class UserStatusConsumer(WebsocketConsumer):
+#     online_users = {}  # Это будет словарь для отслеживания пользователей
+#
+#     def user_online(self, event):
+#         user_id = event['user_id']
+#         group = event['group']
+#
+#         log_error(f'user_online', wt=False)
+#
+#         # Добавляем пользователя в онлайн статус
+#         if group not in self.online_users:
+#             self.online_users[group] = set()
+#         self.online_users[group].add(user_id)
+#
+#     def user_offline(self, event):
+#         user_id = event['user_id']
+#         group = event['group']
+#
+#         log_error(f'user_offline', wt=False)
+#
+#         # Удаляем пользователя из онлайн статуса
+#         if group in self.online_users:
+#             self.online_users[group].discard(user_id)
+#             if not self.online_users[group]:  # Если группа пуста, удаляем
+#                 del self.online_users[group]
+#
+#     # Проверка, кто онлайн в конкретной группе
+#     def is_user_online(self, group, user_id):
+#         log_error(f'is_user_online', wt=False)
+#
+#         return group in self.online_users and user_id in self.online_users[group]

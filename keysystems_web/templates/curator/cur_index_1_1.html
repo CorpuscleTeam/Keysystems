@@ -62,7 +62,7 @@
             </a>
         </li>
         <li class="sidenav_mobile_li">
-            <a href="cur_index_2_1" class="sidenav-close">
+            <a href="/curator/alldashboard" class="sidenav-close">
                 <div class="sidenav_li_left">
                     <img src="{% static 'site/img/request.svg' %}" alt="">
                     <p>Все заявки</p>
@@ -70,7 +70,7 @@
             </a>
         </li>
         <li class="sidenav_mobile_li">
-            <a href="cur_index_3">
+            <a href="/curator/notifications">
                 <div class="sidenav_li_flex mobile_notice" id="id_menu_push_mob">
                     <div class="sidenav_li_left">
                         <img src="{% static 'site/img/push.svg' %}" alt="">
@@ -137,7 +137,7 @@
                             </a>
                         </li>
                         <li>
-                            <a href="cur_index_2_1">
+                            <a href="/curator/alldashboard">
                                 <div class="page_menu_li_news">
                                     <img src="{% static 'site/img/request.svg' %}" alt="">
                                     <p>Все заявки</p>
@@ -145,7 +145,7 @@
                             </a>
                         </li>
                         <li>
-                            <a href="cur_index_3">
+                            <a href="/curator/notifications">
                                 <div class="page_menu_li_flex page_notice" id="id_menu_push">
                                     <div class="page_menu_li_left">
                                         <img src="{% static 'site/img/push.svg' %}" alt="">
@@ -156,7 +156,7 @@
                             </a>
                         </li>
                         <!-- <li>
-                            <a href="index_7_1">
+                            <a href="/client/upgrade">
                                 <div class="page_menu_li_flex page_update">
                                     <div class="page_menu_li_left">
                                         <img src="{% static 'site/img/update.svg' %}" alt="">
@@ -241,6 +241,7 @@
     let sentMsg = "{% static 'site/img/sentMsg.svg' %}"
 
     let curatorUser = true
+    
 
     </script>
 
@@ -256,6 +257,7 @@
     <script type="text/javascript" src="{% static 'site/js/cur_main_5_3.js' %}"></script>
     <!-- <script type="text/javascript" src="{% static 'site/js/mob_card_req.js' %}"></script> -->
     <script type="text/javascript" src="{% static 'site/js/reload.js' %}"></script>
+    <script type="text/javascript" src="{% static 'site/js/user_socket.js' %}"></script>
 
 
 </body>
