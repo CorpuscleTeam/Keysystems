@@ -5,6 +5,13 @@
     }
 }
 
+@media screen and (max-width: 1340px) {
+    .header_client_menu_ul li:first-child p:nth-of-type(2) {
+        max-width: 300px;
+        white-space: nowrap;
+        overflow: hidden;
+    }
+}
 @media screen and (max-width: 1024px) {
     
 
@@ -30,6 +37,16 @@
         grid-template-columns: 1fr 2.3fr;
         align-items: start;
     }
+    .header_client_menu_ul li:first-child p {
+        /* font-size: 10px; */
+    }
+    .header_client_menu_ul li:first-child .menu_INN {
+        white-space: wrap;
+        min-width: 100px;
+    }
+    .header_client_menu_ul li:first-child p:nth-of-type(2) {
+        max-width: 250px;
+    }
 }
 
 @media screen and (max-width: 850px) {
@@ -51,6 +68,15 @@
     }
     .update_files_grid {
         grid-template-columns: repeat(1, 1fr);
+    }
+    .header_client_menu_ul li:first-child .menu_INN {
+        min-width: 80px;
+    }
+    .header_client_menu_ul li:first-child p:nth-of-type(2) {
+        max-width: 100px;
+    }
+    .header_client_menu_ul li>a {
+        font-size: 11px;
     }
 }
 
@@ -119,6 +145,7 @@
     .footer_flex {
         margin-bottom: 0;
     }
+    
 
     /* Тело страницы */
     .page_flex {
