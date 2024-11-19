@@ -418,6 +418,20 @@ input[placeholder] {
     padding-left: 30px;
     padding-right: 30px;
 }
+.header_client_menu_ul li:first-child p {
+    font-size: 12px;
+}
+.header_client_menu_ul li:first-child .menu_INN {
+    margin-right: 5px;
+    white-space: nowrap;
+    overflow: hidden;
+    min-width: 150px;
+}
+.header_client_menu_ul li:first-child p:nth-of-type(2) {
+    text-overflow: ellipsis;
+    flex-shrink: 1;
+    min-width: 0;
+}
 
 .header_client_menu_ul li:nth-child(n+2) {
     flex-grow: 0;
