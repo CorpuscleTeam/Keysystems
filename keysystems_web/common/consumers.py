@@ -63,7 +63,7 @@ class ChatConsumer(WebsocketConsumer):
     # Receive message from WebSocket
     def receive(self, text_data=None, bytes_data=None):
         data_json: dict = json.loads(text_data) if text_data else {'event': 'file_', 'text_data': str(text_data)}
-        log_error(wt=False, message=f'receive\n{data_json}'[:200])
+        # log_error(wt=False, message=f'receive\n{data_json}'[:200])
 
         if data_json['event'] == EditOrderAction.MSG or data_json['event'] == EditOrderAction.FILE:
             ut.ws_proc_msg(data_json, self)

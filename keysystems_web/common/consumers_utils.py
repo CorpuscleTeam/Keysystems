@@ -13,9 +13,12 @@ from enums import EditOrderAction, MsgType, NoticeType, notices_dict, CountSelec
 
 
 # список всех относящихся к заказу пользователей
-def get_related_users_list(order: m.Order) -> list[int]:
-    curators = m.OrderCurator.objects.select_related('user').filter(order_id=order).all()
-    return [curator.user.id for curator in curators] + [order.from_user.id]
+def get_related_users_list(order: m.Order, chat: str = ChatType.CLIENT.value) -> list[int]:
+    curators = m.OrderCurator.objects.select_related('user').filter(order=order).all()
+    if chat == ChatType.CLIENT:
+        return [curator.user.id for curator in curators] + [order.from_user.id]
+    else:
+        return [curator.user.id for curator in curators]
 
 
 # обработка входящего сообщения
@@ -62,12 +65,13 @@ def ws_proc_msg(msg_data: dict, ws_consumer: WebsocketConsumer):
                 f.write(file_data)
 
         # рассылаем уведомления
-        notice_list = get_related_users_list(order)
+        notice_list = get_related_users_list(order=order, chat=msg_data['chat'])
         if msg_data['user_id'] in notice_list:
             notice_list.remove(msg_data['user_id'])
 
         notice: str = notices_dict.get(NoticeType.NEW_MSG.value)
         notice_text = notice.format(pk=order.id)
+        log_error(f'user_ids: {notice_list}', wt=False)
 
         for user_id in notice_list:
             new_notice = m.Notice(
@@ -98,7 +102,7 @@ def ws_proc_msg(msg_data: dict, ws_consumer: WebsocketConsumer):
 
 
 # {'event': 'edit_curator', 'add': '2', 'del': 5, 'order_id': '10', 'room_name': 'order10'}
-# обработка смены статуса
+# обработка изменения списка кураторов
 def ws_proc_curator(event_data: dict, ws_consumer: WebsocketConsumer):
     order_id = int(event_data.get('order_id', 0))
 
@@ -147,8 +151,14 @@ def ws_proc_status(event_data: dict, ws_consumer: WebsocketConsumer):
         new_message.save()
         add_counter_ws = 1
 
-    ws_send_list = get_related_users_list(order)
+    ws_send_list = get_related_users_list(order=order)
+
+    notice_type = NoticeType.ORDER_DONE.value if event_data['status'] == OrderStatus.DONE else NoticeType.ORDER_ACTIVE.value
+    notice_text: str = notices_dict.get(notice_type).format(pk=order.id)
+    # notice_text = notice.format(pk=order.id)
     for user in ws_send_list:
+        # new_notice = m.Notice(order=order, user_ks_id=user, text=notice_text)
+        m.Notice.objects.create(order=order, user_ks_id=user, text=notice_text)
         async_to_sync(ws_consumer.channel_layer.group_send)(
             f'user{user}',
             {
@@ -159,6 +169,7 @@ def ws_proc_status(event_data: dict, ws_consumer: WebsocketConsumer):
         )
 
     # если заказ закрыт отнимает у всех циферку
+    log_error(f'ws_send_list: {ws_send_list} {event_data["status"]} {add_counter_ws}')
     if event_data['status'] == OrderStatus.DONE or add_counter_ws == 1:
         for user in ws_send_list:
             async_to_sync(ws_consumer.channel_layer.group_send)(

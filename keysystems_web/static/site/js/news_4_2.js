@@ -26,7 +26,7 @@ news_header.appendChild(news_date)
 
 let news_date_day = document.createElement('p')
 news_date_day.classList.add('news_date_day')
-news_date_day.innerHTML = news['fields']['day']
+news_date_day.innerHTML = news['day']
 news_date.appendChild(news_date_day)
 
 let news_date_MY_flex = document.createElement('div')
@@ -35,12 +35,12 @@ news_date.appendChild(news_date_MY_flex)
 
 let news_date_mon = document.createElement('p')
 news_date_mon.classList.add('news_date_MY')
-news_date_mon.innerHTML = news['fields']['month']
+news_date_mon.innerHTML = news['month']
 news_date_MY_flex.appendChild(news_date_mon)
 
 let news_date_year = document.createElement('p')
 news_date_year.classList.add('news_date_MY')
-news_date_year.innerHTML = news['fields']['year']
+news_date_year.innerHTML = news['year']
 news_date_MY_flex.appendChild(news_date_year)
 
 // Заголовок
@@ -50,12 +50,12 @@ news_header.appendChild(news_title_flex)
 
 let news_header_title = document.createElement('h3')
 news_header_title.classList.add('news_title')
-news_header_title.innerHTML = news['fields']['title']
+news_header_title.innerHTML = news['title']
 news_title_flex.appendChild(news_header_title)
 
 let news_header_author = document.createElement('p')
 news_header_author.classList.add('news_author')
-news_header_author.innerHTML = `Автор: ${news['fields']['author']}`
+news_header_author.innerHTML = `Автор: ${news['author']}`
 news_title_flex.appendChild(news_header_author)
 
 // картинка новости
@@ -64,14 +64,15 @@ news_img_div.classList.add('page_news_img')
 // news_img_div.innerHTML = news_img
 document.querySelector('.page_flex_body').appendChild(news_img_div)
 
-let news_img = document.createElement('img')
-news_img.setAttribute('src', news_path)
-news_img_div.appendChild(news_img)
-
+if (news.photo) {
+    let news_img = document.createElement('img')
+    news_img.setAttribute('src', news.photo)
+    news_img_div.appendChild(news_img)
+}
 // Текст новости
 let news_content = document.createElement('div')
 news_content.classList.add('page_news_content')
-news_content.innerHTML = news['fields']['text']
+news_content.innerHTML = news['text']
 document.querySelector('.page_flex_body').appendChild(news_content)
 
 // кнопки "Предыдущая новость", "Следующая новость"
