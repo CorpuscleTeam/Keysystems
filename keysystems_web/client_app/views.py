@@ -125,14 +125,9 @@ def index_6(request: HttpRequest):
         utils.form_processing(request)
         return redirect('index_6')
 
-    if request.user.is_authenticated:
-        notices = Notice.objects.filter(user_ks=request.user).order_by('-created_at').all()
-    else:
-        notices = Notice.objects.filter().order_by('-created_at').all()
-
-    if request.user.is_authenticated:
-        # обнуляем непросмотренные уведомления
-        Notice.objects.filter(user_ks=request.user, viewed=False).update(viewed=True)
+    notices = Notice.objects.filter(user_ks=request.user).order_by('-created_at').all()
+    # обнуляем непросмотренные уведомления
+    Notice.objects.filter(user_ks=request.user, viewed=False).update(viewed=True)
 
     client_data = utils.get_main_client_front_data(request)
     context = {
@@ -196,7 +191,7 @@ def index_7_1(request: HttpRequest):
 
 # обновление подробнее
 def index_7_2(request: HttpRequest, update_id: int):
-    log_error(f'>> index_7_2 {update_id} {type(update_id)}', wt=False)
+    # log_error(f'>> index_7_2 {update_id} {type(update_id)}', wt=False)
 
     if utils.is_access_denied(request):
         return redirect('redirect')

@@ -23,12 +23,17 @@ def cur_index_1_1(request: HttpRequest):
     if utils.is_access_denied(request):
         return redirect('redirect')
 
-    # orders = utils.get_orders_curator(request)
-
     # logging.warning(f'request.user: {request.user.full_name} {request.user.id}')
     orders = OrderCurator.objects.select_related('order').filter(user=request.user).order_by('order__created_at').all()
 
-    order_list = [order_curator.order for order_curator in orders if order_curator.order]
+    # order_list = [order_curator.order for order_curator in orders if order_curator.order]
+    order_list = []
+    added_orders = []  # Чтоб не задваивались заказы при ошибке записи
+    for order_curator in orders:
+        if order_curator.order.id not in added_orders:
+            # logging.warning(f'{order_curator.order.id} - {added_orders}')
+            order_list.append(order_curator.order)
+            added_orders.append(order_curator.order.id)
 
     curator_data = utils.get_main_curator_front_data(request)
 
