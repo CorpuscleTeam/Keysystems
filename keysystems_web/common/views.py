@@ -12,7 +12,6 @@ from .models import Order, Message, OrderCurator, ViewMessage, UserKS, Soft, Cus
 from . import models as m
 from .serializers import FullOrderSerializer, MessageSerializer, UserKSSerializer
 from .logs import log_error
-from .data import client_data
 from enums import ChatType, RequestMethod, EditOrderAction, soft_list_dict, CustomerType
 
 

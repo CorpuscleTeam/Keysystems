@@ -26,7 +26,7 @@ class DownloadedFileSerializer(serializers.ModelSerializer):
         return os.path.basename(parsed_url.path)
 
     def get_url(self, obj):
-        return f'{obj.url}'
+        return f'/{obj.url}'
 
     def get_file_size(self, obj):
         if obj.file_size:
@@ -197,7 +197,7 @@ class MessageSerializer(serializers.ModelSerializer):
         return ut.get_time_string(obj.created_at)
 
     def get_file_url(self, obj):
-        return f'{obj.file_path}' if obj.file_path else None
+        return f'/{obj.file_path}' if obj.file_path else None
 
     def get_file_size(self, obj):
         if obj.file_size:
