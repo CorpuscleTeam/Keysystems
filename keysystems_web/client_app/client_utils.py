@@ -158,25 +158,34 @@ def form_processing(request: HttpRequest) -> None:
             new_order.save()
 
             # добавляет куратора
-            curators = get_order_curator(
-                soft=form.cleaned_data['type_soft'],
-                prefix=str(request.user.customer.inn)[:4],
-                ministry_id=request.user.customer.ministry_id,
-                customer_type=request.user.customer.form_type
-            )
-            log_error(f'>>>> {len(curators)}', wt=False)
-            if curators:
+            if form.cleaned_data['type_appeal'] == e.OrderTopic.CONTRACT:
+                curators = m.UserKS.objects.filter(contract_dep=True).all()
                 for curator in curators:
                     m.OrderCurator.objects.create(
-                        user_id=curator.user.id,
+                        user_id=curator.id,
                         order=new_order
                     )
+
             else:
-                curator = m.UserKS.objects.filter(is_staff=True).order_by('?').first()
-                m.OrderCurator.objects.create(
-                    user_id=curator.id,
-                    order=new_order
+                curators = get_order_curator(
+                    soft=form.cleaned_data['type_soft'],
+                    prefix=str(request.user.customer.inn)[:4],
+                    ministry_id=request.user.customer.ministry_id,
+                    customer_type=request.user.customer.form_type
                 )
+
+                if curators:
+                    for curator in curators:
+                        m.OrderCurator.objects.create(
+                            user_id=curator.user.id,
+                            order=new_order
+                        )
+                else:
+                    curator = m.UserKS.objects.filter(is_staff=True).order_by('?').first()
+                    m.OrderCurator.objects.create(
+                        user_id=curator.id,
+                        order=new_order
+                    )
 
             # Запись коммента
             full_description = form.cleaned_data.get('fullDescription')
