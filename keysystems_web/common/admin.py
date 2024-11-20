@@ -89,7 +89,7 @@ class ViewAdminUser(admin.ModelAdmin):
 
     fieldsets = (
         ('О пользователе', {'fields': ('full_name', 'username', 'phone', 'inn')}),
-        ('Права', {'fields': ('is_staff', 'is_superuser')}),
+        ('Права', {'fields': ('is_staff', 'is_superuser', 'contract_dep')}),
         ('Даты', {'fields': ('last_login', 'date_joined')}),
     )
 

@@ -66,11 +66,10 @@ class UserKS(AbstractUser):
         blank=True
     )
     username = models.CharField('Почта', max_length=150, unique=True)
-    # email = models.CharField('Почта', max_length=100, null=True, blank=True)
     full_name = models.CharField('ФИО', max_length=255, default='Админ')
     phone = models.CharField('Телефон', max_length=100, null=True, blank=True)
     inn = models.CharField('ИНН', max_length=12, null=True, blank=True)
-    # is_staff = models.BooleanField('Статус куратора', default=True)
+    contract_dep = models.BooleanField('Договорной отдел', default=False)
 
     groups = models.ManyToManyField(
         Group,
