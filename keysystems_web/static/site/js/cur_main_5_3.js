@@ -95,7 +95,7 @@ function craeteOrderModal(orderId) {
 
                     <div id="tab1" class="tab-content active">
                         <h6 class="title_in_modal">Тема</h6>
-                        <div class="text_in_modal">${data.order.topic}</div>
+                        <div class="text_in_modal topic_of_req">${data.order.topic}</div>
                         <form action="" method="post">
                             <div class="select_PO">
                                 <label class="title_in_modal" for="soft_in_chat">Програмное обеспечение</label>
@@ -177,20 +177,25 @@ function craeteOrderModal(orderId) {
                 }
 
                 // список ПО
-                if (curatorUser == false) {
-                    let selectPOClientTab = document.querySelector('.select_PO select')
-                    selectPOClientTab.style.display = "none"
-
-                    let textPOClientTab = document.createElement('p')
-                    textPOClientTab.classList.add('text_in_modal')
-                    textPOClientTab.setAttribute('id', 'soft_title')
-                    textPOClientTab.innerHTML = data['order']['soft']
-                    document.querySelector('.select_PO').appendChild(textPOClientTab)
+                // let topicOfReq = document.querySelector('.topic_of_req')
+                if(data.order.topic == 'Договорной отдел') {
+                    let tab1form = document.querySelector('#tab1>form')
+                    tab1form.style.display = 'none'
                 } else {
-                    selectPO('#soft_in_chat', data['soft'], data.order.soft)
+                    if (curatorUser == false) {
+                        let selectPOClientTab = document.querySelector('.select_PO select')
+                        selectPOClientTab.style.display = "none"
+    
+                        let textPOClientTab = document.createElement('p')
+                        textPOClientTab.classList.add('text_in_modal')
+                        textPOClientTab.setAttribute('id', 'soft_title')
+                        textPOClientTab.innerHTML = data['order']['soft']
+                        document.querySelector('.select_PO').appendChild(textPOClientTab)
+                    } else {
+                        selectPO('#soft_in_chat', data['soft'], data.order.soft)
+                    }
                 }
-
-
+                
                 // кнопка скачать файл
                 btnLdFile('.files_in_modal', data['order']['files'])
 
